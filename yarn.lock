@@ -2360,7 +2360,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/react@npm:^0.26.13":
+"@floating-ui/react@npm:^0.26.16":
   version: 0.26.17
   resolution: "@floating-ui/react@npm:0.26.17"
   dependencies:
@@ -2417,18 +2417,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@headlessui/react@npm:2.0.4":
-  version: 2.0.4
-  resolution: "@headlessui/react@npm:2.0.4"
+"@headlessui/react@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@headlessui/react@npm:2.1.0"
   dependencies:
-    "@floating-ui/react": ^0.26.13
-    "@react-aria/focus": ^3.16.2
-    "@react-aria/interactions": ^3.21.1
+    "@floating-ui/react": ^0.26.16
+    "@react-aria/focus": ^3.17.1
+    "@react-aria/interactions": ^3.21.3
     "@tanstack/react-virtual": 3.5.0
   peerDependencies:
     react: ^18
     react-dom: ^18
-  checksum: b2b25da155017783958fc8fec695db6b0bdb6d159502f573dc7b9b536ffac104e4ffcdcab80f86a1e0b3b47fd93701ad8e995cdf04eb601ceef48893046919e1
+  checksum: 0dae7df17c2fd8bcbe0a19fce14c4bfa756fa5500b92a0799958a90fd8a67466142544b495e434404b9de90db5b82e22cf83916b1769862bd0fed654655bf65b
   languageName: node
   linkType: hard
 
@@ -3163,7 +3163,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/focus@npm:^3.16.2":
+"@react-aria/focus@npm:^3.17.1":
   version: 3.17.1
   resolution: "@react-aria/focus@npm:3.17.1"
   dependencies:
@@ -3178,7 +3178,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-aria/interactions@npm:^3.21.1, @react-aria/interactions@npm:^3.21.3":
+"@react-aria/interactions@npm:^3.21.3":
   version: 3.21.3
   resolution: "@react-aria/interactions@npm:3.21.3"
   dependencies:
@@ -11342,7 +11342,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "tailwind-nextjs-starter-blog@workspace:."
   dependencies:
-    "@headlessui/react": 2.0.4
+    "@headlessui/react": 2.1.0
     "@next/bundle-analyzer": 14.2.4
     "@svgr/webpack": ^8.1.0
     "@tailwindcss/forms": ^0.5.7
