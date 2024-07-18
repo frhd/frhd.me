@@ -18,7 +18,7 @@ const projectsData: Project[] = [
     title: 'An intelligent swarm of catarpillar robot',
     description: `Designing and building a swarm of robots that can work together to solve problems.`,
     imgSrc: '/static/images/time-machine.jpg',
-    href: '/blog/ISASCrawler',
+    href: '/blog/isasCrawler',
   },
 ]
 
