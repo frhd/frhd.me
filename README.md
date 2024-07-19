@@ -1,6 +1,6 @@
 # frhd.me
 
-my personal website
+my personal website v2
 
 ## Licence
 
