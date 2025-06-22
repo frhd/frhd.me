@@ -15,6 +15,14 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
 
   useEffect(() => {
     inputRef.current?.focus();
+    
+    // Re-focus on click anywhere in the document
+    const handleClick = () => {
+      inputRef.current?.focus();
+    };
+    
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -62,7 +70,7 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
         autoComplete="off"
         spellCheck={false}
       />
-      <span className="animate-pulse text-green-500">_</span>
+      <span className="terminal-cursor text-green-500">_</span>
     </form>
   );
 }
