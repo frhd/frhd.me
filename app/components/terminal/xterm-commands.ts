@@ -149,7 +149,7 @@ function displayHelp(term: any): void {
     { name: "access --mainframe", desc: "Access the mainframe (press 'q' to exit)" },
     { name: "glitch", desc: "????" },
     { name: "download --consciousness", desc: "Download consciousness" },
-    { name: "exit", desc: "Close browser tab" },
+    { name: "exit", desc: "Close terminal" },
   ];
 
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
