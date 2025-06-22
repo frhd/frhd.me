@@ -113,6 +113,10 @@ export async function executeCommand(
       }
       break;
 
+    case "exit":
+      await displayExit(term);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -145,6 +149,7 @@ function displayHelp(term: any): void {
     { name: "access --mainframe", desc: "Access the mainframe (press 'q' to exit)" },
     { name: "glitch", desc: "????" },
     { name: "download --consciousness", desc: "Download consciousness" },
+    { name: "exit", desc: "Close browser tab" },
   ];
 
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
@@ -369,6 +374,31 @@ async function displayConsciousnessDownload(term: any): Promise<void> {
   term.writeln("");
   term.writeln(term.colorize("ERROR: Consciousness is not downloadable.", "brightRed"));
   term.writeln(term.colorize("It must be experienced.", "brightYellow"));
+}
+
+async function displayExit(term: any): Promise<void> {
+  const exitSteps = [
+    "Terminating session...",
+    "Saving state...",
+    "Closing connection...",
+  ];
+
+  for (const step of exitSteps) {
+    term.write(`[${term.colorize("SYSTEM", "brightCyan")}] ${step}`);
+    await sleep(400);
+    term.writeln(` ${term.colorize("✓", "brightGreen")}`);
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize("Goodbye, user. Connection terminated.", "brightYellow"));
+  term.writeln("");
+
+  // Close the browser tab after a short delay
+  setTimeout(() => {
+    if (typeof window !== 'undefined') {
+      window.close();
+    }
+  }, 1500);
 }
 
 // Helper functions

@@ -48,24 +48,24 @@
 }
 
 .xterm .xterm-viewport {
-  background-color: #0a0a0a;
-  overflow-y: scroll;
+  background-color: transparent;
+  overflow-y: hidden;
   cursor: default;
   position: absolute;
-  right: 16px;
-  left: 16px;
-  top: 16px;
-  bottom: 16px;
+  right: 0;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
 .xterm .xterm-screen {
   position: relative;
-  padding: 16px 0 0 0;
+  padding: 0;
 }
 
 .xterm .xterm-screen canvas {
   position: absolute;
-  left: 16px;
+  left: 0;
   top: 0;
 }
 
@@ -128,24 +128,14 @@
   }
 }
 
-/* Custom scrollbar */
+/* Hide scrollbar completely */
 .xterm .xterm-viewport::-webkit-scrollbar {
-  width: 10px;
+  display: none;
 }
 
-.xterm .xterm-viewport::-webkit-scrollbar-track {
-  background: #0a0a0a;
-}
-
-.xterm .xterm-viewport::-webkit-scrollbar-thumb {
-  background: #00aa00;
-  opacity: 0.15;
-  border-radius: 5px;
-}
-
-.xterm .xterm-viewport::-webkit-scrollbar-thumb:hover {
-  background: #00cc00;
-  opacity: 0.25;
+.xterm .xterm-viewport {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 /* Matrix rain effect overlay */
@@ -161,9 +151,9 @@
 
 /* Force text rendering offset */
 .xterm-rows {
-  padding-left: 16px !important;
+  padding-left: 0 !important;
 }
 
 .xterm-row {
-  padding-left: 16px !important;
+  padding-left: 0 !important;
 }

@@ -20,6 +20,7 @@ Available commands:
   ls                  - List available sections
   cat [file]          - Display file contents
   download --consciousness - Easter egg
+  exit                - Close browser tab
 `,
       type: 'text'
     })
@@ -254,6 +255,28 @@ Transfer failed. You're not ready yet, Neo.
       return {
         content: 'Usage: download --consciousness',
         type: 'error'
+      };
+    }
+  },
+
+  exit: {
+    name: 'exit',
+    description: 'Close browser tab',
+    action: () => {
+      // Display a goodbye message before closing
+      setTimeout(() => {
+        window.close();
+      }, 1000);
+      
+      return {
+        content: `
+[TERMINATING SESSION...]
+[SAVING STATE...]
+[CLOSING CONNECTION...]
+
+Goodbye, user. Connection terminated.
+`,
+        type: 'text'
       };
     }
   }

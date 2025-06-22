@@ -160,6 +160,7 @@ export function extendTerminal(term: any): void {
         "echo",
         "date",
         "neofetch",
+        "exit",
       ];
 
       const matches = commands.filter((cmd) =>
