@@ -79,18 +79,18 @@ Type 'help' for available commands.`,
         />
       )}
       
-      <div className="min-h-screen bg-black text-green-500 p-8 font-mono flex items-center justify-center">
-        <div className="w-full max-w-3xl bg-gray-950 border border-green-500 rounded-lg shadow-2xl shadow-green-500/20">
+      <div className="min-h-screen bg-black text-green-500 font-mono text-base">
+        <div className="w-full max-w-4xl pl-12 pr-8 py-8">
           <div 
             ref={terminalRef}
-            className="h-[70vh] overflow-y-auto custom-scrollbar p-8"
+            className="overflow-y-auto"
           >
           {history.map((item, index) => (
             <div key={index} className="mb-4">
               {item.input && (
                 <div className="flex items-center mb-1">
-                  <span className="text-green-500 mr-2 font-mono">guest@frhd.me:~$</span>
-                  <span className="text-green-500 font-mono">{item.input}</span>
+                  <span className="mr-2 font-mono text-base" style={{ color: '#22c55e', fontFamily: 'inherit' }}>guest@frhd.me:~$</span>
+                  <span className="font-mono text-base" style={{ color: '#22c55e', fontFamily: 'inherit' }}>{item.input}</span>
                 </div>
               )}
               <TerminalOutput output={item.output} />

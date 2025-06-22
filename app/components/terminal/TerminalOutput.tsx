@@ -43,7 +43,7 @@ export default function TerminalOutput({ output }: TerminalOutputProps) {
   if (output.type === 'glitch') {
     return (
       <div className="relative">
-        <pre className="text-green-500 font-mono whitespace-pre-wrap animate-pulse glitch">
+        <pre className="font-mono text-base whitespace-pre-wrap animate-pulse glitch" style={{ color: '#22c55e', fontFamily: 'inherit' }}>
           {displayText}
         </pre>
       </div>
@@ -52,7 +52,7 @@ export default function TerminalOutput({ output }: TerminalOutputProps) {
 
   if (output.type === 'error') {
     return (
-      <pre className="text-red-500 font-mono whitespace-pre-wrap">
+      <pre className="font-mono text-base whitespace-pre-wrap" style={{ color: '#ef4444', fontFamily: 'inherit' }}>
         {displayText}
       </pre>
     );
@@ -60,14 +60,14 @@ export default function TerminalOutput({ output }: TerminalOutputProps) {
 
   if (output.type === 'decrypt') {
     return (
-      <pre className={`font-mono whitespace-pre-wrap ${isDecrypting ? 'text-green-300' : 'text-green-500'}`}>
+      <pre className="font-mono text-base whitespace-pre-wrap" style={{ color: isDecrypting ? '#86efac' : '#22c55e', fontFamily: 'inherit' }}>
         {displayText}
       </pre>
     );
   }
 
   return (
-    <pre className="text-green-500 font-mono whitespace-pre-wrap">
+    <pre className="font-mono text-base whitespace-pre-wrap" style={{ color: '#22c55e', fontFamily: 'inherit' }}>
       {displayText}
     </pre>
   );

@@ -25,6 +25,13 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
     return () => document.removeEventListener('click', handleClick);
   }, []);
 
+  // Re-focus after processing completes
+  useEffect(() => {
+    if (!isProcessing) {
+      inputRef.current?.focus();
+    }
+  }, [isProcessing]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim() && !isProcessing) {
@@ -32,6 +39,10 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
       setCommandHistory(prev => [...prev, input]);
       setHistoryIndex(-1);
       setInput('');
+      // Keep focus on input after submission
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 0);
     }
   };
 
@@ -57,8 +68,8 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center font-mono">
-      <span className="text-green-500 mr-2 font-mono">guest@frhd.me:~$</span>
+    <form onSubmit={handleSubmit} className="flex items-center font-mono text-base">
+      <span className="mr-2 font-mono text-base" style={{ color: '#22c55e', fontFamily: 'inherit' }}>guest@frhd.me:~$</span>
       <input
         ref={inputRef}
         type="text"
@@ -66,11 +77,11 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         disabled={isProcessing}
-        className="flex-1 bg-transparent outline-none text-green-500 font-mono"
+        className="flex-1 bg-transparent outline-none font-mono text-base caret-green-500"
+        style={{ color: '#22c55e', fontFamily: 'inherit' }}
         autoComplete="off"
         spellCheck={false}
       />
-      <span className="terminal-cursor text-green-500 font-mono ml-0.5">_</span>
     </form>
   );
 }

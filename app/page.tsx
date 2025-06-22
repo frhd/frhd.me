@@ -1,5 +1,5 @@
-import Terminal from "./components/terminal/Terminal";
+import XTerminal from "./components/terminal/XTerminal";
 
 export default function Home() {
-  return <Terminal />;
+  return <XTerminal />;
 }
