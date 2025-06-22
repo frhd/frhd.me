@@ -103,6 +103,10 @@ export function extendTerminal(term: any): void {
   // Disconnect method
   ext.disconnect = () => {
     ext.disconnected = true;
+    
+    // Hide the cursor
+    ext.write("\x1b[?25l");
+    
     ext.writeln("");
     ext.writeln(ext.colorize("Connection to frhd.me closed.", "brightRed"));
     

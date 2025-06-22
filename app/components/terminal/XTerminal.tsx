@@ -289,7 +289,7 @@ export default function XTerminal() {
   return (
     <>
       <div className="flex min-h-screen w-full items-start justify-center bg-black p-4 pt-8">
-        <div className="h-[85vh] w-full max-w-6xl rounded-lg border border-green-500/20 bg-black/90 p-4 shadow-2xl shadow-green-500/10">
+        <div className="h-[85vh] w-full max-w-6xl rounded-lg bg-black/90 p-4 shadow-2xl shadow-green-500/10">
           {/* Loading overlay */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/90 z-10">
