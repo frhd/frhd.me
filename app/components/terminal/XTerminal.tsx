@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./xterm-theme.css";
 
 // Define the extended terminal interface
@@ -52,9 +52,10 @@ export default function XTerminal() {
     });
   }, []);
 
-  useEffect(() => {
+  // Use useLayoutEffect for DOM-dependent operations
+  useLayoutEffect(() => {
     if (!terminalRef.current) {
-      addDebug("terminalRef.current is null, waiting...");
+      addDebug("terminalRef.current is null in useLayoutEffect, waiting...");
       return;
     }
     
@@ -62,6 +63,8 @@ export default function XTerminal() {
       addDebug("xtermRef.current already exists, skipping...");
       return;
     }
+
+    addDebug("✅ terminalRef.current is available, proceeding with initialization");
 
     let isInitialized = false;
 
@@ -265,37 +268,39 @@ export default function XTerminal() {
         xtermRef.current.dispose();
       }
     };
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-black p-4">
-        <div className="h-full w-full max-w-6xl rounded-lg border border-green-500/20 bg-black/90 p-4 shadow-2xl shadow-green-500/10">
-          <div className="flex h-full w-full items-center justify-center flex-col space-y-4">
-            <div className="text-green-500 font-mono animate-pulse">
-              Loading terminal...
-            </div>
-            <div className="text-xs text-green-300 font-mono max-w-md">
-              Debug info:
-              {debugInfo.slice(-5).map((info, i) => (
-                <div key={i} className="text-xs opacity-70">
-                  {info}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  }, []); // Empty dependency array since we want this to run once when the component is ready
 
   return (
     <>
       <div className="flex h-screen w-full items-center justify-center bg-black p-4">
         <div className="h-full w-full max-w-6xl rounded-lg border border-green-500/20 bg-black/90 p-4 shadow-2xl shadow-green-500/10">
-          <div ref={terminalRef} className="h-full w-full" />
+          {/* Loading overlay */}
+          {isLoading && (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/90 z-10">
+              <div className="flex flex-col items-center space-y-4">
+                <div className="text-green-500 font-mono animate-pulse">
+                  Loading terminal...
+                </div>
+                <div className="text-xs text-green-300 font-mono max-w-md">
+                  Debug info:
+                  {debugInfo.slice(-5).map((info, i) => (
+                    <div key={i} className="text-xs opacity-70">
+                      {info}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          
+          {/* Terminal wrapper with padding */}
+          <div className="h-full w-full p-4">
+            {/* Terminal container - XTerm.js attaches here */}
+            <div ref={terminalRef} className="h-full w-full" />
+          </div>
         </div>
       </div>
+      
       {showMatrix && MatrixComponent && (
         <MatrixComponent
           duration={matrixDuration}
