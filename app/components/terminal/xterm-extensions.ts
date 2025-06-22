@@ -34,8 +34,6 @@ interface CustomTerminal {
 export function extendTerminal(term: any): void {
   const ext = term as CustomTerminal;
 
-  console.log("🔧 Extending terminal with custom functionality...");
-
   // Initialize properties
   ext.currentLine = "";
   ext.user = "guest";
@@ -75,11 +73,12 @@ export function extendTerminal(term: any): void {
 
   // ASCII art logo
   const logo = [
-    "   ___     _         _                    ",
-    "  / __\\_ __| |__   __| |  _ __ ___   ___ ",
-    " / _\\/ '__| '_ \\ / _` | | '_ ` _ \\ / _ \\",
-    "/ / | |  | | | | (_| |_| | | | | |  __/",
-    "\\/  |_|  |_| |_|\\__,_(_)_| |_| |_|\\___|",
+    "  __      _         _                  ",
+    " / _|    | |       | |                 ",
+    "| |_ _ __| |__   __| |  _ __ ___   ___ ",
+    "|  _| '__| '_ \\ / _` | | '_ ` _ \\ / _ \\",
+    "| | | |  | | | | (_| |_| | | | | |  __/",
+    "|_| |_|  |_| |_|\\__,_(_)_| |_| |_|\\___|",
     "",
   ];
 
@@ -286,8 +285,6 @@ export function extendTerminal(term: any): void {
     ext.currentLine += data;
     ext.write(data);
   };
-
-  console.log("✅ Terminal extension complete");
 
   // Override dispose to clean up intervals
   const originalDispose = ext.dispose;

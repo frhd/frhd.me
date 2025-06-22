@@ -30,86 +30,55 @@ export default function XTerminal() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<ExtendedTerminal | null>(null);
   const [showMatrix, setShowMatrix] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [MatrixComponent, setMatrixComponent] = useState<any>(null);
-  const [debugInfo, setDebugInfo] = useState<string[]>([]);
-
-  const addDebug = (message: string) => {
-    console.log("🐛 XTerminal:", message);
-    setDebugInfo(prev => [...prev, message]);
-  };
 
   useEffect(() => {
-    addDebug("Component mounted, starting initialization...");
-    
     // Load the Matrix component dynamically
     import("./XTermMatrixRain").then((module) => {
-      addDebug("Matrix component loaded successfully");
       setMatrixComponent(() => module.default);
     }).catch((error) => {
-      addDebug(`Matrix component failed: ${error.message}`);
+      console.error("Failed to load Matrix component:", error);
     });
   }, []);
 
   // Use useLayoutEffect for DOM-dependent operations
   useLayoutEffect(() => {
     if (!terminalRef.current) {
-      addDebug("terminalRef.current is null in useLayoutEffect, waiting...");
       return;
     }
     
     if (xtermRef.current) {
-      addDebug("xtermRef.current already exists, skipping...");
       return;
     }
-
-    addDebug("✅ terminalRef.current is available, proceeding with initialization");
 
     let isInitialized = false;
 
     const initializeTerminal = async () => {
       if (isInitialized) {
-        addDebug("Already initialized, returning early");
         return;
       }
       isInitialized = true;
 
-      addDebug("🚀 Starting terminal initialization...");
-
       try {
-        addDebug("📦 Loading dynamic imports...");
-        
-        // Test basic import first
+        // Load dynamic imports
         const xtermModule = await import("@xterm/xterm");
-        addDebug("✅ @xterm/xterm loaded");
-
         const fitModule = await import("@xterm/addon-fit");
-        addDebug("✅ @xterm/addon-fit loaded");
-
         const webLinksModule = await import("@xterm/addon-web-links");
-        addDebug("✅ @xterm/addon-web-links loaded");
-
         const extensionsModule = await import("./xterm-extensions");
-        addDebug("✅ xterm-extensions loaded");
 
         const { Terminal } = xtermModule;
         const { FitAddon } = fitModule;
         const { WebLinksAddon } = webLinksModule;
         const { extendTerminal } = extensionsModule;
 
-        addDebug("📄 Loading xterm CSS...");
         // Load xterm CSS dynamically
         if (typeof document !== 'undefined' && !document.querySelector('link[href*="xterm.css"]')) {
           const link = document.createElement('link');
           link.rel = 'stylesheet';
           link.href = 'https://unpkg.com/@xterm/xterm@5.5.0/css/xterm.css';
           document.head.appendChild(link);
-          addDebug("✅ XTerm CSS added to head");
-        } else {
-          addDebug("✅ XTerm CSS already present");
         }
 
-        addDebug("🖥️ Creating terminal instance...");
         // Create terminal instance
         const term = new Terminal({
           cursorBlink: true,
@@ -139,29 +108,20 @@ export default function XTerminal() {
             brightWhite: "#ffffff",
           },
         });
-        addDebug("✅ Terminal instance created");
 
-        addDebug("🔌 Creating addons...");
         // Create addons
         const fitAddon = new FitAddon();
         const webLinksAddon = new WebLinksAddon();
-        addDebug("✅ Addons created");
 
-        addDebug("🏠 Opening terminal in DOM...");
         // Open terminal in DOM
         term.open(terminalRef.current!);
-        addDebug("✅ Terminal opened in DOM");
 
-        addDebug("🔧 Loading addons...");
         // Load addons
         term.loadAddon(fitAddon);
         term.loadAddon(webLinksAddon);
-        addDebug("✅ Addons loaded");
 
-        addDebug("⚡ Extending terminal...");
         // Extend terminal with custom functionality
         extendTerminal(term);
-        addDebug("✅ Terminal extended");
 
         // Cast to extended terminal type
         const extendedTerm = term as unknown as ExtendedTerminal;
@@ -169,7 +129,6 @@ export default function XTerminal() {
         // Store ref after extending
         xtermRef.current = extendedTerm;
 
-        addDebug("🎨 Fitting and initializing terminal...");
         // Wait for terminal to be fully rendered before fitting
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -183,12 +142,8 @@ export default function XTerminal() {
               extendedTerm.writeln("Type \x1b[1;33mhelp\x1b[0m to see available commands.");
               extendedTerm.writeln("");
               extendedTerm.prompt();
-              
-              addDebug("🎉 Terminal initialization complete!");
-              setIsLoading(false);
             } catch (error) {
-              addDebug(`❌ Terminal initialization error: ${error}`);
-              setIsLoading(false);
+              console.error("Terminal initialization error:", error);
             }
           });
         });
@@ -235,7 +190,7 @@ export default function XTerminal() {
               fitAddon.fit();
             }
           } catch (error) {
-            addDebug(`Resize fit failed: ${error}`);
+            console.error("Resize fit failed:", error);
           }
         };
         window.addEventListener("resize", handleResize);
@@ -253,9 +208,7 @@ export default function XTerminal() {
           extendedTerm.dispose();
         };
       } catch (error) {
-        addDebug(`❌ Failed to initialize terminal: ${error}`);
-        console.error("❌ Failed to initialize terminal:", error);
-        setIsLoading(false);
+        console.error("Failed to initialize terminal:", error);
       }
     };
 
@@ -290,25 +243,6 @@ export default function XTerminal() {
     <>
       <div className="flex min-h-screen w-full items-start justify-center bg-black p-4 pt-8">
         <div className="h-[85vh] w-full max-w-6xl rounded-lg bg-black/90 p-4 shadow-2xl shadow-green-500/10">
-          {/* Loading overlay */}
-          {isLoading && (
-            <div className="absolute inset-0 flex items-center justify-center bg-black/90 z-10">
-              <div className="flex flex-col items-center space-y-4">
-                <div className="text-green-500 font-mono animate-pulse">
-                  Loading terminal...
-                </div>
-                <div className="text-xs text-green-300 font-mono max-w-md">
-                  Debug info:
-                  {debugInfo.slice(-5).map((info, i) => (
-                    <div key={i} className="text-xs opacity-70">
-                      {info}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-          
           {/* Terminal wrapper with padding */}
           <div className="h-full w-full p-4">
             {/* Terminal container - XTerm.js attaches here */}
