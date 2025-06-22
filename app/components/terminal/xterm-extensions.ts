@@ -1,7 +1,13 @@
-import { Terminal } from "@xterm/xterm";
-import { executeCommand } from "./xterm-commands";
-
-interface ExtendedTerminal extends Terminal {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+interface CustomTerminal {
+  write: (data: string) => void;
+  writeln: (data: string) => void;
+  clear: () => void;
+  scrollToTop: () => void;
+  dispose: () => void;
+  onData: (callback: (data: string) => void) => void;
+  open: (parent: HTMLElement) => void;
+  loadAddon: (addon: any) => void;
   currentLine: string;
   user: string;
   host: string;
@@ -23,8 +29,10 @@ interface ExtendedTerminal extends Terminal {
   colorize: (text: string, color: string) => string;
 }
 
-export function extendTerminal(term: Terminal): void {
-  const ext = term as ExtendedTerminal;
+export function extendTerminal(term: any): void {
+  const ext = term as CustomTerminal;
+
+  console.log("🔧 Extending terminal with custom functionality...");
 
   // Initialize properties
   ext.currentLine = "";
@@ -108,8 +116,14 @@ export function extendTerminal(term: Terminal): void {
       ext.history.push(command);
       ext.historyIndex = ext.history.length;
 
-      // Execute command
-      await executeCommand(ext, command);
+      // Dynamically import executeCommand to avoid SSR issues
+      try {
+        const { executeCommand } = await import("./xterm-commands");
+        await executeCommand(ext, command);
+      } catch (error) {
+        console.error("Failed to execute command:", error);
+        ext.writeln(ext.colorize("Command execution failed", "brightRed"));
+      }
     }
 
     ext.currentLine = "";
@@ -210,4 +224,6 @@ export function extendTerminal(term: Terminal): void {
     ext.currentLine += data;
     ext.write(data);
   };
+
+  console.log("✅ Terminal extension complete");
 }

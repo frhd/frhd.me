@@ -1,12 +1,6 @@
-import { Terminal } from "@xterm/xterm";
-
-interface ExtendedTerminal extends Terminal {
-  colorize: (text: string, color: string) => string;
-  cwd: string;
-}
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export async function executeCommand(
-  term: ExtendedTerminal,
+  term: any,
   command: string
 ): Promise<void> {
   const [cmd, ...args] = command.split(" ");
@@ -130,7 +124,7 @@ export async function executeCommand(
   }
 }
 
-function displayHelp(term: ExtendedTerminal): void {
+function displayHelp(term: any): void {
   const commands = [
     { name: "help", desc: "Display this help message" },
     { name: "clear", desc: "Clear the terminal" },
@@ -162,7 +156,7 @@ function displayHelp(term: ExtendedTerminal): void {
   });
 }
 
-function displayAbout(term: ExtendedTerminal): void {
+function displayAbout(term: any): void {
   term.writeln(term.colorize("=== About ===", "brightCyan"));
   term.writeln("");
   term.writeln("Name: Farhad");
@@ -177,7 +171,7 @@ function displayAbout(term: ExtendedTerminal): void {
   );
 }
 
-async function displayAboutDecrypted(term: ExtendedTerminal): Promise<void> {
+async function displayAboutDecrypted(term: any): Promise<void> {
   const text = [
     "Decrypting biography...",
     "",
@@ -196,14 +190,16 @@ async function displayAboutDecrypted(term: ExtendedTerminal): Promise<void> {
   }
 }
 
-function displayMatrix(term: ExtendedTerminal, duration = 5000): void {
+function displayMatrix(term: any, duration = 5000): void {
   // Trigger matrix rain effect in parent component
-  window.dispatchEvent(
-    new CustomEvent("matrix-effect", { detail: { duration } })
-  );
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(
+      new CustomEvent("matrix-effect", { detail: { duration } })
+    );
+  }
 }
 
-async function displayGlitch(term: ExtendedTerminal): Promise<void> {
+async function displayGlitch(term: any): Promise<void> {
   const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
   const originalText = "REALITY.EXE HAS STOPPED RESPONDING";
 
@@ -221,7 +217,7 @@ async function displayGlitch(term: ExtendedTerminal): Promise<void> {
   term.writeln(`\r${term.colorize(originalText, "brightRed")}`);
 }
 
-function displayLs(term: ExtendedTerminal): void {
+function displayLs(term: any): void {
   const files = [
     { name: "about.txt", type: "file" },
     { name: "projects/", type: "dir" },
@@ -236,7 +232,7 @@ function displayLs(term: ExtendedTerminal): void {
   });
 }
 
-function displayCat(term: ExtendedTerminal, filename: string): void {
+function displayCat(term: any, filename: string): void {
   const files: Record<string, string[]> = {
     "about.txt": [
       "Full-stack engineer passionate about building",
@@ -270,7 +266,7 @@ function displayCat(term: ExtendedTerminal, filename: string): void {
   }
 }
 
-function handleCd(term: ExtendedTerminal, path: string): void {
+function handleCd(term: any, path: string): void {
   if (!path || path === "~") {
     term.cwd = "~";
   } else if (path === "..") {
@@ -286,7 +282,7 @@ function handleCd(term: ExtendedTerminal, path: string): void {
   }
 }
 
-function displayNeofetch(term: ExtendedTerminal): void {
+function displayNeofetch(term: any): void {
   const info = [
     term.colorize("       _____      _          _ ", "brightGreen"),
     term.colorize("      |  ___|_ _ | |__   ___| |", "brightGreen"),
@@ -309,7 +305,7 @@ function displayNeofetch(term: ExtendedTerminal): void {
   info.forEach((line) => term.writeln(line));
 }
 
-function displayContact(term: ExtendedTerminal): void {
+function displayContact(term: any): void {
   term.writeln(term.colorize("=== Contact Information ===", "brightCyan"));
   term.writeln("");
   term.writeln(
@@ -323,7 +319,7 @@ function displayContact(term: ExtendedTerminal): void {
   );
 }
 
-async function displaySystemScan(term: ExtendedTerminal): Promise<void> {
+async function displaySystemScan(term: any): Promise<void> {
   const systems = [
     "Neural Networks",
     "Quantum Processors",
@@ -349,7 +345,7 @@ async function displaySystemScan(term: ExtendedTerminal): Promise<void> {
   );
 }
 
-async function displayConsciousnessDownload(term: ExtendedTerminal): Promise<void> {
+async function displayConsciousnessDownload(term: any): Promise<void> {
   term.writeln(term.colorize("INITIATING CONSCIOUSNESS DOWNLOAD", "brightMagenta"));
   term.writeln("");
   
@@ -375,7 +371,7 @@ async function displayConsciousnessDownload(term: ExtendedTerminal): Promise<voi
 
 // Helper functions
 async function typewriterEffect(
-  term: ExtendedTerminal,
+  term: any,
   text: string,
   delay: number
 ): Promise<void> {

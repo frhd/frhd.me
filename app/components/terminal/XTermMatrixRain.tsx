@@ -11,8 +11,8 @@ export default function XTermMatrixRain({
   duration = 5000,
   onComplete,
 }: XTermMatrixRainProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animationRef = useRef<number>();
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
