@@ -1,2 +1,5 @@
+packages:
+  - "cli-website"
+
 onlyBuiltDependencies:
   - '@tailwindcss/oxide'
