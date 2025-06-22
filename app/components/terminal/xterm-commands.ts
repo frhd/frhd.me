@@ -390,15 +390,10 @@ async function displayExit(term: any): Promise<void> {
   }
 
   term.writeln("");
-  term.writeln(term.colorize("Goodbye, user. Connection terminated.", "brightYellow"));
-  term.writeln("");
+  term.writeln(term.colorize("Goodbye, user.", "brightYellow"));
 
-  // Close the browser tab after a short delay
-  setTimeout(() => {
-    if (typeof window !== 'undefined') {
-      window.close();
-    }
-  }, 1500);
+  // Disconnect the terminal session
+  term.disconnect();
 }
 
 // Helper functions

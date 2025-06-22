@@ -14,6 +14,7 @@ interface CustomTerminal {
   cwd: string;
   history: string[];
   historyIndex: number;
+  disconnected: boolean;
   prompt: () => void;
   handleEnter: () => void;
   handleBackspace: () => void;
@@ -27,6 +28,7 @@ interface CustomTerminal {
   clearCurrentLine: () => void;
   setCurrentLine: (line: string) => void;
   colorize: (text: string, color: string) => string;
+  disconnect: () => void;
 }
 
 export function extendTerminal(term: any): void {
@@ -41,6 +43,7 @@ export function extendTerminal(term: any): void {
   ext.cwd = "~";
   ext.history = [];
   ext.historyIndex = -1;
+  ext.disconnected = false;
 
   // Helper function to colorize text
   ext.colorize = (text: string, color: string): string => {
@@ -87,11 +90,35 @@ export function extendTerminal(term: any): void {
 
   // Display prompt
   ext.prompt = () => {
+    if (ext.disconnected) {
+      return; // Don't show prompt when disconnected
+    }
     const prompt = `${ext.colorize(ext.user, "brightYellow")}@${ext.colorize(
       ext.host,
       "brightGreen"
     )}:${ext.colorize(ext.cwd, "brightBlue")}$ `;
     ext.write(prompt);
+  };
+
+  // Disconnect method
+  ext.disconnect = () => {
+    ext.disconnected = true;
+    ext.writeln("");
+    ext.writeln(ext.colorize("Connection to frhd.me closed.", "brightRed"));
+    
+    // Show blinking disconnected status
+    let blinkState = true;
+    const blinkInterval = setInterval(() => {
+      if (blinkState) {
+        ext.write(`\r${ext.colorize("[Disconnected]", "dim")}`);
+      } else {
+        ext.write(`\r${" ".repeat(14)}`); // Clear the text
+      }
+      blinkState = !blinkState;
+    }, 800);
+
+    // Store the interval so it can be cleared if needed
+    (ext as any).disconnectBlinkInterval = blinkInterval;
   };
 
   // Clear current line
@@ -109,6 +136,10 @@ export function extendTerminal(term: any): void {
 
   // Handle Enter key
   ext.handleEnter = async () => {
+    if (ext.disconnected) {
+      return; // Don't process commands when disconnected
+    }
+
     ext.writeln("");
     const command = ext.currentLine.trim();
 
@@ -127,11 +158,16 @@ export function extendTerminal(term: any): void {
     }
 
     ext.currentLine = "";
-    ext.prompt();
+    if (!ext.disconnected) {
+      ext.prompt();
+    }
   };
 
   // Handle Backspace
   ext.handleBackspace = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     if (ext.currentLine.length > 0) {
       ext.currentLine = ext.currentLine.slice(0, -1);
       ext.write("\b \b");
@@ -140,6 +176,9 @@ export function extendTerminal(term: any): void {
 
   // Handle Tab (auto-completion)
   ext.handleTab = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     // Simple tab completion for commands
     if (!ext.currentLine.includes(" ")) {
       const commands = [
@@ -184,6 +223,9 @@ export function extendTerminal(term: any): void {
 
   // Handle Arrow Up
   ext.handleArrowUp = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     if (ext.historyIndex > 0) {
       ext.historyIndex--;
       ext.setCurrentLine(ext.history[ext.historyIndex]);
@@ -192,6 +234,9 @@ export function extendTerminal(term: any): void {
 
   // Handle Arrow Down
   ext.handleArrowDown = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     if (ext.historyIndex < ext.history.length - 1) {
       ext.historyIndex++;
       ext.setCurrentLine(ext.history[ext.historyIndex]);
@@ -203,18 +248,27 @@ export function extendTerminal(term: any): void {
 
   // Handle Home (Ctrl+A)
   ext.handleHome = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     const cursorPos = ext.currentLine.length;
     ext.write(`\x1b[${cursorPos}D`);
   };
 
   // Handle End (Ctrl+E)
   ext.handleEnd = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     const cursorPos = ext.currentLine.length;
     ext.write(`\x1b[${cursorPos}C`);
   };
 
   // Handle Ctrl+C
   ext.handleCtrlC = () => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     ext.writeln("^C");
     ext.currentLine = "";
     ext.prompt();
@@ -222,9 +276,23 @@ export function extendTerminal(term: any): void {
 
   // Handle regular input
   ext.handleInput = (data: string) => {
+    if (ext.disconnected) {
+      return; // Don't process input when disconnected
+    }
     ext.currentLine += data;
     ext.write(data);
   };
 
   console.log("✅ Terminal extension complete");
+
+  // Override dispose to clean up intervals
+  const originalDispose = ext.dispose;
+  ext.dispose = () => {
+    // Clear disconnect blink interval if it exists
+    if ((ext as any).disconnectBlinkInterval) {
+      clearInterval((ext as any).disconnectBlinkInterval);
+    }
+    // Call original dispose
+    originalDispose.call(ext);
+  };
 }
