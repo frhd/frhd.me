@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
+    "check": "pnpm run lint && pnpm run type-check",
+    "pre-deploy": "pnpm run check && pnpm run build"
   },
   "dependencies": {
     "@xterm/addon-fit": "^0.10.0",

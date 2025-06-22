@@ -191,6 +191,7 @@ async function displayAboutDecrypted(term: any): Promise<void> {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function displayMatrix(_term: any): void {
   // Trigger matrix rain effect in parent component
   if (typeof window !== 'undefined') {
