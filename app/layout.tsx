@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "frhd.me",
-  description: "frhd personal page",
+  title: "frhd.me | Terminal",
+  description: "Interactive terminal portfolio - Explore through commands",
 };
 
 export default function RootLayout({

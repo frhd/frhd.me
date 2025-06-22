@@ -1,4 +1,5 @@
-import AnimatedComingSoon from "./AnimatedComingSoon";
+import Terminal from "./components/terminal/Terminal";
+
 export default function Home() {
-  return <AnimatedComingSoon />;
+  return <Terminal />;
 }
