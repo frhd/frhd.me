@@ -48,7 +48,7 @@ export default function XTermMatrixRain({
     // Enhanced Matrix rain configuration
     const fontSize = 12; // Smaller font = more streams
     const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(columns).fill(1);
+    const drops: number[] = Array(columns).fill(0).map(() => -Math.random() * 100); // Randomized start positions
     const dropSpeeds: number[] = Array(columns).fill(0).map(() => Math.random() * 1.2 + 0.8); // Faster speeds between 0.8-2.0
     const trailLengths: number[] = Array(columns).fill(0).map(() => Math.random() * 15 + 5); // Variable trail lengths
     

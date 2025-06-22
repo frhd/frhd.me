@@ -91,7 +91,7 @@ export async function executeCommand(
         term.writeln(term.colorize("ACCESS GRANTED", "brightGreen"));
         term.writeln("");
         term.writeln("Initiating enhanced matrix protocol...");
-        term.writeln(term.coloriz("Press 'q' or ESC to exit", "brightYellow"));
+        term.writeln(term.colorize("Press 'q' or ESC to exit", "brightYellow"));
         await sleep(1000);
         displayMatrix(term);
       } else {
