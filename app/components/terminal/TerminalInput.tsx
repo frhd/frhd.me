@@ -57,8 +57,8 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex items-center">
-      <span className="text-green-500 mr-2">guest@frhd.me:~$</span>
+    <form onSubmit={handleSubmit} className="flex items-center font-mono">
+      <span className="text-green-500 mr-2 font-mono">guest@frhd.me:~$</span>
       <input
         ref={inputRef}
         type="text"
@@ -70,7 +70,7 @@ export default function TerminalInput({ onCommand, isProcessing }: TerminalInput
         autoComplete="off"
         spellCheck={false}
       />
-      <span className="terminal-cursor text-green-500">_</span>
+      <span className="terminal-cursor text-green-500 font-mono ml-0.5">_</span>
     </form>
   );
 }
