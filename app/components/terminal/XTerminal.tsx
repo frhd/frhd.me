@@ -19,115 +19,151 @@ export default function XTerminal() {
   useEffect(() => {
     if (!terminalRef.current || xtermRef.current) return;
 
-    // Create terminal instance
-    const term = new Terminal({
-      cursorBlink: true,
-      fontSize: 14,
-      fontFamily: 'Consolas, "Courier New", monospace',
-      theme: {
-        background: "#0a0a0a",
-        foreground: "#00ff00",
-        cursor: "#00ff00",
-        cursorAccent: "#0a0a0a",
-        selectionBackground: "#00ff0044",
-        black: "#000000",
-        red: "#ff0000",
-        green: "#00ff00",
-        yellow: "#ffff00",
-        blue: "#0080ff",
-        magenta: "#ff00ff",
-        cyan: "#00ffff",
-        white: "#ffffff",
-        brightBlack: "#555555",
-        brightRed: "#ff5555",
-        brightGreen: "#55ff55",
-        brightYellow: "#ffff55",
-        brightBlue: "#5555ff",
-        brightMagenta: "#ff55ff",
-        brightCyan: "#55ffff",
-        brightWhite: "#ffffff",
-      },
-    });
+    let isInitialized = false;
 
-    // Create addons
-    const fitAddon = new FitAddon();
-    const webLinksAddon = new WebLinksAddon();
+    const initializeTerminal = () => {
+      if (isInitialized) return;
+      isInitialized = true;
 
-    // Open terminal in DOM
-    term.open(terminalRef.current);
+      // Create terminal instance
+      const term = new Terminal({
+        cursorBlink: true,
+        fontSize: 14,
+        fontFamily: 'Consolas, "Courier New", monospace',
+        theme: {
+          background: "#0a0a0a",
+          foreground: "#00ff00",
+          cursor: "#00ff00",
+          cursorAccent: "#0a0a0a",
+          selectionBackground: "#00ff0044",
+          black: "#000000",
+          red: "#ff0000",
+          green: "#00ff00",
+          yellow: "#ffff00",
+          blue: "#0080ff",
+          magenta: "#ff00ff",
+          cyan: "#00ffff",
+          white: "#ffffff",
+          brightBlack: "#555555",
+          brightRed: "#ff5555",
+          brightGreen: "#55ff55",
+          brightYellow: "#ffff55",
+          brightBlue: "#5555ff",
+          brightMagenta: "#ff55ff",
+          brightCyan: "#55ffff",
+          brightWhite: "#ffffff",
+        },
+      });
 
-    // Load addons
-    term.loadAddon(fitAddon);
-    term.loadAddon(webLinksAddon);
+      // Create addons
+      const fitAddon = new FitAddon();
+      const webLinksAddon = new WebLinksAddon();
 
-    // Extend terminal with custom functionality
-    extendTerminal(term);
+      // Open terminal in DOM
+      term.open(terminalRef.current!);
 
-    // Fit terminal to container
-    fitAddon.fit();
+      // Load addons
+      term.loadAddon(fitAddon);
+      term.loadAddon(webLinksAddon);
 
-    // Initialize terminal
-    term.writeln("\x1b[1;32mWelcome to frhd.me terminal\x1b[0m");
-    term.writeln("\x1b[1;32m===========================\x1b[0m");
-    term.writeln("");
-    term.writeln("Type \x1b[1;33mhelp\x1b[0m to see available commands.");
-    term.writeln("");
-    term.prompt();
+      // Store ref before extending
+      xtermRef.current = term;
 
-    // Handle input
-    term.onData((data) => {
-      const code = data.charCodeAt(0);
+      // Extend terminal with custom functionality
+      extendTerminal(term);
 
-      // Handle special keys
-      if (code === 13) {
-        // Enter
-        term.handleEnter();
-      } else if (code === 127) {
-        // Backspace
-        term.handleBackspace();
-      } else if (code === 9) {
-        // Tab
-        term.handleTab();
-      } else if (data === "\x1b[A") {
-        // Arrow up
-        term.handleArrowUp();
-      } else if (data === "\x1b[B") {
-        // Arrow down
-        term.handleArrowDown();
-      } else if (data === "\x01") {
-        // Ctrl+A
-        term.handleHome();
-      } else if (data === "\x05") {
-        // Ctrl+E
-        term.handleEnd();
-      } else if (data === "\x03") {
-        // Ctrl+C
-        term.handleCtrlC();
-      } else if (code >= 32) {
-        // Printable characters
-        term.handleInput(data);
-      }
-    });
+      // Wait for terminal to be fully rendered before fitting
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          try {
+            fitAddon.fit();
+            
+            // Initialize terminal after everything is set up
+            term.writeln("\x1b[1;32mWelcome to frhd.me terminal\x1b[0m");
+            term.writeln("\x1b[1;32m===========================\x1b[0m");
+            term.writeln("");
+            term.writeln("Type \x1b[1;33mhelp\x1b[0m to see available commands.");
+            term.writeln("");
+            term.prompt();
+          } catch (error) {
+            console.warn("Terminal initialization error:", error);
+          }
+        });
+      });
 
-    // Handle window resize
-    const handleResize = () => {
-      fitAddon.fit();
+      // Handle input
+      term.onData((data) => {
+        const code = data.charCodeAt(0);
+
+        // Handle special keys
+        if (code === 13) {
+          // Enter
+          term.handleEnter();
+        } else if (code === 127) {
+          // Backspace
+          term.handleBackspace();
+        } else if (code === 9) {
+          // Tab
+          term.handleTab();
+        } else if (data === "\x1b[A") {
+          // Arrow up
+          term.handleArrowUp();
+        } else if (data === "\x1b[B") {
+          // Arrow down
+          term.handleArrowDown();
+        } else if (data === "\x01") {
+          // Ctrl+A
+          term.handleHome();
+        } else if (data === "\x05") {
+          // Ctrl+E
+          term.handleEnd();
+        } else if (data === "\x03") {
+          // Ctrl+C
+          term.handleCtrlC();
+        } else if (code >= 32) {
+          // Printable characters
+          term.handleInput(data);
+        }
+      });
+
+      // Handle window resize
+      const handleResize = () => {
+        try {
+          if (term && fitAddon) {
+            fitAddon.fit();
+          }
+        } catch (error) {
+          console.warn("Resize fit failed:", error);
+        }
+      };
+      window.addEventListener("resize", handleResize);
+
+      // Listen for matrix effect events
+      const handleMatrixEffect = (event: CustomEvent) => {
+        setMatrixDuration(event.detail.duration || 5000);
+        setShowMatrix(true);
+      };
+      window.addEventListener("matrix-effect", handleMatrixEffect as EventListener);
+
+      // Cleanup function
+      return () => {
+        window.removeEventListener("resize", handleResize);
+        window.removeEventListener("matrix-effect", handleMatrixEffect as EventListener);
+        term.dispose();
+      };
     };
-    window.addEventListener("resize", handleResize);
 
-    // Listen for matrix effect events
-    const handleMatrixEffect = (event: CustomEvent) => {
-      setMatrixDuration(event.detail.duration || 5000);
-      setShowMatrix(true);
-    };
-    window.addEventListener("matrix-effect", handleMatrixEffect as EventListener);
-
-    xtermRef.current = term;
+    // Initialize terminal when DOM is ready
+    if (document.readyState === 'complete') {
+      initializeTerminal();
+    } else {
+      window.addEventListener('load', initializeTerminal);
+    }
 
     return () => {
-      window.removeEventListener("resize", handleResize);
-      window.removeEventListener("matrix-effect", handleMatrixEffect as EventListener);
-      term.dispose();
+      if (xtermRef.current) {
+        xtermRef.current.dispose();
+      }
     };
   }, []);
 

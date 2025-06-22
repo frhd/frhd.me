@@ -1,5 +1,5 @@
-import XTerminal from "./components/terminal/XTerminal";
+import ClientTerminalWrapper from "./components/terminal/ClientTerminalWrapper";
 
 export default function Home() {
-  return <XTerminal />;
+  return <ClientTerminalWrapper />;
 }

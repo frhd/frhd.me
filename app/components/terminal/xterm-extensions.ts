@@ -34,21 +34,6 @@ export function extendTerminal(term: Terminal): void {
   ext.history = [];
   ext.historyIndex = -1;
 
-  // ASCII art logo
-  const logo = [
-    "   ___     _         _                    ",
-    "  / __\\_ __| |__   __| |  _ __ ___   ___ ",
-    " / _\\/ '__| '_ \\ / _` | | '_ ` _ \\ / _ \\",
-    "/ / | |  | | | | (_| |_| | | | | |  __/",
-    "\\/  |_|  |_| |_|\\__,_(_)_| |_| |_|\\___|",
-    "",
-  ];
-
-  // Display logo on initialization
-  logo.forEach((line) => {
-    ext.writeln(ext.colorize(line, "brightGreen"));
-  });
-
   // Helper function to colorize text
   ext.colorize = (text: string, color: string): string => {
     const colors: Record<string, string> = {
@@ -76,6 +61,21 @@ export function extendTerminal(term: Terminal): void {
     };
     return `${colors[color] || ""}${text}${colors.reset}`;
   };
+
+  // ASCII art logo
+  const logo = [
+    "   ___     _         _                    ",
+    "  / __\\_ __| |__   __| |  _ __ ___   ___ ",
+    " / _\\/ '__| '_ \\ / _` | | '_ ` _ \\ / _ \\",
+    "/ / | |  | | | | (_| |_| | | | | |  __/",
+    "\\/  |_|  |_| |_|\\__,_(_)_| |_| |_|\\___|",
+    "",
+  ];
+
+  // Display logo on initialization
+  logo.forEach((line) => {
+    ext.writeln(ext.colorize(line, "brightGreen"));
+  });
 
   // Display prompt
   ext.prompt = () => {
