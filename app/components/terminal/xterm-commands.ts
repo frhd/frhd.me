@@ -191,7 +191,7 @@ async function displayAboutDecrypted(term: any): Promise<void> {
   }
 }
 
-function displayMatrix(term: any): void {
+function displayMatrix(_term: any): void {
   // Trigger matrix rain effect in parent component
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
