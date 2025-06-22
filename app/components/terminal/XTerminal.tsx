@@ -30,7 +30,6 @@ export default function XTerminal() {
   const terminalRef = useRef<HTMLDivElement>(null);
   const xtermRef = useRef<ExtendedTerminal | null>(null);
   const [showMatrix, setShowMatrix] = useState(false);
-  const [matrixDuration, setMatrixDuration] = useState(5000);
   const [isLoading, setIsLoading] = useState(true);
   const [MatrixComponent, setMatrixComponent] = useState<any>(null);
   const [debugInfo, setDebugInfo] = useState<string[]>([]);
@@ -242,8 +241,7 @@ export default function XTerminal() {
         window.addEventListener("resize", handleResize);
 
         // Listen for matrix effect events
-        const handleMatrixEffect = (event: CustomEvent) => {
-          setMatrixDuration(event.detail.duration || 5000);
+        const handleMatrixEffect = () => {
           setShowMatrix(true);
         };
         window.addEventListener("matrix-effect", handleMatrixEffect as EventListener);
@@ -269,6 +267,24 @@ export default function XTerminal() {
       }
     };
   }, []); // Empty dependency array since we want this to run once when the component is ready
+
+  // Handle keyboard events for matrix exit
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (showMatrix && (event.key.toLowerCase() === 'q' || event.key === 'Escape')) {
+        setShowMatrix(false);
+        event.preventDefault(); // Prevent other handlers from processing this key
+      }
+    };
+
+    if (showMatrix) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showMatrix]);
 
   return (
     <>
@@ -303,7 +319,6 @@ export default function XTerminal() {
       
       {showMatrix && MatrixComponent && (
         <MatrixComponent
-          duration={matrixDuration}
           onComplete={() => setShowMatrix(false)}
         />
       )}

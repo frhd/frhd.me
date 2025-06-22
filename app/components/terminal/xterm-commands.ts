@@ -91,8 +91,9 @@ export async function executeCommand(
         term.writeln(term.colorize("ACCESS GRANTED", "brightGreen"));
         term.writeln("");
         term.writeln("Initiating enhanced matrix protocol...");
+        term.writeln(term.coloriz("Press 'q' or ESC to exit", "brightYellow"));
         await sleep(1000);
-        displayMatrix(term, 10000);
+        displayMatrix(term);
       } else {
         term.writeln(term.colorize("Usage: access --mainframe", "brightRed"));
       }
@@ -130,7 +131,7 @@ function displayHelp(term: any): void {
     { name: "clear", desc: "Clear the terminal" },
     { name: "about", desc: "Learn about me" },
     { name: "about --decrypt", desc: "Decrypt extended bio" },
-    { name: "matrix", desc: "Enter the Matrix" },
+    { name: "matrix", desc: "Enter the Matrix (press 'q' to exit)" },
     { name: "whoami", desc: "Display current user" },
     { name: "pwd", desc: "Print working directory" },
     { name: "ls", desc: "List directory contents" },
@@ -141,7 +142,7 @@ function displayHelp(term: any): void {
     { name: "neofetch", desc: "Display system info" },
     { name: "contact", desc: "Get contact information" },
     { name: "scan --systems", desc: "Scan available systems" },
-    { name: "access --mainframe", desc: "Access the mainframe" },
+    { name: "access --mainframe", desc: "Access the mainframe (press 'q' to exit)" },
     { name: "glitch", desc: "????" },
     { name: "download --consciousness", desc: "Download consciousness" },
   ];
@@ -190,11 +191,11 @@ async function displayAboutDecrypted(term: any): Promise<void> {
   }
 }
 
-function displayMatrix(term: any, duration = 5000): void {
+function displayMatrix(term: any): void {
   // Trigger matrix rain effect in parent component
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
-      new CustomEvent("matrix-effect", { detail: { duration } })
+      new CustomEvent("matrix-effect", { detail: {} })
     );
   }
 }
