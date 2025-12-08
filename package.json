@@ -11,7 +11,7 @@
     "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:run": "vitest run",
-    "check": "pnpm run lint && pnpm run type-check",
+    "check": "pnpm run lint && pnpm run type-check && pnpm run test:run",
     "pre-deploy": "pnpm run check && pnpm run build"
   },
   "dependencies": {

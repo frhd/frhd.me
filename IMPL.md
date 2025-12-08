@@ -58,9 +58,9 @@ Add tests to protect against regressions before updating dependencies (Next.js 1
   - [ ] Test command history navigation
 
 ### Phase 5: CI Integration
-- [ ] Update `check` script to include tests
-- [ ] Update `pre-deploy` script
-- [ ] Verify full pipeline: `pnpm pre-deploy`
+- [x] Update `check` script to include tests
+- [x] Update `pre-deploy` script
+- [x] Verify full pipeline: `pnpm pre-deploy`
 
 ### Phase 6: Dependency Update
 - [ ] Create branch `deps/update-all`
