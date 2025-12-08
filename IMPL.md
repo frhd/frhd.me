@@ -15,29 +15,29 @@ Add tests to protect against regressions before updating dependencies (Next.js 1
 - [x] Verify `pnpm test` runs successfully (no tests yet)
 
 ### Phase 2: Unit Tests - Command Logic
-- [ ] Create `app/components/terminal/__tests__/` directory
-- [ ] Create `xterm-commands.test.ts`
-  - [ ] Test `help` command
-  - [ ] Test `whoami` command
-  - [ ] Test `pwd` command
-  - [ ] Test `date` command
-  - [ ] Test `echo` command
-  - [ ] Test `cat` with valid file
-  - [ ] Test `cat` with invalid file
-  - [ ] Test `ls` command
-  - [ ] Test `cd` navigation (projects, .., ~)
-  - [ ] Test `neofetch` command
-  - [ ] Test `contact` command
-  - [ ] Test unknown command error
-- [ ] Create `xterm-extensions.test.ts`
-  - [ ] Test `colorize()` function
-  - [ ] Test `handleBackspace`
-  - [ ] Test `handleArrowUp` history navigation
-  - [ ] Test `handleArrowDown` history navigation
-  - [ ] Test `handleTab` completion (single match)
-  - [ ] Test `handleTab` completion (multiple matches)
-  - [ ] Test `handleCtrlC`
-  - [ ] Test `disconnect` state
+- [x] Create `app/components/terminal/__tests__/` directory
+- [x] Create `xterm-commands.test.ts`
+  - [x] Test `help` command
+  - [x] Test `whoami` command
+  - [x] Test `pwd` command
+  - [x] Test `date` command
+  - [x] Test `echo` command
+  - [x] Test `cat` with valid file
+  - [x] Test `cat` with invalid file
+  - [x] Test `ls` command
+  - [x] Test `cd` navigation (projects, .., ~)
+  - [x] Test `neofetch` command
+  - [x] Test `contact` command
+  - [x] Test unknown command error
+- [x] Create `xterm-extensions.test.ts`
+  - [x] Test `colorize()` function
+  - [x] Test `handleBackspace`
+  - [x] Test `handleArrowUp` history navigation
+  - [x] Test `handleArrowDown` history navigation
+  - [x] Test `handleTab` completion (single match)
+  - [x] Test `handleTab` completion (multiple matches)
+  - [x] Test `handleCtrlC`
+  - [x] Test `disconnect` state
 
 ### Phase 3: Component Integration Tests
 - [ ] Create `XTerminal.test.tsx`
