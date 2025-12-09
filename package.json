@@ -33,7 +33,7 @@
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9",
-    "eslint-config-next": "16.0.7",
+    "eslint-config-next": "16.0.8",
     "jsdom": "^27.2.0",
     "postcss": "^8",
     "tailwindcss": "^4.1.17",
