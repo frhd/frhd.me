@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { unlockAchievement } from "./achievements";
 
 interface TetrisProps {
   onComplete: () => void;
@@ -241,6 +242,8 @@ export default function XTermTetris({ onComplete }: TetrisProps) {
         if (state.score > state.highScore) {
           state.highScore = state.score;
           localStorage.setItem("frhd-tetris-highscore", state.highScore.toString());
+          // Unlock high_scorer achievement
+          unlockAchievement("high_scorer");
         }
       }
     };

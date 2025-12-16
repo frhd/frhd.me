@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { unlockAchievement } from "./achievements";
 
 interface SnakeProps {
   onComplete: () => void;
@@ -128,6 +129,8 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
         if (state.score > state.highScore) {
           state.highScore = state.score;
           localStorage.setItem("frhd-snake-highscore", state.highScore.toString());
+          // Unlock high_scorer achievement
+          unlockAchievement("high_scorer");
         }
         return;
       }

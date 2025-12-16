@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
+import { unlockAchievement } from "./achievements";
 
 interface TypingProps {
   onComplete: () => void;
@@ -154,6 +155,13 @@ export default function XTermTyping({ onComplete }: TypingProps) {
           if (finalWpm > highScore) {
             setHighScore(finalWpm);
             localStorage.setItem("frhd-typing-highscore", finalWpm.toString());
+            // Unlock high_scorer achievement for new high score
+            unlockAchievement("high_scorer");
+          }
+
+          // Unlock speed_demon achievement for 60+ WPM
+          if (finalWpm >= 60) {
+            unlockAchievement("speed_demon");
           }
         }
       } else {

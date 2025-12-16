@@ -4,6 +4,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./xterm-theme.css";
 import { getStoredTheme, getTheme, getDefaultTheme } from "./xterm-themes";
+import XTermAchievementManager from "./XTermAchievement";
+import { checkTimeAchievements } from "./achievements";
 
 // Define the extended terminal interface
 interface ExtendedTerminal {
@@ -79,6 +81,9 @@ export default function XTerminal() {
     // Check initial CRT state from localStorage
     const crtEnabled = localStorage.getItem("frhd-terminal-crt") === "true";
     setShowCrt(crtEnabled);
+
+    // Check time-based achievements on load
+    checkTimeAchievements();
   }, []);
 
   // Use useLayoutEffect for DOM-dependent operations
@@ -316,6 +321,9 @@ export default function XTerminal() {
           onComplete={() => setActiveEffect(null)}
         />
       )}
+
+      {/* Achievement notifications */}
+      <XTermAchievementManager />
     </>
   );
 }

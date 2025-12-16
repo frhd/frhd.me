@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback } from "react";
+import { unlockAchievement } from "./achievements";
 
 interface Game2048Props {
   onComplete: () => void;
@@ -209,6 +210,8 @@ export default function XTerm2048({ onComplete }: Game2048Props) {
           if (state.score > state.highScore) {
             state.highScore = state.score;
             localStorage.setItem("frhd-2048-highscore", state.highScore.toString());
+            // Unlock high_scorer achievement
+            unlockAchievement("high_scorer");
           }
         }
       }

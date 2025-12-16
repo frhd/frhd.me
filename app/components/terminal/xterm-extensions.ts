@@ -247,6 +247,8 @@ export function extendTerminal(term: any): void {
         // Phase 4: Sound system
         "sound",
         "music",
+        // Phase 5: Achievements
+        "achievements",
       ];
 
       const matches = commands.filter((cmd) =>

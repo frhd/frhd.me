@@ -11,6 +11,14 @@ import {
   isMusicPlaying,
   playSound,
 } from "./sound-manager";
+import {
+  unlockAchievement,
+  trackCommand,
+  getAchievementStats,
+  getUnlockedAchievements,
+  ACHIEVEMENTS,
+  type AchievementId,
+} from "./achievements";
 
 export async function executeCommand(
   term: any,
@@ -18,6 +26,13 @@ export async function executeCommand(
 ): Promise<void> {
   const [cmd, ...args] = command.split(" ");
   const arg = args.join(" ");
+
+  // Track command usage for completionist achievement
+  if (command.trim()) {
+    trackCommand(command);
+    // Unlock first_command achievement on any valid command
+    unlockAchievement("first_command");
+  }
 
   switch (cmd.toLowerCase()) {
     case "theme":
@@ -223,6 +238,11 @@ export async function executeCommand(
       await handleMusicCommand(term, args);
       break;
 
+    // Phase 5: Achievements
+    case "achievements":
+      displayAchievements(term);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -278,6 +298,10 @@ function displayHelp(term: any): void {
     { name: "sound on|off", desc: "Toggle keyboard & command sounds" },
     { name: "music play|stop", desc: "Toggle ambient lo-fi music" },
     { name: "music volume <0-100>", desc: "Adjust music volume" },
+  ];
+
+  const achievementCommands = [
+    { name: "achievements", desc: "View your unlocked achievements" },
   ];
 
   const gameCommands = [
@@ -337,6 +361,16 @@ function displayHelp(term: any): void {
   });
 
   term.writeln("");
+  term.writeln(term.colorize("Progress:", "brightYellow"));
+  term.writeln("");
+  achievementCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "yellow")} ${desc}`
+    );
+  });
+
+  term.writeln("");
   term.writeln(term.colorize("Hint: Try 'find / -name \"*.secret\"' to discover hidden files...", "dim"));
 }
 
@@ -376,6 +410,9 @@ async function displayAboutDecrypted(term: any): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function displayMatrix(_term: any): void {
+  // Unlock matrix_fan achievement
+  unlockAchievement("matrix_fan");
+
   // Trigger matrix rain effect in parent component
   if (typeof window !== 'undefined') {
     window.dispatchEvent(
@@ -418,6 +455,13 @@ function displayLs(term: any): void {
 }
 
 function displayCat(term: any, filename: string): void {
+  // Achievement triggers for secret files
+  if (filename === ".secrets") {
+    unlockAchievement("secret_finder");
+  } else if (filename === ".rabbit_hole") {
+    unlockAchievement("rabbit_hole");
+  }
+
   const files: Record<string, string[]> = {
     "about.txt": [
       "Full-stack engineer passionate about building",
@@ -614,6 +658,9 @@ async function displayExit(term: any): Promise<void> {
 // Phase 1: Joke/Easter Egg Commands
 
 async function displaySudo(term: any, arg: string): Promise<void> {
+  // Unlock sudo_user achievement
+  unlockAchievement("sudo_user");
+
   if (!arg) {
     term.writeln(term.colorize("sudo: missing command", "brightRed"));
     return;
@@ -628,6 +675,9 @@ async function displaySudo(term: any, arg: string): Promise<void> {
 }
 
 async function displayRmRf(term: any): Promise<void> {
+  // Unlock destroyer achievement
+  unlockAchievement("destroyer");
+
   term.writeln(term.colorize("WARNING: NUCLEAR OPTION DETECTED", "brightRed"));
   term.writeln("");
 
@@ -671,6 +721,9 @@ async function displayRmRf(term: any): Promise<void> {
 }
 
 function displayForkBomb(term: any): void {
+  // Unlock fork_bomber achievement
+  unlockAchievement("fork_bomber");
+
   term.writeln(term.colorize("⚠️  FORK BOMB DETECTED", "brightRed"));
   term.writeln("");
   term.writeln("Nice try, hacker. 😏");
@@ -774,6 +827,9 @@ async function displaySteamLocomotive(term: any): Promise<void> {
 }
 
 function displayCowsay(term: any, message: string): void {
+  // Unlock moo achievement
+  unlockAchievement("moo");
+
   const maxWidth = 40;
   const words = message.split(" ");
   const lines: string[] = [];
@@ -953,6 +1009,9 @@ function handleThemeCommand(term: any, args: string[]): void {
     const theme = themes[themeName];
 
     if (theme) {
+      // Unlock theme_switcher achievement
+      unlockAchievement("theme_switcher");
+
       setStoredTheme(themeName);
 
       // Dispatch event to update terminal theme
@@ -1050,6 +1109,9 @@ function displayFireworks(term: any): void {
 // Phase 3: Mini-Games
 
 function displaySnake(term: any): void {
+  // Unlock game_on achievement
+  unlockAchievement("game_on");
+
   term.writeln(term.colorize("🐍 Launching Snake...", "brightGreen"));
   term.writeln(term.colorize("Arrow keys or WASD to move | SPACE to pause | Q/ESC to exit", "brightYellow"));
 
@@ -1059,6 +1121,9 @@ function displaySnake(term: any): void {
 }
 
 function displayTetris(term: any): void {
+  // Unlock game_on achievement
+  unlockAchievement("game_on");
+
   term.writeln(term.colorize("🧱 Launching Tetris...", "brightCyan"));
   term.writeln(term.colorize("Arrow keys to move | UP to rotate | ENTER for hard drop | Q/ESC to exit", "brightYellow"));
 
@@ -1068,6 +1133,9 @@ function displayTetris(term: any): void {
 }
 
 function displayTyping(term: any): void {
+  // Unlock game_on achievement
+  unlockAchievement("game_on");
+
   term.writeln(term.colorize("⌨️  Launching Typing Test...", "brightMagenta"));
   term.writeln(term.colorize("Start typing when ready | TAB to skip whitespace | Q/ESC to exit", "brightYellow"));
 
@@ -1077,6 +1145,9 @@ function displayTyping(term: any): void {
 }
 
 function display2048(term: any): void {
+  // Unlock game_on achievement
+  unlockAchievement("game_on");
+
   term.writeln(term.colorize("🎮 Launching 2048...", "brightYellow"));
   term.writeln(term.colorize("Arrow keys to move | SPACE to restart | Q/ESC to exit", "brightYellow"));
 
@@ -1155,4 +1226,51 @@ async function handleMusicCommand(term: any, args: string[]): Promise<void> {
   }
 }
 
-export { isSoundEnabled, isMusicEnabled };
+// Phase 5: Achievements
+
+function displayAchievements(term: any): void {
+  const stats = getAchievementStats();
+  const unlocked = getUnlockedAchievements();
+
+  term.writeln(term.colorize("=== Achievements ===", "brightYellow"));
+  term.writeln("");
+  term.writeln(
+    `Progress: ${term.colorize(`${stats.unlocked}/${stats.total}`, "brightGreen")} (${stats.percentage}%)`
+  );
+  term.writeln("");
+
+  // Display all achievements
+  const allIds = Object.keys(ACHIEVEMENTS) as AchievementId[];
+
+  // Show unlocked achievements first
+  const unlockedSet = new Set(unlocked);
+  const sortedIds = [
+    ...allIds.filter((id) => unlockedSet.has(id)),
+    ...allIds.filter((id) => !unlockedSet.has(id)),
+  ];
+
+  for (const id of sortedIds) {
+    const isUnlocked = unlockedSet.has(id);
+    const achievement = ACHIEVEMENTS[id];
+
+    if (achievement.secret && !isUnlocked) {
+      term.writeln(term.colorize("○ 🔒 ?????? - Secret achievement", "dim"));
+    } else {
+      const status = isUnlocked ? "✓" : "○";
+      const icon = isUnlocked ? achievement.icon : "🔒";
+      const color = isUnlocked ? "brightGreen" : "dim";
+      term.writeln(
+        term.colorize(`${status} ${icon} ${achievement.name} - ${achievement.description}`, color)
+      );
+    }
+  }
+
+  term.writeln("");
+  if (stats.unlocked < stats.total) {
+    term.writeln(term.colorize("Tip: Explore the terminal to unlock more achievements!", "dim"));
+  } else {
+    term.writeln(term.colorize("🎉 Congratulations! You've unlocked all achievements!", "brightMagenta"));
+  }
+}
+
+export { isSoundEnabled, isMusicEnabled, unlockAchievement };

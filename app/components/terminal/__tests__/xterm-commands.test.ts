@@ -1,5 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { executeCommand } from '../xterm-commands'
+import { resetAchievements } from '../achievements'
 
 // Mock terminal object that captures writes
 function createMockTerminal() {
@@ -25,6 +26,11 @@ describe('executeCommand', () => {
 
   beforeEach(() => {
     term = createMockTerminal()
+    resetAchievements()
+  })
+
+  afterEach(() => {
+    resetAchievements()
   })
 
   describe('help command', () => {
@@ -458,6 +464,29 @@ describe('executeCommand', () => {
       await executeCommand(term, 'music stop')
       const output = term.getOutput()
       expect(output).toContain('Music stopped')
+    })
+  })
+
+  // Phase 5: Achievement System Tests
+
+  describe('achievements command', () => {
+    it('displays achievements header', async () => {
+      await executeCommand(term, 'achievements')
+      const output = term.getOutput()
+      expect(output).toContain('Achievements')
+    })
+
+    it('displays progress stats', async () => {
+      await executeCommand(term, 'achievements')
+      const output = term.getOutput()
+      expect(output).toContain('Progress:')
+    })
+
+    it('includes achievements in help', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('achievements')
+      expect(output).toContain('Progress:')
     })
   })
 })
