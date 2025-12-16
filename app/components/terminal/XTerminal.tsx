@@ -44,8 +44,9 @@ export default function XTerminal() {
   const [showCrt, setShowCrt] = useState(false);
   const [CrtComponent, setCrtComponent] = useState<any>(null);
   const [activeEffect, setActiveEffect] = useState<string | null>(null);
+  const [activeEffectProps, setActiveEffectProps] = useState<Record<string, any>>({});
   const [EffectComponents, setEffectComponents] = useState<Record<string, any>>({});
-  const pendingEffectRef = useRef<string | null>(null);
+  const pendingEffectRef = useRef<{ effect: string; props: Record<string, any> } | null>(null);
   const effectComponentsLoadedRef = useRef(false);
 
   useEffect(() => {
@@ -72,7 +73,8 @@ export default function XTerminal() {
       import("./XTermTetris"),
       import("./XTermTyping"),
       import("./XTerm2048"),
-    ]).then(([pipes, plasma, fireworks, snake, tetris, typing, game2048]) => {
+      import("./XTermVim"),
+    ]).then(([pipes, plasma, fireworks, snake, tetris, typing, game2048, vim]) => {
       setEffectComponents({
         pipes: pipes.default,
         plasma: plasma.default,
@@ -81,11 +83,13 @@ export default function XTerminal() {
         tetris: tetris.default,
         typing: typing.default,
         "2048": game2048.default,
+        vim: vim.default,
       });
       effectComponentsLoadedRef.current = true;
       // If there was a pending effect waiting for components to load, activate it now
       if (pendingEffectRef.current) {
-        setActiveEffect(pendingEffectRef.current);
+        setActiveEffect(pendingEffectRef.current.effect);
+        setActiveEffectProps(pendingEffectRef.current.props);
         pendingEffectRef.current = null;
       }
     }).catch((error) => {
@@ -276,12 +280,13 @@ export default function XTerminal() {
 
         // Listen for visual effect events
         const handleVisualEffect = (event: CustomEvent) => {
-          const effect = event.detail.effect;
+          const { effect, ...props } = event.detail;
           // If components aren't loaded yet, store the effect to apply later
           if (!effectComponentsLoadedRef.current) {
-            pendingEffectRef.current = effect;
+            pendingEffectRef.current = { effect, props };
           } else {
             setActiveEffect(effect);
+            setActiveEffectProps(props);
           }
         };
         window.addEventListener("visual-effect", handleVisualEffect as EventListener);
@@ -310,11 +315,16 @@ export default function XTerminal() {
   }, []); // Empty dependency array since we want this to run once when the component is ready
 
   // Handle keyboard events for effect exit
+  // Note: vim handles its own exit via :q commands, so we skip it here
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
+      // Skip vim - it handles its own keyboard events
+      if (activeEffect === "vim") return;
+
       if ((showMatrix || activeEffect) && (event.key.toLowerCase() === 'q' || event.key === 'Escape')) {
         setShowMatrix(false);
         setActiveEffect(null);
+        setActiveEffectProps({});
         event.preventDefault(); // Prevent other handlers from processing this key
       }
     };
@@ -354,7 +364,11 @@ export default function XTerminal() {
 
       {activeEffect && ActiveEffectComponent && (
         <ActiveEffectComponent
-          onComplete={() => setActiveEffect(null)}
+          onComplete={() => {
+            setActiveEffect(null);
+            setActiveEffectProps({});
+          }}
+          {...activeEffectProps}
         />
       )}
 

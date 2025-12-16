@@ -307,6 +307,13 @@ export async function executeCommand(
       await handleNewsCommand(term, args);
       break;
 
+    // Phase 12: Advanced Editor
+    case "vim":
+    case "vi":
+    case "nano":
+      displayVim(term, arg);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -380,6 +387,7 @@ function displayHelp(term: any): void {
     { name: "uuid", desc: "Generate random UUID v4" },
     { name: "timestamp", desc: "Show current timestamps" },
     { name: "weather [loc]", desc: "Show weather (simulated)" },
+    { name: "vim [file]", desc: "Minimal vim-like text editor" },
   ];
 
   const liveDataCommands = [
@@ -1270,6 +1278,19 @@ function display2048(term: any): void {
 
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "2048" } }));
+  }
+}
+
+// Phase 12: Advanced Editor
+
+function displayVim(term: any, filename?: string): void {
+  const file = filename || "readme.txt";
+  term.writeln(term.colorize("📝 Launching vim editor...", "brightCyan"));
+  term.writeln(term.colorize(`Opening: ${file}`, "brightYellow"));
+  term.writeln(term.colorize("Press ESC for normal mode | :q to quit | :help for commands", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "vim", filename: file } }));
   }
 }
 

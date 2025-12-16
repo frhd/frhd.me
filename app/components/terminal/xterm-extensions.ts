@@ -265,6 +265,10 @@ export function extendTerminal(term: any): void {
         "github",
         "status",
         "news",
+        // Phase 12: Advanced Editor
+        "vim",
+        "vi",
+        "nano",
       ];
 
       const matches = commands.filter((cmd) =>
