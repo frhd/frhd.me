@@ -186,6 +186,23 @@ export async function executeCommand(
       displayFireworks(term);
       break;
 
+    // Phase 3: Mini-Games
+    case "snake":
+      displaySnake(term);
+      break;
+
+    case "tetris":
+      displayTetris(term);
+      break;
+
+    case "typing":
+      displayTyping(term);
+      break;
+
+    case "2048":
+      display2048(term);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -237,6 +254,13 @@ function displayHelp(term: any): void {
     { name: "fireworks", desc: "Celebratory fireworks display" },
   ];
 
+  const gameCommands = [
+    { name: "snake", desc: "Classic snake game" },
+    { name: "tetris", desc: "The classic block game" },
+    { name: "typing", desc: "Test your typing speed" },
+    { name: "2048", desc: "Slide and merge numbers" },
+  ];
+
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
   term.writeln("");
   commands.forEach(({ name, desc }) => {
@@ -263,6 +287,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "cyan")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Mini-Games:", "brightRed"));
+  term.writeln("");
+  gameCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "brightWhite")} ${desc}`
     );
   });
 
@@ -974,5 +1008,43 @@ function displayFireworks(term: any): void {
 
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "fireworks" } }));
+  }
+}
+
+// Phase 3: Mini-Games
+
+function displaySnake(term: any): void {
+  term.writeln(term.colorize("🐍 Launching Snake...", "brightGreen"));
+  term.writeln(term.colorize("Arrow keys or WASD to move | SPACE to pause | Q/ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "snake" } }));
+  }
+}
+
+function displayTetris(term: any): void {
+  term.writeln(term.colorize("🧱 Launching Tetris...", "brightCyan"));
+  term.writeln(term.colorize("Arrow keys to move | UP to rotate | ENTER for hard drop | Q/ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "tetris" } }));
+  }
+}
+
+function displayTyping(term: any): void {
+  term.writeln(term.colorize("⌨️  Launching Typing Test...", "brightMagenta"));
+  term.writeln(term.colorize("Start typing when ready | TAB to skip whitespace | Q/ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "typing" } }));
+  }
+}
+
+function display2048(term: any): void {
+  term.writeln(term.colorize("🎮 Launching 2048...", "brightYellow"));
+  term.writeln(term.colorize("Arrow keys to move | SPACE to restart | Q/ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "2048" } }));
   }
 }

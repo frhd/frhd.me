@@ -58,11 +58,19 @@ export default function XTerminal() {
       import("./XTermPipes"),
       import("./XTermPlasma"),
       import("./XTermFireworks"),
-    ]).then(([pipes, plasma, fireworks]) => {
+      import("./XTermSnake"),
+      import("./XTermTetris"),
+      import("./XTermTyping"),
+      import("./XTerm2048"),
+    ]).then(([pipes, plasma, fireworks, snake, tetris, typing, game2048]) => {
       setEffectComponents({
         pipes: pipes.default,
         plasma: plasma.default,
         fireworks: fireworks.default,
+        snake: snake.default,
+        tetris: tetris.default,
+        typing: typing.default,
+        "2048": game2048.default,
       });
     }).catch((error) => {
       console.error("Failed to load effect components:", error);

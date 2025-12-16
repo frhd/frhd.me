@@ -219,6 +219,11 @@ export function extendTerminal(term: any): void {
         "pipes",
         "plasma",
         "fireworks",
+        // Phase 3: Mini-games
+        "snake",
+        "tetris",
+        "typing",
+        "2048",
       ];
 
       const matches = commands.filter((cmd) =>
