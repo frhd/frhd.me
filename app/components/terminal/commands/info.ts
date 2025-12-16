@@ -65,7 +65,7 @@ const contactCommand: Command = {
     term.writeln(`${term.colorize("Email:", "brightGreen")}    hello@frhd.me`);
     term.writeln(`${term.colorize("GitHub:", "brightGreen")}   github.com/frhd`);
     term.writeln(
-      `${term.colorize("LinkedIn:", "brightGreen")} linkedin.com/in/frhd`
+      `${term.colorize("LinkedIn:", "brightGreen")} linkedin.com/in/farhadomid`
     );
   },
 };

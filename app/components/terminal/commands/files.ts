@@ -23,7 +23,7 @@ const FILES: Record<string, string[]> = {
     "",
     "- GitHub: github.com/frhd",
     "- Email: hello@frhd.me",
-    "- LinkedIn: linkedin.com/in/frhd",
+    "- LinkedIn: linkedin.com/in/farhadomid",
   ],
   ".secrets": [
     "You found the secrets file! But is this all there is?",
