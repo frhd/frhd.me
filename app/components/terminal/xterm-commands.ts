@@ -155,7 +155,7 @@ function displayHelp(term: any): void {
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
   term.writeln("");
   commands.forEach(({ name, desc }) => {
-    const paddedName = name.padEnd(25);
+    const paddedName = name.padEnd(16);
     term.writeln(
       `  ${term.colorize(paddedName, "brightGreen")} ${desc}`
     );
@@ -183,7 +183,7 @@ async function displayAboutDecrypted(term: any): Promise<void> {
     "",
     "Name: Farhad",
     "Role: Full-Stack Engineer & Creative Technologist",
-    "Specialties: React, TypeScript, Node.js, System Design",
+    "Specialties: Java, Kubernetes, Node.js, System Design, Sofware Architecture",
     "Interests: AI/ML, Creative Coding, Open Source",
     "",
     "Currently building innovative web experiences",
