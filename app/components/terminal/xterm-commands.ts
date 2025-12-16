@@ -257,6 +257,31 @@ export async function executeCommand(
       displayLast(term);
       break;
 
+    // Phase 7: QR Code & Utilities
+    case "qr":
+      await displayQrCode(term, arg);
+      break;
+
+    case "base64":
+      handleBase64Command(term, args);
+      break;
+
+    case "calc":
+      handleCalcCommand(term, arg);
+      break;
+
+    case "uuid":
+      displayUuid(term);
+      break;
+
+    case "timestamp":
+      displayTimestamp(term);
+      break;
+
+    case "weather":
+      displayWeather(term, arg);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -321,6 +346,15 @@ function displayHelp(term: any): void {
   const timeCommands = [
     { name: "uptime", desc: "Show current session duration" },
     { name: "last", desc: "Show when you last visited" },
+  ];
+
+  const utilityCommands = [
+    { name: "qr [url]", desc: "Generate QR code (default: frhd.me)" },
+    { name: "base64 encode|decode", desc: "Base64 encode/decode text" },
+    { name: "calc <expr>", desc: "Simple calculator" },
+    { name: "uuid", desc: "Generate random UUID v4" },
+    { name: "timestamp", desc: "Show current timestamps" },
+    { name: "weather [loc]", desc: "Show weather (simulated)" },
   ];
 
   const gameCommands = [
@@ -396,6 +430,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "cyan")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Utilities:", "brightGreen"));
+  term.writeln("");
+  utilityCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "green")} ${desc}`
     );
   });
 
@@ -1327,6 +1371,247 @@ function displayLast(term: any): void {
   }
 
   term.writeln(`Total visits: ${term.colorize(visitData.visitCount.toString(), "brightGreen")}`);
+}
+
+// Phase 7: QR Code & Utilities
+
+async function displayQrCode(term: any, url: string): Promise<void> {
+  const targetUrl = url || "https://frhd.me";
+
+  term.writeln(term.colorize("Generating QR code...", "brightCyan"));
+  term.writeln("");
+
+  try {
+    // Dynamic import to handle module resolution in both browser and test environments
+    const QRCode = await import("qrcode");
+    const qrModule = QRCode.default || QRCode;
+
+    // Generate QR code as a string (text mode)
+    const qrString = await qrModule.toString(targetUrl, {
+      type: "utf8",
+      errorCorrectionLevel: "M",
+      margin: 1,
+      scale: 1,
+    });
+
+    // Display each line of the QR code
+    const lines = qrString.split("\n");
+    for (const line of lines) {
+      term.writeln(term.colorize(line, "brightWhite"));
+    }
+
+    term.writeln("");
+    term.writeln(`URL: ${term.colorize(targetUrl, "brightGreen")}`);
+    term.writeln(term.colorize("Scan with your phone camera!", "dim"));
+  } catch {
+    term.writeln(term.colorize("Failed to generate QR code", "brightRed"));
+  }
+}
+
+function handleBase64Command(term: any, args: string[]): void {
+  const subCommand = args[0]?.toLowerCase();
+  const text = args.slice(1).join(" ");
+
+  if (!subCommand || (subCommand !== "encode" && subCommand !== "decode")) {
+    term.writeln(term.colorize("Usage: base64 encode|decode <text>", "brightYellow"));
+    term.writeln("");
+    term.writeln("Examples:");
+    term.writeln(`  ${term.colorize("base64 encode Hello World", "dim")}`);
+    term.writeln(`  ${term.colorize("base64 decode SGVsbG8gV29ybGQ=", "dim")}`);
+    return;
+  }
+
+  if (!text) {
+    term.writeln(term.colorize(`base64: missing text to ${subCommand}`, "brightRed"));
+    return;
+  }
+
+  if (subCommand === "encode") {
+    try {
+      const encoded = btoa(text);
+      term.writeln(term.colorize("Encoded:", "brightCyan"));
+      term.writeln(encoded);
+    } catch {
+      term.writeln(term.colorize("Failed to encode text", "brightRed"));
+    }
+  } else {
+    try {
+      const decoded = atob(text);
+      term.writeln(term.colorize("Decoded:", "brightCyan"));
+      term.writeln(decoded);
+    } catch {
+      term.writeln(term.colorize("Failed to decode - invalid base64 string", "brightRed"));
+    }
+  }
+}
+
+function handleCalcCommand(term: any, expression: string): void {
+  if (!expression) {
+    term.writeln(term.colorize("Usage: calc <expression>", "brightYellow"));
+    term.writeln("");
+    term.writeln("Examples:");
+    term.writeln(`  ${term.colorize("calc 2 + 2", "dim")}`);
+    term.writeln(`  ${term.colorize("calc 100 * 3.14", "dim")}`);
+    term.writeln(`  ${term.colorize("calc (10 + 5) / 3", "dim")}`);
+    term.writeln(`  ${term.colorize("calc 2 ** 8", "dim")} (exponentiation)`);
+    term.writeln(`  ${term.colorize("calc 17 % 5", "dim")} (modulo)`);
+    return;
+  }
+
+  // Sanitize: only allow numbers, operators, parentheses, and spaces
+  const sanitized = expression.replace(/\s+/g, "");
+  const validPattern = /^[\d+\-*/%().\s^]+$/;
+
+  if (!validPattern.test(sanitized)) {
+    term.writeln(term.colorize("Invalid expression - only numbers and operators allowed", "brightRed"));
+    return;
+  }
+
+  // Replace ^ with ** for exponentiation
+  const normalized = sanitized.replace(/\^/g, "**");
+
+  try {
+    // Safe evaluation using Function constructor (safer than eval for this limited scope)
+    const result = new Function(`"use strict"; return (${normalized})`)();
+
+    if (typeof result === "number" && !isNaN(result) && isFinite(result)) {
+      term.writeln(`${term.colorize(expression, "brightCyan")} = ${term.colorize(result.toString(), "brightGreen")}`);
+    } else {
+      term.writeln(term.colorize("Invalid result", "brightRed"));
+    }
+  } catch {
+    term.writeln(term.colorize("Invalid expression", "brightRed"));
+  }
+}
+
+function displayUuid(term: any): void {
+  // Generate UUID v4
+  const uuid = crypto.randomUUID();
+  term.writeln(term.colorize("Generated UUID v4:", "brightCyan"));
+  term.writeln(term.colorize(uuid, "brightGreen"));
+  term.writeln("");
+  term.writeln(term.colorize("Tip: Run again for a new UUID", "dim"));
+}
+
+function displayTimestamp(term: any): void {
+  const now = new Date();
+  const unixSeconds = Math.floor(now.getTime() / 1000);
+  const unixMs = now.getTime();
+  const iso = now.toISOString();
+
+  term.writeln(term.colorize("=== Timestamps ===", "brightCyan"));
+  term.writeln("");
+  term.writeln(`Unix (seconds): ${term.colorize(unixSeconds.toString(), "brightGreen")}`);
+  term.writeln(`Unix (ms):      ${term.colorize(unixMs.toString(), "brightYellow")}`);
+  term.writeln(`ISO 8601:       ${term.colorize(iso, "brightMagenta")}`);
+  term.writeln(`Local:          ${term.colorize(now.toLocaleString(), "white")}`);
+}
+
+const WEATHER_CONDITIONS = [
+  {
+    condition: "sunny",
+    icon: [
+      "    \\   /    ",
+      "     .-.     ",
+      "  ‒ (   ) ‒  ",
+      "     `-᾿     ",
+      "    /   \\    ",
+    ],
+    color: "brightYellow",
+    temp: { min: 22, max: 35 },
+    desc: "Clear sky",
+  },
+  {
+    condition: "cloudy",
+    icon: [
+      "             ",
+      "     .--.    ",
+      "  .-(    ).  ",
+      " (___.__)__) ",
+      "             ",
+    ],
+    color: "white",
+    temp: { min: 15, max: 25 },
+    desc: "Cloudy",
+  },
+  {
+    condition: "rainy",
+    icon: [
+      "     .-.     ",
+      "    (   ).   ",
+      "   (___(__)  ",
+      "   ‚ʻ‚ʻ‚ʻ‚ʻ  ",
+      "   ‚ʻ‚ʻ‚ʻ‚ʻ  ",
+    ],
+    color: "brightCyan",
+    temp: { min: 10, max: 20 },
+    desc: "Light rain",
+  },
+  {
+    condition: "stormy",
+    icon: [
+      "     .-.     ",
+      "    (   ).   ",
+      "   (___(__)  ",
+      "  ⚡ʻ‚⚡ʻ‚   ",
+      "   ‚ʻ‚ʻ‚ʻ    ",
+    ],
+    color: "brightMagenta",
+    temp: { min: 8, max: 18 },
+    desc: "Thunderstorm",
+  },
+  {
+    condition: "snowy",
+    icon: [
+      "     .-.     ",
+      "    (   ).   ",
+      "   (___(__)  ",
+      "   * * * *   ",
+      "  * * * *    ",
+    ],
+    color: "brightWhite",
+    temp: { min: -10, max: 2 },
+    desc: "Snowfall",
+  },
+  {
+    condition: "foggy",
+    icon: [
+      "             ",
+      "  _ - _ - _  ",
+      " _ - _ - _ - ",
+      "  - _ - _ -  ",
+      "             ",
+    ],
+    color: "dim",
+    temp: { min: 5, max: 15 },
+    desc: "Foggy",
+  },
+];
+
+function displayWeather(term: any, location: string): void {
+  const loc = location || "Cyberspace";
+
+  // Pick a random weather condition (simulated)
+  const weather = WEATHER_CONDITIONS[Math.floor(Math.random() * WEATHER_CONDITIONS.length)];
+  const temp = Math.floor(Math.random() * (weather.temp.max - weather.temp.min + 1)) + weather.temp.min;
+  const humidity = Math.floor(Math.random() * 40) + 40; // 40-80%
+  const wind = Math.floor(Math.random() * 30) + 5; // 5-35 km/h
+
+  term.writeln(term.colorize(`Weather in ${loc}`, "brightCyan"));
+  term.writeln("");
+
+  // Display ASCII art
+  for (const line of weather.icon) {
+    term.writeln(term.colorize(line, weather.color));
+  }
+
+  term.writeln("");
+  term.writeln(`${term.colorize("Condition:", "white")} ${weather.desc}`);
+  term.writeln(`${term.colorize("Temperature:", "white")} ${term.colorize(temp + "°C", "brightYellow")} / ${term.colorize(Math.round(temp * 9 / 5 + 32) + "°F", "brightYellow")}`);
+  term.writeln(`${term.colorize("Humidity:", "white")} ${humidity}%`);
+  term.writeln(`${term.colorize("Wind:", "white")} ${wind} km/h`);
+  term.writeln("");
+  term.writeln(term.colorize("* Weather data is simulated for demo purposes", "dim"));
 }
 
 export { isSoundEnabled, isMusicEnabled, unlockAchievement };

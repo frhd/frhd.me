@@ -252,6 +252,13 @@ export function extendTerminal(term: any): void {
         // Phase 6: Time-based features
         "uptime",
         "last",
+        // Phase 7: Utilities
+        "qr",
+        "base64",
+        "calc",
+        "uuid",
+        "timestamp",
+        "weather",
       ];
 
       const matches = commands.filter((cmd) =>

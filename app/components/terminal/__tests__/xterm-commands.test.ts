@@ -489,4 +489,205 @@ describe('executeCommand', () => {
       expect(output).toContain('Progress:')
     })
   })
+
+  // Phase 7: QR Code & Utilities Tests
+
+  describe('qr command', () => {
+    it('generates QR code for default URL', async () => {
+      await executeCommand(term, 'qr')
+      const output = term.getOutput()
+      expect(output).toContain('Generating QR code')
+      expect(output).toContain('frhd.me')
+      expect(output).toContain('Scan with your phone camera')
+    })
+
+    it('generates QR code for custom URL', async () => {
+      await executeCommand(term, 'qr https://github.com')
+      const output = term.getOutput()
+      expect(output).toContain('Generating QR code')
+      expect(output).toContain('https://github.com')
+    })
+  })
+
+  describe('base64 command', () => {
+    it('shows usage when no args', async () => {
+      await executeCommand(term, 'base64')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: base64 encode|decode')
+    })
+
+    it('encodes text to base64', async () => {
+      await executeCommand(term, 'base64 encode Hello World')
+      const output = term.getOutput()
+      expect(output).toContain('Encoded:')
+      expect(output).toContain('SGVsbG8gV29ybGQ=')
+    })
+
+    it('decodes base64 to text', async () => {
+      await executeCommand(term, 'base64 decode SGVsbG8gV29ybGQ=')
+      const output = term.getOutput()
+      expect(output).toContain('Decoded:')
+      expect(output).toContain('Hello World')
+    })
+
+    it('shows error for missing text to encode', async () => {
+      await executeCommand(term, 'base64 encode')
+      const output = term.getOutput()
+      expect(output).toContain('missing text to encode')
+    })
+
+    it('shows error for missing text to decode', async () => {
+      await executeCommand(term, 'base64 decode')
+      const output = term.getOutput()
+      expect(output).toContain('missing text to decode')
+    })
+
+    it('shows error for invalid base64 string', async () => {
+      await executeCommand(term, 'base64 decode !!!invalid!!!')
+      const output = term.getOutput()
+      expect(output).toContain('invalid base64 string')
+    })
+  })
+
+  describe('calc command', () => {
+    it('shows usage when no args', async () => {
+      await executeCommand(term, 'calc')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: calc')
+      expect(output).toContain('Examples:')
+    })
+
+    it('calculates addition', async () => {
+      await executeCommand(term, 'calc 2 + 2')
+      const output = term.getOutput()
+      expect(output).toContain('4')
+    })
+
+    it('calculates multiplication', async () => {
+      await executeCommand(term, 'calc 6 * 7')
+      const output = term.getOutput()
+      expect(output).toContain('42')
+    })
+
+    it('calculates division', async () => {
+      await executeCommand(term, 'calc 100 / 4')
+      const output = term.getOutput()
+      expect(output).toContain('25')
+    })
+
+    it('calculates exponentiation', async () => {
+      await executeCommand(term, 'calc 2 ** 8')
+      const output = term.getOutput()
+      expect(output).toContain('256')
+    })
+
+    it('calculates modulo', async () => {
+      await executeCommand(term, 'calc 17 % 5')
+      const output = term.getOutput()
+      expect(output).toContain('2')
+    })
+
+    it('handles parentheses', async () => {
+      await executeCommand(term, 'calc (10 + 5) / 3')
+      const output = term.getOutput()
+      expect(output).toContain('5')
+    })
+
+    it('rejects invalid characters', async () => {
+      await executeCommand(term, 'calc 2 + abc')
+      const output = term.getOutput()
+      expect(output).toContain('only numbers and operators allowed')
+    })
+
+    it('handles invalid expression gracefully', async () => {
+      await executeCommand(term, 'calc 2 + + 2')
+      const output = term.getOutput()
+      expect(output).toContain('Invalid')
+    })
+  })
+
+  describe('uuid command', () => {
+    it('generates a UUID', async () => {
+      await executeCommand(term, 'uuid')
+      const output = term.getOutput()
+      expect(output).toContain('Generated UUID v4')
+      // UUID format: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+      expect(output).toMatch(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i)
+    })
+  })
+
+  describe('timestamp command', () => {
+    it('displays various timestamp formats', async () => {
+      await executeCommand(term, 'timestamp')
+      const output = term.getOutput()
+      expect(output).toContain('Timestamps')
+      expect(output).toContain('Unix (seconds)')
+      expect(output).toContain('Unix (ms)')
+      expect(output).toContain('ISO 8601')
+      expect(output).toContain('Local')
+    })
+  })
+
+  describe('weather command', () => {
+    it('displays weather for default location', async () => {
+      await executeCommand(term, 'weather')
+      const output = term.getOutput()
+      expect(output).toContain('Weather in Cyberspace')
+      expect(output).toContain('Condition:')
+      expect(output).toContain('Temperature:')
+      expect(output).toContain('Humidity:')
+      expect(output).toContain('Wind:')
+    })
+
+    it('displays weather for custom location', async () => {
+      await executeCommand(term, 'weather New York')
+      const output = term.getOutput()
+      expect(output).toContain('Weather in New York')
+    })
+
+    it('shows simulated disclaimer', async () => {
+      await executeCommand(term, 'weather')
+      const output = term.getOutput()
+      expect(output).toContain('simulated')
+    })
+  })
+
+  describe('help includes Phase 7 utilities', () => {
+    it('lists qr command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('qr')
+      expect(output).toContain('QR code')
+    })
+
+    it('lists base64 command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('base64')
+    })
+
+    it('lists calc command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('calc')
+    })
+
+    it('lists uuid command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('uuid')
+    })
+
+    it('lists timestamp command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('timestamp')
+    })
+
+    it('lists weather command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('weather')
+    })
+  })
 })
