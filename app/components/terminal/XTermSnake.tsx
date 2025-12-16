@@ -2,34 +2,27 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { unlockAchievement } from "./achievements";
+import type { SnakeState, SnakeConfig } from "./games/types";
+import {
+  createInitialState,
+  update,
+  setDirection,
+  togglePause,
+  resetGame,
+  getDirectionFromKey,
+  getSegmentBrightness,
+} from "./games/snake-engine";
 
 interface SnakeProps {
   onComplete: () => void;
 }
 
-interface Point {
-  x: number;
-  y: number;
-}
-
 const GRID_SIZE = 20;
-const INITIAL_SPEED = 100;
-const SPEED_INCREMENT = 2;
-const MIN_SPEED = 50;
 
 export default function XTermSnake({ onComplete }: SnakeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const gameStateRef = useRef({
-    snake: [{ x: 10, y: 10 }] as Point[],
-    direction: { x: 1, y: 0 },
-    nextDirection: { x: 1, y: 0 },
-    food: { x: 15, y: 10 } as Point,
-    score: 0,
-    highScore: 0,
-    gameOver: false,
-    isPaused: false,
-    speed: INITIAL_SPEED,
-  });
+  const gameStateRef = useRef<SnakeState | null>(null);
+  const configRef = useRef<SnakeConfig | null>(null);
 
   const handleComplete = useCallback(() => {
     onComplete?.();
@@ -42,12 +35,6 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Load high score from localStorage
-    const savedHighScore = localStorage.getItem("frhd-snake-highscore");
-    if (savedHighScore) {
-      gameStateRef.current.highScore = parseInt(savedHighScore, 10);
-    }
-
     // Calculate grid dimensions based on canvas size
     let gridWidth: number;
     let gridHeight: number;
@@ -59,99 +46,31 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
       cellSize = Math.floor(Math.min(canvas.width, canvas.height) / GRID_SIZE);
       gridWidth = Math.floor(canvas.width / cellSize);
       gridHeight = Math.floor(canvas.height / cellSize);
+
+      // Update config with calculated dimensions
+      configRef.current = {
+        gridWidth,
+        gridHeight,
+        initialSpeed: 100,
+        speedIncrement: 2,
+        minSpeed: 50,
+      };
     };
 
     setupCanvas();
 
-    // Initialize snake in the middle
-    const initGame = () => {
-      const startX = Math.floor(gridWidth / 2);
-      const startY = Math.floor(gridHeight / 2);
-      gameStateRef.current.snake = [
-        { x: startX, y: startY },
-        { x: startX - 1, y: startY },
-        { x: startX - 2, y: startY },
-      ];
-      gameStateRef.current.direction = { x: 1, y: 0 };
-      gameStateRef.current.nextDirection = { x: 1, y: 0 };
-      gameStateRef.current.score = 0;
-      gameStateRef.current.gameOver = false;
-      gameStateRef.current.isPaused = false;
-      gameStateRef.current.speed = INITIAL_SPEED;
-      spawnFood();
-    };
+    // Load high score from localStorage
+    const savedHighScore = localStorage.getItem("frhd-snake-highscore");
 
-    const spawnFood = () => {
-      const state = gameStateRef.current;
-      let newFood: Point;
-      do {
-        newFood = {
-          x: Math.floor(Math.random() * gridWidth),
-          y: Math.floor(Math.random() * gridHeight),
-        };
-      } while (state.snake.some((s) => s.x === newFood.x && s.y === newFood.y));
-      state.food = newFood;
-    };
-
-    const checkCollision = (head: Point): boolean => {
-      const state = gameStateRef.current;
-      // Wall collision
-      if (head.x < 0 || head.x >= gridWidth || head.y < 0 || head.y >= gridHeight) {
-        return true;
-      }
-      // Self collision (skip the head itself)
-      for (let i = 1; i < state.snake.length; i++) {
-        if (state.snake[i].x === head.x && state.snake[i].y === head.y) {
-          return true;
-        }
-      }
-      return false;
-    };
-
-    const update = () => {
-      const state = gameStateRef.current;
-      if (state.gameOver || state.isPaused) return;
-
-      // Apply the queued direction
-      state.direction = { ...state.nextDirection };
-
-      // Calculate new head position
-      const head = state.snake[0];
-      const newHead: Point = {
-        x: head.x + state.direction.x,
-        y: head.y + state.direction.y,
-      };
-
-      // Check collision
-      if (checkCollision(newHead)) {
-        state.gameOver = true;
-        // Save high score
-        if (state.score > state.highScore) {
-          state.highScore = state.score;
-          localStorage.setItem("frhd-snake-highscore", state.highScore.toString());
-          // Unlock high_scorer achievement
-          unlockAchievement("high_scorer");
-        }
-        return;
-      }
-
-      // Add new head
-      state.snake.unshift(newHead);
-
-      // Check if food eaten
-      if (newHead.x === state.food.x && newHead.y === state.food.y) {
-        state.score += 10;
-        // Increase speed
-        state.speed = Math.max(MIN_SPEED, state.speed - SPEED_INCREMENT);
-        spawnFood();
-      } else {
-        // Remove tail if no food eaten
-        state.snake.pop();
-      }
-    };
+    // Initialize game with calculated config
+    gameStateRef.current = createInitialState(configRef.current!);
+    if (savedHighScore) {
+      gameStateRef.current.highScore = parseInt(savedHighScore, 10);
+    }
 
     const draw = () => {
       const state = gameStateRef.current;
+      if (!state) return;
 
       // Clear canvas
       ctx.fillStyle = "#000000";
@@ -175,7 +94,7 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
 
       // Draw snake
       state.snake.forEach((segment, index) => {
-        const brightness = Math.max(0.4, 1 - index * 0.03);
+        const brightness = getSegmentBrightness(index);
         ctx.fillStyle = `rgb(0, ${Math.floor(255 * brightness)}, 0)`;
         ctx.fillRect(
           segment.x * cellSize + 1,
@@ -265,6 +184,8 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
     // Keyboard handler
     const handleKeyDown = (event: KeyboardEvent) => {
       const state = gameStateRef.current;
+      const config = configRef.current;
+      if (!state || !config) return;
 
       // Exit on Q or ESC
       if (event.key.toLowerCase() === "q" || event.key === "Escape") {
@@ -278,23 +199,17 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
       if (event.key === " ") {
         event.preventDefault();
         if (state.gameOver) {
-          initGame();
+          resetGame(state, config);
         } else {
-          state.isPaused = !state.isPaused;
+          togglePause(state);
         }
         return;
       }
 
       // Direction controls
-      const { direction } = state;
-      if ((event.key === "ArrowUp" || event.key.toLowerCase() === "w") && direction.y !== 1) {
-        state.nextDirection = { x: 0, y: -1 };
-      } else if ((event.key === "ArrowDown" || event.key.toLowerCase() === "s") && direction.y !== -1) {
-        state.nextDirection = { x: 0, y: 1 };
-      } else if ((event.key === "ArrowLeft" || event.key.toLowerCase() === "a") && direction.x !== 1) {
-        state.nextDirection = { x: -1, y: 0 };
-      } else if ((event.key === "ArrowRight" || event.key.toLowerCase() === "d") && direction.x !== -1) {
-        state.nextDirection = { x: 1, y: 0 };
+      const newDirection = getDirectionFromKey(event.key);
+      if (newDirection) {
+        setDirection(state, newDirection);
       }
     };
 
@@ -303,11 +218,14 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
     // Handle resize
     const handleResize = () => {
       setupCanvas();
+      // Reinitialize game with new dimensions
+      if (gameStateRef.current && configRef.current) {
+        const highScore = gameStateRef.current.highScore;
+        gameStateRef.current = createInitialState(configRef.current);
+        gameStateRef.current.highScore = highScore;
+      }
     };
     window.addEventListener("resize", handleResize);
-
-    // Initialize game
-    initGame();
 
     // Game loop
     let lastUpdate = 0;
@@ -315,9 +233,18 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
 
     const gameLoop = (timestamp: number) => {
       const state = gameStateRef.current;
+      const config = configRef.current;
+      if (!state || !config) {
+        animationId = requestAnimationFrame(gameLoop);
+        return;
+      }
 
       if (timestamp - lastUpdate >= state.speed) {
-        update();
+        const result = update(state, config);
+        if (result.newHighScore) {
+          localStorage.setItem("frhd-snake-highscore", state.highScore.toString());
+          unlockAchievement("high_scorer");
+        }
         lastUpdate = timestamp;
       }
 
