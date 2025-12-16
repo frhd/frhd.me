@@ -343,16 +343,13 @@ export default function XTerminal() {
 
   return (
     <>
-      <div className="flex min-h-screen w-full items-start justify-center bg-black p-4 pt-8">
-        <div className="h-[85vh] w-full max-w-6xl rounded-lg bg-black/90 p-4 shadow-2xl shadow-green-500/10">
-          {/* Terminal wrapper with padding */}
-          <div className="h-full w-full p-4 relative">
-            {/* Terminal container - XTerm.js attaches here */}
-            <div ref={terminalRef} className="h-full w-full" />
+      <div className="flex h-screen w-full bg-black">
+        <div className="h-full w-full bg-black relative">
+          {/* Terminal container - XTerm.js attaches here */}
+          <div ref={terminalRef} className="h-full w-full" />
 
-            {/* CRT overlay effect */}
-            {showCrt && CrtComponent && <CrtComponent />}
-          </div>
+          {/* CRT overlay effect */}
+          {showCrt && CrtComponent && <CrtComponent />}
         </div>
       </div>
 

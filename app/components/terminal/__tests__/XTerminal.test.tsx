@@ -72,11 +72,11 @@ describe('XTerminal', () => {
     const { container } = render(<XTerminal />)
 
     // Check for main wrapper with flex layout
-    const flexWrapper = container.querySelector('.flex.min-h-screen')
+    const flexWrapper = container.querySelector('.flex.h-screen')
     expect(flexWrapper).toBeTruthy()
 
-    // Check for terminal box
-    const terminalBox = container.querySelector('.rounded-lg.bg-black\\/90')
+    // Check for terminal container
+    const terminalBox = container.querySelector('.bg-black.relative')
     expect(terminalBox).toBeTruthy()
   })
 })
@@ -100,7 +100,7 @@ describe('ClientTerminalWrapper', () => {
     const { container } = render(<ClientTerminalWrapper />)
 
     // Should render the terminal structure
-    const flexWrapper = container.querySelector('.flex.min-h-screen')
+    const flexWrapper = container.querySelector('.flex.h-screen')
     expect(flexWrapper).toBeTruthy()
   })
 })
