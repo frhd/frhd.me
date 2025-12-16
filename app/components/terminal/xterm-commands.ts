@@ -31,6 +31,7 @@ import {
   getStats as getAdventureStats,
   type AdventureState,
 } from "./adventure-engine";
+import { getPluginRegistry, examplePlugins } from "./plugin-system";
 
 export async function executeCommand(
   term: any,
@@ -314,8 +315,17 @@ export async function executeCommand(
       displayVim(term, arg);
       break;
 
-    default:
-      if (command.trim()) {
+    // Phase 13: Plugin System
+    case "plugin":
+      await handlePluginCommand(term, args);
+      break;
+
+    default: {
+      // Check if it's a plugin command
+      const registry = getPluginRegistry();
+      if (registry.hasCommand(cmd)) {
+        await registry.executeCommand(cmd, term, args);
+      } else if (command.trim()) {
         term.writeln(
           term.colorize(
             `Command not found: ${cmd}. Type 'help' for available commands.`,
@@ -323,6 +333,7 @@ export async function executeCommand(
           )
         );
       }
+    }
   }
 }
 
@@ -494,6 +505,40 @@ function displayHelp(term: any): void {
       `  ${term.colorize(paddedName, "blue")} ${desc}`
     );
   });
+
+  const pluginCommands = [
+    { name: "plugin list", desc: "Show installed plugins" },
+    { name: "plugin install <id>", desc: "Install an example plugin" },
+    { name: "plugin remove <id>", desc: "Remove an installed plugin" },
+    { name: "plugin create", desc: "Show plugin creation guide" },
+  ];
+
+  term.writeln("");
+  term.writeln(term.colorize("Plugins:", "brightMagenta"));
+  term.writeln("");
+  pluginCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "magenta")} ${desc}`
+    );
+  });
+
+  // Show installed plugin commands
+  const registry = getPluginRegistry();
+  const pluginCmds = registry.getPlugins().flatMap((p) =>
+    p.commands.map((c) => ({ name: c.name, desc: c.description }))
+  );
+  if (pluginCmds.length > 0) {
+    term.writeln("");
+    term.writeln(term.colorize("Plugin Commands:", "brightMagenta"));
+    term.writeln("");
+    pluginCmds.forEach(({ name, desc }) => {
+      const paddedName = name.padEnd(24);
+      term.writeln(
+        `  ${term.colorize(paddedName, "magenta")} ${desc}`
+      );
+    });
+  }
 
   term.writeln("");
   term.writeln(term.colorize("Hint: Try 'find / -name \"*.secret\"' to discover hidden files...", "dim"));
@@ -2144,6 +2189,189 @@ async function displayTechNews(term: any): Promise<void> {
   term.writeln("");
   term.writeln(term.colorize("Source: news.ycombinator.com", "dim"));
   term.writeln(term.colorize("Data cached for 1 hour", "dim"));
+}
+
+// Phase 13: Plugin System Command Handler
+async function handlePluginCommand(term: any, args: string[]): Promise<void> {
+  const subCommand = args[0]?.toLowerCase();
+  const registry = getPluginRegistry();
+
+  if (!subCommand || subCommand === "list") {
+    // List installed plugins
+    const plugins = registry.getPlugins();
+
+    term.writeln(term.colorize("=== Plugin System ===", "brightMagenta"));
+    term.writeln("");
+
+    if (plugins.length === 0) {
+      term.writeln(term.colorize("No plugins installed.", "dim"));
+      term.writeln("");
+      term.writeln("Available example plugins:");
+      term.writeln(
+        `  ${term.colorize("dice", "brightCyan")}      - Roll dice with various configurations`
+      );
+      term.writeln(
+        `  ${term.colorize("countdown", "brightCyan")} - Simple countdown timer`
+      );
+      term.writeln(
+        `  ${term.colorize("ascii", "brightCyan")}     - Fun ASCII art emoticons`
+      );
+      term.writeln("");
+      term.writeln(
+        `Install with: ${term.colorize("plugin install <name>", "brightYellow")}`
+      );
+    } else {
+      term.writeln(term.colorize("Installed Plugins:", "brightGreen"));
+      term.writeln("");
+      for (const plugin of plugins) {
+        term.writeln(
+          `  ${term.colorize(plugin.name, "brightCyan")} v${plugin.version}`
+        );
+        term.writeln(`    ${term.colorize(plugin.description, "dim")}`);
+        term.writeln(`    ID: ${term.colorize(plugin.id, "dim")}`);
+        term.writeln(
+          `    Commands: ${plugin.commands.map((c) => term.colorize(c.name, "brightYellow")).join(", ")}`
+        );
+        term.writeln("");
+      }
+      term.writeln(
+        `Remove with: ${term.colorize("plugin remove <id>", "brightYellow")}`
+      );
+    }
+    return;
+  }
+
+  if (subCommand === "install") {
+    const pluginId = args[1]?.toLowerCase();
+    if (!pluginId) {
+      term.writeln(
+        term.colorize("Usage: plugin install <name>", "brightYellow")
+      );
+      term.writeln("");
+      term.writeln("Available example plugins:");
+      term.writeln(
+        `  ${term.colorize("dice", "brightCyan")}      - Roll dice (adds 'roll' command)`
+      );
+      term.writeln(
+        `  ${term.colorize("countdown", "brightCyan")} - Countdown timer (adds 'countdown' command)`
+      );
+      term.writeln(
+        `  ${term.colorize("ascii", "brightCyan")}     - ASCII emoticons (adds 'shrug', 'tableflip', 'unflip')`
+      );
+      return;
+    }
+
+    // Check if it's an example plugin
+    const exampleSource =
+      examplePlugins[pluginId as keyof typeof examplePlugins];
+    if (!exampleSource) {
+      term.writeln(
+        term.colorize(`Unknown plugin: ${pluginId}`, "brightRed")
+      );
+      term.writeln("");
+      term.writeln("Available example plugins: dice, countdown, ascii");
+      return;
+    }
+
+    try {
+      const plugin = registry.parsePlugin(exampleSource);
+      if (plugin) {
+        registry.registerPlugin(plugin);
+        term.writeln(
+          term.colorize(`Installed plugin: ${plugin.name}`, "brightGreen")
+        );
+        term.writeln(
+          `New commands: ${plugin.commands.map((c) => term.colorize(c.name, "brightYellow")).join(", ")}`
+        );
+      }
+    } catch (e) {
+      term.writeln(
+        term.colorize(
+          `Failed to install: ${e instanceof Error ? e.message : "Unknown error"}`,
+          "brightRed"
+        )
+      );
+    }
+    return;
+  }
+
+  if (subCommand === "remove") {
+    const pluginId = args[1];
+    if (!pluginId) {
+      term.writeln(
+        term.colorize("Usage: plugin remove <id>", "brightYellow")
+      );
+      term.writeln("");
+      const plugins = registry.getPlugins();
+      if (plugins.length > 0) {
+        term.writeln("Installed plugin IDs:");
+        for (const plugin of plugins) {
+          term.writeln(`  ${term.colorize(plugin.id, "brightCyan")}`);
+        }
+      }
+      return;
+    }
+
+    const removed = registry.unregisterPlugin(pluginId);
+    if (removed) {
+      term.writeln(
+        term.colorize(`Removed plugin: ${pluginId}`, "brightGreen")
+      );
+    } else {
+      term.writeln(
+        term.colorize(`Plugin not found: ${pluginId}`, "brightRed")
+      );
+    }
+    return;
+  }
+
+  if (subCommand === "create") {
+    term.writeln(term.colorize("=== Plugin Creation Guide ===", "brightCyan"));
+    term.writeln("");
+    term.writeln("Plugins are JavaScript objects with the following structure:");
+    term.writeln("");
+    term.writeln(term.colorize("const plugin = {", "brightYellow"));
+    term.writeln(term.colorize('  name: "My Plugin",', "brightYellow"));
+    term.writeln(term.colorize('  version: "1.0.0",', "brightYellow"));
+    term.writeln(term.colorize('  author: "Your Name",', "brightYellow"));
+    term.writeln(term.colorize('  description: "What it does",', "brightYellow"));
+    term.writeln(term.colorize("  commands: [", "brightYellow"));
+    term.writeln(term.colorize("    {", "brightYellow"));
+    term.writeln(term.colorize('      name: "mycommand",', "brightYellow"));
+    term.writeln(term.colorize('      description: "My custom command",', "brightYellow"));
+    term.writeln(term.colorize("      execute: function(term, args) {", "brightYellow"));
+    term.writeln(term.colorize('        term.writeln("Hello from plugin!");', "brightYellow"));
+    term.writeln(term.colorize("      }", "brightYellow"));
+    term.writeln(term.colorize("    }", "brightYellow"));
+    term.writeln(term.colorize("  ]", "brightYellow"));
+    term.writeln(term.colorize("};", "brightYellow"));
+    term.writeln("");
+    term.writeln(term.colorize("Available Terminal Methods:", "brightGreen"));
+    term.writeln("  term.write(text)     - Write without newline");
+    term.writeln("  term.writeln(text)   - Write with newline");
+    term.writeln("  term.clear()         - Clear terminal");
+    term.writeln("  term.colorize(text, color)");
+    term.writeln("");
+    term.writeln(term.colorize("Available Colors:", "brightGreen"));
+    term.writeln("  red, green, yellow, blue, magenta, cyan, white");
+    term.writeln("  brightRed, brightGreen, brightYellow, etc.");
+    term.writeln("  bold, dim, italic, underline");
+    term.writeln("");
+    term.writeln(term.colorize("Note:", "brightYellow"));
+    term.writeln("  Plugins run in a sandboxed environment.");
+    term.writeln("  No access to window, document, fetch, localStorage.");
+    term.writeln("  Async functions are supported with Promise.");
+    return;
+  }
+
+  // Unknown subcommand
+  term.writeln(term.colorize(`Unknown plugin command: ${subCommand}`, "brightRed"));
+  term.writeln("");
+  term.writeln("Usage:");
+  term.writeln("  plugin list              - Show installed plugins");
+  term.writeln("  plugin install <name>    - Install example plugin");
+  term.writeln("  plugin remove <id>       - Remove installed plugin");
+  term.writeln("  plugin create            - Show plugin creation guide");
 }
 
 export { isSoundEnabled, isMusicEnabled, unlockAchievement };

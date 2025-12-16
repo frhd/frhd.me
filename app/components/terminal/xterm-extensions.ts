@@ -6,6 +6,7 @@ import {
   playSound,
   isSoundEnabled,
 } from "./sound-manager";
+import { getPluginRegistry } from "./plugin-system";
 
 interface CustomTerminal {
   write: (data: string) => void;
@@ -269,9 +270,15 @@ export function extendTerminal(term: any): void {
         "vim",
         "vi",
         "nano",
+        // Phase 13: Plugin System
+        "plugin",
       ];
 
-      const matches = commands.filter((cmd) =>
+      // Add plugin commands dynamically
+      const pluginCommands = getPluginRegistry().getCommandNames();
+      const allCommands = [...commands, ...pluginCommands];
+
+      const matches = allCommands.filter((cmd) =>
         cmd.startsWith(ext.currentLine)
       );
 
