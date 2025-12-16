@@ -8,7 +8,11 @@ describe('Phase 3: Mini-Games Commands', () => {
   let term: {
     write: ReturnType<typeof vi.fn>
     writeln: ReturnType<typeof vi.fn>
+    clear: ReturnType<typeof vi.fn>
+    scrollToTop: ReturnType<typeof vi.fn>
     colorize: (text: string, color: string) => string
+    cwd: string
+    disconnect: ReturnType<typeof vi.fn>
   }
   let dispatchedEvents: CustomEvent[] = []
 
@@ -16,7 +20,11 @@ describe('Phase 3: Mini-Games Commands', () => {
     term = {
       write: vi.fn(),
       writeln: vi.fn(),
+      clear: vi.fn(),
+      scrollToTop: vi.fn(),
       colorize: (text: string) => text, // Simple pass-through for tests
+      cwd: '~',
+      disconnect: vi.fn(),
     }
     dispatchedEvents = []
 
@@ -131,14 +139,22 @@ describe('Phase 3: Game Commands in Help', () => {
   let term: {
     write: ReturnType<typeof vi.fn>
     writeln: ReturnType<typeof vi.fn>
+    clear: ReturnType<typeof vi.fn>
+    scrollToTop: ReturnType<typeof vi.fn>
     colorize: (text: string, color: string) => string
+    cwd: string
+    disconnect: ReturnType<typeof vi.fn>
   }
 
   beforeEach(() => {
     term = {
       write: vi.fn(),
       writeln: vi.fn(),
+      clear: vi.fn(),
+      scrollToTop: vi.fn(),
       colorize: (text: string) => text,
+      cwd: '~',
+      disconnect: vi.fn(),
     }
   })
 
