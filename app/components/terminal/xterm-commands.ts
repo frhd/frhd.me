@@ -19,6 +19,11 @@ import {
   ACHIEVEMENTS,
   type AchievementId,
 } from "./achievements";
+import {
+  getSessionUptime,
+  getLastVisitString,
+  getVisitData,
+} from "./time-utils";
 
 export async function executeCommand(
   term: any,
@@ -243,6 +248,15 @@ export async function executeCommand(
       displayAchievements(term);
       break;
 
+    // Phase 6: Time-Based Features
+    case "uptime":
+      displayUptime(term);
+      break;
+
+    case "last":
+      displayLast(term);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -302,6 +316,11 @@ function displayHelp(term: any): void {
 
   const achievementCommands = [
     { name: "achievements", desc: "View your unlocked achievements" },
+  ];
+
+  const timeCommands = [
+    { name: "uptime", desc: "Show current session duration" },
+    { name: "last", desc: "Show when you last visited" },
   ];
 
   const gameCommands = [
@@ -367,6 +386,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "yellow")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Session:", "brightCyan"));
+  term.writeln("");
+  timeCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "cyan")} ${desc}`
     );
   });
 
@@ -1271,6 +1300,33 @@ function displayAchievements(term: any): void {
   } else {
     term.writeln(term.colorize("🎉 Congratulations! You've unlocked all achievements!", "brightMagenta"));
   }
+}
+
+// Phase 6: Time-Based Features
+
+function displayUptime(term: any): void {
+  const uptime = getSessionUptime();
+  term.writeln(term.colorize("=== Session Uptime ===", "brightCyan"));
+  term.writeln("");
+  term.writeln(`Current session: ${term.colorize(uptime, "brightGreen")}`);
+  term.writeln("");
+  term.writeln(term.colorize("Keep exploring!", "dim"));
+}
+
+function displayLast(term: any): void {
+  const lastVisit = getLastVisitString();
+  const visitData = getVisitData();
+
+  term.writeln(term.colorize("=== Visit History ===", "brightCyan"));
+  term.writeln("");
+
+  if (lastVisit) {
+    term.writeln(`Last visit: ${term.colorize(lastVisit, "brightYellow")}`);
+  } else {
+    term.writeln(term.colorize("This is your first visit!", "brightGreen"));
+  }
+
+  term.writeln(`Total visits: ${term.colorize(visitData.visitCount.toString(), "brightGreen")}`);
 }
 
 export { isSoundEnabled, isMusicEnabled, unlockAchievement };

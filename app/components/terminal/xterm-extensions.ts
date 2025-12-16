@@ -249,6 +249,9 @@ export function extendTerminal(term: any): void {
         "music",
         // Phase 5: Achievements
         "achievements",
+        // Phase 6: Time-based features
+        "uptime",
+        "last",
       ];
 
       const matches = commands.filter((cmd) =>

@@ -6,6 +6,12 @@ import "./xterm-theme.css";
 import { getStoredTheme, getTheme, getDefaultTheme } from "./xterm-themes";
 import XTermAchievementManager from "./XTermAchievement";
 import { checkTimeAchievements } from "./achievements";
+import {
+  initSession,
+  getTimeGreeting,
+  getSeasonalMessage,
+  getReturnGreeting,
+} from "./time-utils";
 
 // Define the extended terminal interface
 interface ExtendedTerminal {
@@ -84,6 +90,9 @@ export default function XTerminal() {
 
     // Check time-based achievements on load
     checkTimeAchievements();
+
+    // Initialize session tracking
+    initSession();
   }, []);
 
   // Use useLayoutEffect for DOM-dependent operations
@@ -163,9 +172,22 @@ export default function XTerminal() {
               fitAddon.fit();
               
               // Initialize terminal after everything is set up
+              const timeGreeting = getTimeGreeting();
+              const seasonalMessage = getSeasonalMessage();
+              const returnGreeting = getReturnGreeting();
+
               extendedTerm.writeln("\x1b[1;32mWelcome to frhd.me terminal\x1b[0m");
               extendedTerm.writeln("\x1b[1;32m===========================\x1b[0m");
               extendedTerm.writeln("");
+              extendedTerm.writeln(`\x1b[1;36m${timeGreeting}\x1b[0m`);
+              if (returnGreeting) {
+                extendedTerm.writeln(`\x1b[1;33m${returnGreeting}\x1b[0m`);
+              }
+              extendedTerm.writeln("");
+              if (seasonalMessage) {
+                extendedTerm.writeln(seasonalMessage);
+                extendedTerm.writeln("");
+              }
               extendedTerm.writeln("Type \x1b[1;33mhelp\x1b[0m to see available commands.");
               extendedTerm.writeln("");
               extendedTerm.prompt();
