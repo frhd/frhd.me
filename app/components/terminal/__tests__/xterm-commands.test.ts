@@ -690,4 +690,247 @@ describe('executeCommand', () => {
       expect(output).toContain('weather')
     })
   })
+
+  // Phase 9: Live Data Integration Tests
+
+  describe('github command', () => {
+    beforeEach(() => {
+      // Mock fetch for GitHub API
+      global.fetch = vi.fn()
+      // Clear localStorage cache to ensure fresh fetch
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('frhd-github-profile-frhd')
+        localStorage.removeItem('frhd-github-repos-frhd')
+        localStorage.removeItem('frhd-github-stats-frhd')
+      }
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('shows usage when invalid subcommand', async () => {
+      await executeCommand(term, 'github invalid')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: github')
+      expect(output).toContain('profile')
+      expect(output).toContain('repos')
+      expect(output).toContain('stats')
+    })
+
+    it('fetches GitHub profile when no args', async () => {
+      const mockUser = {
+        login: 'frhd',
+        name: 'Farhad',
+        bio: 'Developer',
+        public_repos: 42,
+        followers: 100,
+        following: 50,
+        html_url: 'https://github.com/frhd',
+        created_at: '2010-01-01T00:00:00Z',
+      }
+      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockUser),
+      })
+
+      await executeCommand(term, 'github')
+      const output = term.getOutput()
+      expect(output).toContain('GitHub Profile')
+      expect(output).toContain('frhd')
+    })
+
+    it('handles GitHub API error gracefully', async () => {
+      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+      })
+
+      await executeCommand(term, 'github')
+      const output = term.getOutput()
+      expect(output).toContain('Failed to fetch')
+    })
+
+    it('fetches repos with repos subcommand', async () => {
+      const mockRepos = [
+        { name: 'repo1', description: 'Test repo', stargazers_count: 10, forks_count: 5, language: 'TypeScript' },
+        { name: 'repo2', description: null, stargazers_count: 0, forks_count: 0, language: 'JavaScript' },
+      ]
+      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockRepos),
+      })
+
+      await executeCommand(term, 'github repos')
+      const output = term.getOutput()
+      expect(output).toContain('Public Repositories')
+      expect(output).toContain('repo1')
+      expect(output).toContain('TypeScript')
+    })
+
+    it('fetches stats with stats subcommand', async () => {
+      const mockUser = {
+        login: 'frhd',
+        public_repos: 42,
+        followers: 100,
+        created_at: '2010-01-01T00:00:00Z',
+      }
+      const mockRepos = [
+        { name: 'repo1', stargazers_count: 10, forks_count: 5, language: 'TypeScript' },
+        { name: 'repo2', stargazers_count: 5, forks_count: 2, language: 'TypeScript' },
+        { name: 'repo3', stargazers_count: 3, forks_count: 1, language: 'JavaScript' },
+      ]
+      ;(global.fetch as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockUser),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockRepos),
+        })
+
+      await executeCommand(term, 'github stats')
+      const output = term.getOutput()
+      expect(output).toContain('GitHub Stats')
+      expect(output).toContain('Total Repositories')
+      expect(output).toContain('Total Stars')
+      expect(output).toContain('Top Languages')
+    })
+  })
+
+  describe('status command', () => {
+    it('displays site status', async () => {
+      await executeCommand(term, 'status')
+      const output = term.getOutput()
+      expect(output).toContain('Site Status')
+      expect(output).toContain('Online')
+      expect(output).toContain('Vercel')
+    })
+
+    it('displays session info', async () => {
+      await executeCommand(term, 'status')
+      const output = term.getOutput()
+      expect(output).toContain('Session Info')
+      expect(output).toContain('Current Session')
+      expect(output).toContain('Visit Count')
+    })
+
+    it('displays browser info', async () => {
+      await executeCommand(term, 'status')
+      const output = term.getOutput()
+      expect(output).toContain('Browser Info')
+    })
+  })
+
+  describe('news command', () => {
+    beforeEach(() => {
+      global.fetch = vi.fn()
+      // Clear localStorage cache to ensure fresh fetch
+      if (typeof localStorage !== 'undefined') {
+        localStorage.removeItem('frhd-hackernews-top')
+      }
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('fetches Hacker News stories', async () => {
+      const mockIds = [1, 2, 3]
+      const mockStories = [
+        { id: 1, title: 'Story 1', score: 100, by: 'user1', time: Date.now() },
+        { id: 2, title: 'Story 2', score: 80, by: 'user2', time: Date.now() },
+        { id: 3, title: 'Story 3', score: 60, by: 'user3', time: Date.now() },
+      ]
+
+      ;(global.fetch as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockIds),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockStories[0]),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockStories[1]),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockStories[2]),
+        })
+
+      await executeCommand(term, 'news')
+      const output = term.getOutput()
+      expect(output).toContain('Hacker News')
+      expect(output).toContain('Story 1')
+      expect(output).toContain('user1')
+    })
+
+    it('handles news --tech flag', async () => {
+      const mockIds = [1]
+      const mockStory = { id: 1, title: 'Tech Story', score: 100, by: 'techuser', time: Date.now() }
+
+      ;(global.fetch as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockIds),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          json: () => Promise.resolve(mockStory),
+        })
+
+      await executeCommand(term, 'news --tech')
+      const output = term.getOutput()
+      expect(output).toContain('Hacker News')
+    })
+
+    it('handles API error gracefully', async () => {
+      ;(global.fetch as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      })
+
+      await executeCommand(term, 'news')
+      const output = term.getOutput()
+      expect(output).toContain('Failed to fetch')
+    })
+
+    it('shows usage for invalid flag', async () => {
+      await executeCommand(term, 'news --invalid')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: news')
+    })
+  })
+
+  describe('help includes Phase 9 live data commands', () => {
+    it('lists github command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('github')
+      expect(output).toContain('GitHub')
+    })
+
+    it('lists status command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('status')
+    })
+
+    it('lists news command', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('news')
+      expect(output).toContain('Hacker News')
+    })
+
+    it('has Live Data section', async () => {
+      await executeCommand(term, 'help')
+      const output = term.getOutput()
+      expect(output).toContain('Live Data')
+    })
+  })
 })

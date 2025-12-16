@@ -294,6 +294,19 @@ export async function executeCommand(
       handleAdventureCommand(term, args);
       break;
 
+    // Phase 9: Live Data Integration
+    case "github":
+      await handleGitHubCommand(term, args);
+      break;
+
+    case "status":
+      displayStatus(term);
+      break;
+
+    case "news":
+      await handleNewsCommand(term, args);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -367,6 +380,14 @@ function displayHelp(term: any): void {
     { name: "uuid", desc: "Generate random UUID v4" },
     { name: "timestamp", desc: "Show current timestamps" },
     { name: "weather [loc]", desc: "Show weather (simulated)" },
+  ];
+
+  const liveDataCommands = [
+    { name: "github", desc: "Show GitHub profile summary" },
+    { name: "github repos", desc: "List public repositories" },
+    { name: "github stats", desc: "Show GitHub stats" },
+    { name: "status", desc: "Show site and session status" },
+    { name: "news", desc: "Top tech news from Hacker News" },
   ];
 
   const gameCommands = [
@@ -453,6 +474,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "green")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Live Data:", "brightBlue"));
+  term.writeln("");
+  liveDataCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "blue")} ${desc}`
     );
   });
 
@@ -1751,6 +1782,347 @@ export function executeAdventureInput(term: any, input: string): void {
   if (adventureState.gameComplete) {
     unlockAchievement("completionist");
   }
+}
+
+// Phase 9: Live Data Integration
+
+const GITHUB_USERNAME = "frhd";
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+
+interface CachedData<T> {
+  data: T;
+  timestamp: number;
+}
+
+interface GitHubUser {
+  login: string;
+  name: string | null;
+  bio: string | null;
+  public_repos: number;
+  followers: number;
+  following: number;
+  avatar_url: string;
+  html_url: string;
+  created_at: string;
+}
+
+interface GitHubRepo {
+  name: string;
+  description: string | null;
+  html_url: string;
+  stargazers_count: number;
+  forks_count: number;
+  language: string | null;
+  updated_at: string;
+}
+
+interface HackerNewsStory {
+  id: number;
+  title: string;
+  url?: string;
+  score: number;
+  by: string;
+  time: number;
+}
+
+function getCachedData<T>(key: string): T | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const stored = localStorage.getItem(key);
+    if (!stored) return null;
+    const cached: CachedData<T> = JSON.parse(stored);
+    if (Date.now() - cached.timestamp > CACHE_DURATION) {
+      localStorage.removeItem(key);
+      return null;
+    }
+    return cached.data;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedData<T>(key: string, data: T): void {
+  if (typeof window === "undefined") return;
+  try {
+    const cached: CachedData<T> = { data, timestamp: Date.now() };
+    localStorage.setItem(key, JSON.stringify(cached));
+  } catch {
+    // Storage might be full, silently fail
+  }
+}
+
+async function handleGitHubCommand(term: any, args: string[]): Promise<void> {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (!subCommand || subCommand === "profile") {
+    await displayGitHubProfile(term);
+  } else if (subCommand === "repos") {
+    await displayGitHubRepos(term);
+  } else if (subCommand === "stats") {
+    await displayGitHubStats(term);
+  } else {
+    term.writeln(term.colorize("Usage: github [profile|repos|stats]", "brightYellow"));
+    term.writeln("");
+    term.writeln(`  ${term.colorize("github", "dim")}         Show GitHub profile summary`);
+    term.writeln(`  ${term.colorize("github repos", "dim")}   List public repositories`);
+    term.writeln(`  ${term.colorize("github stats", "dim")}   Show contribution stats`);
+  }
+}
+
+async function displayGitHubProfile(term: any): Promise<void> {
+  const cacheKey = `frhd-github-profile-${GITHUB_USERNAME}`;
+  let userData = getCachedData<GitHubUser>(cacheKey);
+
+  if (!userData) {
+    term.writeln(term.colorize("Fetching GitHub profile...", "brightCyan"));
+    try {
+      const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      userData = await response.json();
+      setCachedData(cacheKey, userData);
+    } catch (error) {
+      term.writeln(term.colorize("Failed to fetch GitHub profile", "brightRed"));
+      term.writeln(term.colorize(`Error: ${error instanceof Error ? error.message : "Unknown error"}`, "dim"));
+      return;
+    }
+  }
+
+  if (!userData) {
+    term.writeln(term.colorize("No profile data available", "brightRed"));
+    return;
+  }
+
+  term.writeln(term.colorize("=== GitHub Profile ===", "brightCyan"));
+  term.writeln("");
+  term.writeln(`${term.colorize("User:", "white")} ${term.colorize(userData.login, "brightGreen")}`);
+  if (userData.name) {
+    term.writeln(`${term.colorize("Name:", "white")} ${userData.name}`);
+  }
+  if (userData.bio) {
+    term.writeln(`${term.colorize("Bio:", "white")} ${userData.bio}`);
+  }
+  term.writeln(`${term.colorize("Public Repos:", "white")} ${term.colorize(userData.public_repos.toString(), "brightYellow")}`);
+  term.writeln(`${term.colorize("Followers:", "white")} ${userData.followers}`);
+  term.writeln(`${term.colorize("Following:", "white")} ${userData.following}`);
+  term.writeln(`${term.colorize("URL:", "white")} ${term.colorize(userData.html_url, "brightBlue")}`);
+  term.writeln("");
+  term.writeln(term.colorize("Use 'github repos' to see repositories", "dim"));
+}
+
+async function displayGitHubRepos(term: any): Promise<void> {
+  const cacheKey = `frhd-github-repos-${GITHUB_USERNAME}`;
+  let repos = getCachedData<GitHubRepo[]>(cacheKey);
+
+  if (!repos) {
+    term.writeln(term.colorize("Fetching repositories...", "brightCyan"));
+    try {
+      const response = await fetch(
+        `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=10`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      repos = await response.json();
+      setCachedData(cacheKey, repos);
+    } catch (error) {
+      term.writeln(term.colorize("Failed to fetch repositories", "brightRed"));
+      term.writeln(term.colorize(`Error: ${error instanceof Error ? error.message : "Unknown error"}`, "dim"));
+      return;
+    }
+  }
+
+  term.writeln(term.colorize("=== Public Repositories ===", "brightCyan"));
+  term.writeln("");
+
+  if (!repos || repos.length === 0) {
+    term.writeln(term.colorize("No public repositories found", "dim"));
+    return;
+  }
+
+  for (const repo of repos.slice(0, 10)) {
+    const stars = repo.stargazers_count > 0 ? ` ⭐${repo.stargazers_count}` : "";
+    const lang = repo.language ? term.colorize(` [${repo.language}]`, "brightMagenta") : "";
+    term.writeln(`${term.colorize(repo.name, "brightGreen")}${lang}${stars}`);
+    if (repo.description) {
+      term.writeln(`  ${term.colorize(repo.description.slice(0, 60), "dim")}${repo.description.length > 60 ? "..." : ""}`);
+    }
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize(`View more at: github.com/${GITHUB_USERNAME}`, "dim"));
+}
+
+async function displayGitHubStats(term: any): Promise<void> {
+  const cacheKey = `frhd-github-stats-${GITHUB_USERNAME}`;
+
+  // GitHub doesn't have a public API for contribution stats, so we'll show what we can
+  let userData = getCachedData<GitHubUser>(`frhd-github-profile-${GITHUB_USERNAME}`);
+  let repos = getCachedData<GitHubRepo[]>(`frhd-github-repos-${GITHUB_USERNAME}`);
+
+  if (!userData || !repos) {
+    term.writeln(term.colorize("Fetching stats...", "brightCyan"));
+    try {
+      const [userResponse, reposResponse] = await Promise.all([
+        fetch(`https://api.github.com/users/${GITHUB_USERNAME}`),
+        fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100`)
+      ]);
+
+      if (!userResponse.ok || !reposResponse.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      userData = await userResponse.json();
+      repos = await reposResponse.json();
+      setCachedData(`frhd-github-profile-${GITHUB_USERNAME}`, userData);
+      setCachedData(cacheKey, repos);
+    } catch (error) {
+      term.writeln(term.colorize("Failed to fetch stats", "brightRed"));
+      term.writeln(term.colorize(`Error: ${error instanceof Error ? error.message : "Unknown error"}`, "dim"));
+      return;
+    }
+  }
+
+  // Calculate stats from available data
+  const totalStars = repos?.reduce((sum, repo) => sum + repo.stargazers_count, 0) || 0;
+  const totalForks = repos?.reduce((sum, repo) => sum + repo.forks_count, 0) || 0;
+  const languages = new Set(repos?.map(r => r.language).filter(Boolean));
+  const memberSince = userData?.created_at ? new Date(userData.created_at).getFullYear() : "Unknown";
+
+  term.writeln(term.colorize("=== GitHub Stats ===", "brightCyan"));
+  term.writeln("");
+  term.writeln(`${term.colorize("Total Repositories:", "white")} ${term.colorize(userData?.public_repos?.toString() || "0", "brightYellow")}`);
+  term.writeln(`${term.colorize("Total Stars:", "white")} ${term.colorize(`⭐ ${totalStars}`, "brightYellow")}`);
+  term.writeln(`${term.colorize("Total Forks:", "white")} ${term.colorize(`🍴 ${totalForks}`, "brightGreen")}`);
+  term.writeln(`${term.colorize("Languages:", "white")} ${term.colorize(languages.size.toString(), "brightMagenta")}`);
+  term.writeln(`${term.colorize("Member Since:", "white")} ${memberSince}`);
+  term.writeln(`${term.colorize("Followers:", "white")} ${userData?.followers || 0}`);
+  term.writeln("");
+
+  // Show top languages
+  const langCounts: Record<string, number> = {};
+  repos?.forEach(repo => {
+    if (repo.language) {
+      langCounts[repo.language] = (langCounts[repo.language] || 0) + 1;
+    }
+  });
+  const topLangs = Object.entries(langCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5);
+
+  if (topLangs.length > 0) {
+    term.writeln(term.colorize("Top Languages:", "brightYellow"));
+    for (const [lang, count] of topLangs) {
+      const bar = "█".repeat(Math.min(count * 2, 20));
+      term.writeln(`  ${term.colorize(lang.padEnd(12), "brightGreen")} ${term.colorize(bar, "brightCyan")} ${count}`);
+    }
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize("Note: Contribution graph requires authentication", "dim"));
+}
+
+function displayStatus(term: any): void {
+  const visitData = getVisitData();
+  const uptime = getSessionUptime();
+
+  term.writeln(term.colorize("=== Site Status ===", "brightCyan"));
+  term.writeln("");
+  term.writeln(`${term.colorize("Status:", "white")} ${term.colorize("● Online", "brightGreen")}`);
+  term.writeln(`${term.colorize("Server:", "white")} Vercel Edge Network`);
+  term.writeln(`${term.colorize("Region:", "white")} Global CDN`);
+  term.writeln(`${term.colorize("Framework:", "white")} Next.js 15`);
+  term.writeln(`${term.colorize("Rendering:", "white")} Static Export`);
+  term.writeln("");
+  term.writeln(term.colorize("=== Session Info ===", "brightYellow"));
+  term.writeln(`${term.colorize("Current Session:", "white")} ${uptime}`);
+  term.writeln(`${term.colorize("Your Visit Count:", "white")} ${term.colorize(visitData.visitCount.toString(), "brightGreen")}`);
+  term.writeln("");
+  term.writeln(term.colorize("=== Browser Info ===", "brightMagenta"));
+
+  if (typeof navigator !== "undefined") {
+    const ua = navigator.userAgent;
+    const isMobile = /Mobile|Android|iPhone/i.test(ua);
+    const browser = ua.includes("Firefox") ? "Firefox" :
+                   ua.includes("Chrome") ? "Chrome" :
+                   ua.includes("Safari") ? "Safari" :
+                   ua.includes("Edge") ? "Edge" : "Unknown";
+
+    term.writeln(`${term.colorize("Browser:", "white")} ${browser}`);
+    term.writeln(`${term.colorize("Device:", "white")} ${isMobile ? "Mobile" : "Desktop"}`);
+    term.writeln(`${term.colorize("Online:", "white")} ${navigator.onLine ? term.colorize("Yes", "brightGreen") : term.colorize("No", "brightRed")}`);
+  }
+}
+
+async function handleNewsCommand(term: any, args: string[]): Promise<void> {
+  const flag = args[0]?.toLowerCase();
+
+  if (flag !== "--tech" && flag !== "-t" && !flag) {
+    await displayTechNews(term);
+  } else if (flag === "--tech" || flag === "-t") {
+    await displayTechNews(term);
+  } else {
+    term.writeln(term.colorize("Usage: news [--tech]", "brightYellow"));
+    term.writeln("");
+    term.writeln(`  ${term.colorize("news", "dim")}        Show tech news from Hacker News`);
+    term.writeln(`  ${term.colorize("news --tech", "dim")} Same as above`);
+  }
+}
+
+async function displayTechNews(term: any): Promise<void> {
+  const cacheKey = "frhd-hackernews-top";
+  let stories = getCachedData<HackerNewsStory[]>(cacheKey);
+
+  if (!stories) {
+    term.writeln(term.colorize("Fetching latest tech news...", "brightCyan"));
+    try {
+      // Fetch top story IDs
+      const idsResponse = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
+      if (!idsResponse.ok) {
+        throw new Error(`HTTP ${idsResponse.status}`);
+      }
+      const allIds: number[] = await idsResponse.json();
+      const topIds = allIds.slice(0, 10);
+
+      // Fetch story details
+      const storyPromises = topIds.map(id =>
+        fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`).then(r => r.json())
+      );
+      stories = await Promise.all(storyPromises);
+      setCachedData(cacheKey, stories);
+    } catch (error) {
+      term.writeln(term.colorize("Failed to fetch news", "brightRed"));
+      term.writeln(term.colorize(`Error: ${error instanceof Error ? error.message : "Unknown error"}`, "dim"));
+      return;
+    }
+  }
+
+  term.writeln(term.colorize("=== Hacker News Top Stories ===", "brightCyan"));
+  term.writeln("");
+
+  if (!stories || stories.length === 0) {
+    term.writeln(term.colorize("No stories found", "dim"));
+    return;
+  }
+
+  for (let i = 0; i < stories.length; i++) {
+    const story = stories[i];
+    if (!story) continue;
+
+    const rank = term.colorize(`${(i + 1).toString().padStart(2)}.`, "dim");
+    const points = term.colorize(`▲${story.score}`, "brightYellow");
+    const title = story.title.length > 55
+      ? story.title.slice(0, 55) + "..."
+      : story.title;
+
+    term.writeln(`${rank} ${title}`);
+    term.writeln(`    ${points} by ${term.colorize(story.by, "brightGreen")}`);
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize("Source: news.ycombinator.com", "dim"));
+  term.writeln(term.colorize("Data cached for 1 hour", "dim"));
 }
 
 export { isSoundEnabled, isMusicEnabled, unlockAchievement };

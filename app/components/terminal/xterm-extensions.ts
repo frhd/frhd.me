@@ -261,6 +261,10 @@ export function extendTerminal(term: any): void {
         "weather",
         // Phase 8: Text Adventure
         "adventure",
+        // Phase 9: Live Data
+        "github",
+        "status",
+        "news",
       ];
 
       const matches = commands.filter((cmd) =>

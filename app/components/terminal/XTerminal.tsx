@@ -45,6 +45,8 @@ export default function XTerminal() {
   const [CrtComponent, setCrtComponent] = useState<any>(null);
   const [activeEffect, setActiveEffect] = useState<string | null>(null);
   const [EffectComponents, setEffectComponents] = useState<Record<string, any>>({});
+  const pendingEffectRef = useRef<string | null>(null);
+  const effectComponentsLoadedRef = useRef(false);
 
   useEffect(() => {
     // Load the Matrix component dynamically
@@ -80,6 +82,12 @@ export default function XTerminal() {
         typing: typing.default,
         "2048": game2048.default,
       });
+      effectComponentsLoadedRef.current = true;
+      // If there was a pending effect waiting for components to load, activate it now
+      if (pendingEffectRef.current) {
+        setActiveEffect(pendingEffectRef.current);
+        pendingEffectRef.current = null;
+      }
     }).catch((error) => {
       console.error("Failed to load effect components:", error);
     });
@@ -268,7 +276,13 @@ export default function XTerminal() {
 
         // Listen for visual effect events
         const handleVisualEffect = (event: CustomEvent) => {
-          setActiveEffect(event.detail.effect);
+          const effect = event.detail.effect;
+          // If components aren't loaded yet, store the effect to apply later
+          if (!effectComponentsLoadedRef.current) {
+            pendingEffectRef.current = effect;
+          } else {
+            setActiveEffect(effect);
+          }
         };
         window.addEventListener("visual-effect", handleVisualEffect as EventListener);
 
