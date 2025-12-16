@@ -9,8 +9,14 @@ import { handleInsertMode, handleNormalMode } from "./vim/keybindings";
 import { handleCommandMode } from "./vim/commands";
 
 export default function XTermVim({ onComplete, filename = "readme.txt" }: VimProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [state, setState] = useState<EditorState>(() => createInitialState(filename));
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   const handleComplete = useCallback(() => {
     onComplete?.();
@@ -114,7 +120,7 @@ export default function XTermVim({ onComplete, filename = "readme.txt" }: VimPro
   }, [handleComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black" }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", outline: "none" }}>
       <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
       <div
         style={{

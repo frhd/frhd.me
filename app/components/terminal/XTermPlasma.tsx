@@ -7,7 +7,13 @@ interface PlasmaProps {
 }
 
 export default function XTermPlasma({ onComplete }: PlasmaProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -87,7 +93,7 @@ export default function XTermPlasma({ onComplete }: PlasmaProps) {
   }, [onComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50 }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, outline: "none" }}>
       <canvas
         ref={canvasRef}
         style={{ width: "100%", height: "100%", imageRendering: "pixelated" }}

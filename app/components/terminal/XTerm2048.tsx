@@ -21,8 +21,14 @@ const CELL_GAP = 10;
 const BOARD_PADDING = 10;
 
 export default function XTerm2048({ onComplete }: Game2048Props) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameStateRef = useRef<Game2048State>(createInitialState());
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   const handleComplete = useCallback(() => {
     onComplete?.();
@@ -255,7 +261,7 @@ export default function XTerm2048({ onComplete }: Game2048Props) {
   }, [handleComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center", outline: "none" }}>
       <canvas ref={canvasRef} />
       <div style={{ position: "absolute", bottom: "1rem", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace" }}>
         Arrow keys or WASD to move | SPACE to restart | Q/ESC to exit

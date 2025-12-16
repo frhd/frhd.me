@@ -20,9 +20,15 @@ interface SnakeProps {
 const GRID_SIZE = 20;
 
 export default function XTermSnake({ onComplete }: SnakeProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameStateRef = useRef<SnakeState | null>(null);
   const configRef = useRef<SnakeConfig | null>(null);
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   const handleComplete = useCallback(() => {
     onComplete?.();
@@ -263,7 +269,7 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
   }, [handleComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black" }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", outline: "none" }}>
       <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
       <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace" }}>
         Arrow keys or WASD to move | SPACE to pause | Q or ESC to exit

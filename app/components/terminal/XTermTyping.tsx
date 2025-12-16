@@ -36,6 +36,11 @@ export default function XTermTyping({ onComplete }: TypingProps) {
     onComplete?.();
   }, [onComplete]);
 
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
+
   // Load high score and initialize
   useEffect(() => {
     const savedHighScore = localStorage.getItem("frhd-typing-highscore");
@@ -219,7 +224,8 @@ export default function XTermTyping({ onComplete }: TypingProps) {
   return (
     <div
       ref={containerRef}
-      style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem" }}
+      tabIndex={-1}
+      style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", outline: "none" }}
     >
       {/* Header */}
       <div className="w-full max-w-4xl mb-4">

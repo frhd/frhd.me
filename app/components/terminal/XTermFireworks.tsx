@@ -27,7 +27,13 @@ interface Firework {
 }
 
 export default function XTermFireworks({ onComplete }: FireworksProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -196,7 +202,7 @@ export default function XTermFireworks({ onComplete }: FireworksProps) {
   }, [onComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "#0a0a0a" }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "#0a0a0a", outline: "none" }}>
       <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
       <div style={{ position: "absolute", bottom: "1rem", left: "50%", transform: "translateX(-50%)", color: "white", fontSize: "0.875rem", opacity: 0.5 }}>
         Press &apos;q&apos; or ESC to exit

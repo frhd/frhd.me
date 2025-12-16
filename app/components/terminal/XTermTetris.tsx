@@ -21,8 +21,14 @@ interface TetrisProps {
 const CELL_SIZE = 30;
 
 export default function XTermTetris({ onComplete }: TetrisProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const gameStateRef = useRef<TetrisState>(createInitialState());
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   const handleComplete = useCallback(() => {
     onComplete?.();
@@ -311,7 +317,7 @@ export default function XTermTetris({ onComplete }: TetrisProps) {
   }, [handleComplete]);
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center" }}>
+    <div ref={containerRef} tabIndex={-1} style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center", outline: "none" }}>
       <canvas ref={canvasRef} />
       <div style={{ position: "absolute", bottom: "1rem", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace", textAlign: "center" }}>
         Arrow keys or WASD to move | UP/W to rotate | ENTER to hard drop | SPACE to pause | Q/ESC to exit

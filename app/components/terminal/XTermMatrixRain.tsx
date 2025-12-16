@@ -11,8 +11,14 @@ export default function XTermMatrixRain({
   duration = Infinity, // Run indefinitely by default
   onComplete,
 }: XTermMatrixRainProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationRef = useRef<number | null>(null);
+
+  // Focus the container on mount to capture keyboard events
+  useEffect(() => {
+    containerRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -119,20 +125,28 @@ export default function XTermMatrixRain({
   }, [duration, onComplete]);
 
   return (
-    <>
+    <div
+      ref={containerRef}
+      tabIndex={-1}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 1000,
+        outline: "none",
+      }}
+    >
       <canvas
         ref={canvasRef}
         className="matrix-rain-overlay"
         style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
           width: "100%",
           height: "100%",
           pointerEvents: "none",
-          zIndex: 1000,
         }}
       />
-    </>
+    </div>
   );
 }
