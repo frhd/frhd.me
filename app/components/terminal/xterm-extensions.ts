@@ -259,6 +259,8 @@ export function extendTerminal(term: any): void {
         "uuid",
         "timestamp",
         "weather",
+        // Phase 8: Text Adventure
+        "adventure",
       ];
 
       const matches = commands.filter((cmd) =>

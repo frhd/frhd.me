@@ -24,6 +24,13 @@ import {
   getLastVisitString,
   getVisitData,
 } from "./time-utils";
+import {
+  loadState,
+  resetState,
+  parseCommand as parseAdventureCommand,
+  getStats as getAdventureStats,
+  type AdventureState,
+} from "./adventure-engine";
 
 export async function executeCommand(
   term: any,
@@ -282,6 +289,11 @@ export async function executeCommand(
       displayWeather(term, arg);
       break;
 
+    // Phase 8: Text Adventure Game
+    case "adventure":
+      handleAdventureCommand(term, args);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -362,6 +374,7 @@ function displayHelp(term: any): void {
     { name: "tetris", desc: "The classic block game" },
     { name: "typing", desc: "Test your typing speed" },
     { name: "2048", desc: "Slide and merge numbers" },
+    { name: "adventure", desc: "Text adventure game" },
   ];
 
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
@@ -1612,6 +1625,132 @@ function displayWeather(term: any, location: string): void {
   term.writeln(`${term.colorize("Wind:", "white")} ${wind} km/h`);
   term.writeln("");
   term.writeln(term.colorize("* Weather data is simulated for demo purposes", "dim"));
+}
+
+// Phase 8: Text Adventure Game
+
+// Store adventure state in memory during session
+let adventureState: AdventureState | null = null;
+let adventureMode = false;
+
+function handleAdventureCommand(term: any, args: string[]): void {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (subCommand === "reset") {
+    adventureState = resetState();
+    adventureMode = false;
+    term.writeln(term.colorize("Adventure progress reset.", "brightYellow"));
+    term.writeln("Type 'adventure' to start a new journey.");
+    return;
+  }
+
+  if (subCommand === "stats") {
+    if (!adventureState) {
+      adventureState = loadState();
+    }
+    const stats = getAdventureStats(adventureState);
+    term.writeln(term.colorize("=== Adventure Stats ===", "brightCyan"));
+    term.writeln("");
+    term.writeln(`Moves: ${term.colorize(stats.moveCount.toString(), "brightGreen")}`);
+    term.writeln(`Items: ${term.colorize(stats.itemsCollected.toString(), "brightYellow")}`);
+    term.writeln(`Rooms: ${term.colorize(`${stats.roomsVisited}/${stats.totalRooms}`, "brightMagenta")}`);
+    term.writeln(`Complete: ${term.colorize(stats.gameComplete ? "Yes" : "No", stats.gameComplete ? "brightGreen" : "brightRed")}`);
+    return;
+  }
+
+  if (subCommand === "exit" || subCommand === "quit") {
+    if (adventureMode) {
+      adventureMode = false;
+      term.writeln(term.colorize("Exited adventure mode.", "brightYellow"));
+      term.writeln("Your progress has been saved. Type 'adventure' to continue.");
+    } else {
+      term.writeln(term.colorize("You're not in adventure mode.", "dim"));
+    }
+    return;
+  }
+
+  if (subCommand === "help") {
+    displayAdventureHelp(term);
+    return;
+  }
+
+  // Start or continue adventure
+  if (!adventureState) {
+    adventureState = loadState();
+  }
+
+  // Unlock game_on achievement
+  unlockAchievement("game_on");
+
+  // Enable adventure mode
+  adventureMode = true;
+
+  // If a command is provided (e.g., "adventure look"), execute it
+  if (args.length > 0 && subCommand !== "start") {
+    const adventureInput = args.join(" ");
+    const result = parseAdventureCommand(adventureInput, adventureState);
+    adventureState = result.newState;
+    result.output.forEach((line) => term.writeln(line));
+
+    // Check for game completion achievement
+    if (adventureState.gameComplete) {
+      unlockAchievement("completionist");
+    }
+  } else {
+    // Start or show current state
+    const result = parseAdventureCommand("look", adventureState);
+    adventureState = result.newState;
+    result.output.forEach((line) => term.writeln(line));
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize("Tip: Type commands directly or use 'adventure <command>'", "dim"));
+  term.writeln(term.colorize("Type 'adventure exit' to leave adventure mode", "dim"));
+}
+
+function displayAdventureHelp(term: any): void {
+  term.writeln(term.colorize("=== Adventure Mode ===", "brightCyan"));
+  term.writeln("");
+  term.writeln("An interactive text adventure exploring a developer's journey.");
+  term.writeln("");
+  term.writeln(term.colorize("Commands:", "brightYellow"));
+  term.writeln("  adventure              Start or continue the adventure");
+  term.writeln("  adventure reset        Reset progress and start over");
+  term.writeln("  adventure stats        View your adventure statistics");
+  term.writeln("  adventure exit         Exit adventure mode");
+  term.writeln("  adventure help         Show this help");
+  term.writeln("");
+  term.writeln(term.colorize("In-game commands:", "brightYellow"));
+  term.writeln("  look, l                Look around");
+  term.writeln("  go <direction>         Move (north, south, east, west)");
+  term.writeln("  n, s, e, w             Direction shortcuts");
+  term.writeln("  take <item>            Pick up an item");
+  term.writeln("  drop <item>            Drop an item");
+  term.writeln("  inventory, i           Check your inventory");
+  term.writeln("  examine <thing>        Examine something closely");
+  term.writeln("  exits                  List available exits");
+  term.writeln("  help                   In-game help");
+  term.writeln("");
+  term.writeln(term.colorize("Goal:", "brightGreen") + " Explore your career journey, collect memories,");
+  term.writeln("and reach the summit to claim your reward!");
+}
+
+// Export adventure mode state for potential use in extensions
+export function isInAdventureMode(): boolean {
+  return adventureMode;
+}
+
+export function executeAdventureInput(term: any, input: string): void {
+  if (!adventureState) {
+    adventureState = loadState();
+  }
+  const result = parseAdventureCommand(input, adventureState);
+  adventureState = result.newState;
+  result.output.forEach((line) => term.writeln(line));
+
+  if (adventureState.gameComplete) {
+    unlockAchievement("completionist");
+  }
 }
 
 export { isSoundEnabled, isMusicEnabled, unlockAchievement };
