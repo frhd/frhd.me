@@ -44,8 +44,8 @@ describe('sound-manager', () => {
   })
 
   describe('isSoundEnabled', () => {
-    it('returns true when sound not explicitly disabled', () => {
-      expect(isSoundEnabled()).toBe(true)
+    it('returns false when sound not explicitly enabled (off by default)', () => {
+      expect(isSoundEnabled()).toBe(false)
     })
 
     it('returns false when sound explicitly disabled', () => {
