@@ -34,10 +34,20 @@ describe('executeCommand', () => {
   })
 
   describe('help command', () => {
-    it('displays available commands', async () => {
+    it('displays available categories', async () => {
       await executeCommand(term, 'help')
       const output = term.getOutput()
-      expect(output).toContain('Available Commands:')
+      expect(output).toContain('Available Categories:')
+      expect(output).toContain('system')
+      expect(output).toContain('info')
+      expect(output).toContain('games')
+      expect(output).toContain('help <category>')
+    })
+
+    it('displays all commands with help all', async () => {
+      await executeCommand(term, 'help all')
+      const output = term.getOutput()
+      expect(output).toContain('All Commands:')
       expect(output).toContain('help')
       expect(output).toContain('about')
       expect(output).toContain('matrix')
@@ -482,11 +492,11 @@ describe('executeCommand', () => {
       expect(output).toContain('Progress:')
     })
 
-    it('includes achievements in help', async () => {
-      await executeCommand(term, 'help')
+    it('includes achievements in help all', async () => {
+      await executeCommand(term, 'help all')
       const output = term.getOutput()
       expect(output).toContain('achievements')
-      expect(output).toContain('Progress:')
+      expect(output).toContain('Progress')
     })
   })
 
@@ -652,40 +662,40 @@ describe('executeCommand', () => {
     })
   })
 
-  describe('help includes Phase 7 utilities', () => {
+  describe('help utility category includes Phase 7 utilities', () => {
     it('lists qr command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('qr')
       expect(output).toContain('QR code')
     })
 
     it('lists base64 command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('base64')
     })
 
     it('lists calc command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('calc')
     })
 
     it('lists uuid command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('uuid')
     })
 
     it('lists timestamp command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('timestamp')
     })
 
     it('lists weather command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help utility')
       const output = term.getOutput()
       expect(output).toContain('weather')
     })
@@ -906,29 +916,29 @@ describe('executeCommand', () => {
     })
   })
 
-  describe('help includes Phase 9 live data commands', () => {
+  describe('help live category includes Phase 9 live data commands', () => {
     it('lists github command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help live')
       const output = term.getOutput()
       expect(output).toContain('github')
       expect(output).toContain('GitHub')
     })
 
     it('lists status command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help live')
       const output = term.getOutput()
       expect(output).toContain('status')
     })
 
     it('lists news command', async () => {
-      await executeCommand(term, 'help')
+      await executeCommand(term, 'help live')
       const output = term.getOutput()
       expect(output).toContain('news')
       expect(output).toContain('Hacker News')
     })
 
-    it('has Live Data section', async () => {
-      await executeCommand(term, 'help')
+    it('has Live Data section header', async () => {
+      await executeCommand(term, 'help live')
       const output = term.getOutput()
       expect(output).toContain('Live Data')
     })

@@ -202,15 +202,15 @@ describe('Phase 12: Vim in Help', () => {
     }
   })
 
-  it('help command lists vim', async () => {
-    await executeCommand(term, 'help')
+  it('help utility lists vim', async () => {
+    await executeCommand(term, 'help utility')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('vim')
   })
 
-  it('help command describes vim as text editor', async () => {
-    await executeCommand(term, 'help')
+  it('help utility describes vim as text editor', async () => {
+    await executeCommand(term, 'help utility')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('editor')

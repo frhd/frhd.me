@@ -3,22 +3,58 @@ import { commandRegistry } from "./registry";
 import { sleep } from "./utils";
 
 /**
- * Help command - displays all available commands
+ * Help command - displays available commands with category browser
  */
 const helpCommand: Command = {
   name: "help",
-  description: "Display this help message",
+  usage: "help [category|command|all]",
+  description: "Display help information",
   category: "system",
-  execute: (term) => {
-    term.writeln(term.colorize("Available Commands:", "brightCyan"));
-    commandRegistry.displayHelp(term);
-    term.writeln("");
+  execute: (term, args) => {
+    const arg = args[0]?.toLowerCase();
+
+    // No argument: show category overview
+    if (!arg) {
+      term.writeln(term.colorize("Available Categories:", "brightCyan"));
+      commandRegistry.displayCategories(term);
+      term.writeln("");
+      term.writeln(
+        term.colorize(
+          "Usage: help <category> | help <command> | help all",
+          "dim"
+        )
+      );
+      return;
+    }
+
+    // "all" argument: show full help
+    if (arg === "all") {
+      term.writeln(term.colorize("All Commands:", "brightCyan"));
+      commandRegistry.displayHelp(term);
+      term.writeln("");
+      term.writeln(
+        term.colorize(
+          'Hint: Try \'find / -name "*.secret"\' to discover hidden files...',
+          "dim"
+        )
+      );
+      return;
+    }
+
+    // Try category first, then command
+    if (commandRegistry.displayCategory(term, arg)) {
+      return;
+    }
+
+    if (commandRegistry.displayCommandHelp(term, arg)) {
+      return;
+    }
+
+    // Not found
     term.writeln(
-      term.colorize(
-        'Hint: Try \'find / -name "*.secret"\' to discover hidden files...',
-        "dim"
-      )
+      term.colorize(`Unknown category or command: ${arg}`, "brightRed")
     );
+    term.writeln(term.colorize("Type 'help' to see available categories.", "dim"));
   },
 };
 

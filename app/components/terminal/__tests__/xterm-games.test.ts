@@ -158,36 +158,36 @@ describe('Phase 3: Game Commands in Help', () => {
     }
   })
 
-  it('help command lists mini-games section', async () => {
-    await executeCommand(term, 'help')
+  it('help games lists mini-games section', async () => {
+    await executeCommand(term, 'help games')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('Mini-Games')
   })
 
-  it('help command lists snake game', async () => {
-    await executeCommand(term, 'help')
+  it('help games lists snake game', async () => {
+    await executeCommand(term, 'help games')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('snake')
   })
 
-  it('help command lists tetris game', async () => {
-    await executeCommand(term, 'help')
+  it('help games lists tetris game', async () => {
+    await executeCommand(term, 'help games')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('tetris')
   })
 
-  it('help command lists typing test', async () => {
-    await executeCommand(term, 'help')
+  it('help games lists typing test', async () => {
+    await executeCommand(term, 'help games')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('typing')
   })
 
-  it('help command lists 2048 game', async () => {
-    await executeCommand(term, 'help')
+  it('help games lists 2048 game', async () => {
+    await executeCommand(term, 'help games')
 
     const allOutput = term.writeln.mock.calls.map(call => call[0]).join('\n')
     expect(allOutput).toContain('2048')

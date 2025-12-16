@@ -88,12 +88,29 @@ class CommandRegistry {
   }
 
   /**
-   * Display help for all commands
+   * Display order for categories
    */
-  displayHelp(term: any): void {
-    const categorizedCommands = new Map<CommandCategory, Command[]>();
+  private categoryOrder: CommandCategory[] = [
+    "system",
+    "info",
+    "files",
+    "fun",
+    "visual",
+    "games",
+    "audio",
+    "progress",
+    "session",
+    "utility",
+    "live",
+    "plugin",
+    "meta",
+  ];
 
-    // Group commands by category
+  /**
+   * Get commands grouped by category
+   */
+  private getGroupedCommands(): Map<CommandCategory, Command[]> {
+    const categorizedCommands = new Map<CommandCategory, Command[]>();
     for (const cmd of this.commands.values()) {
       const category = cmd.category;
       if (!categorizedCommands.has(category)) {
@@ -101,26 +118,93 @@ class CommandRegistry {
       }
       categorizedCommands.get(category)!.push(cmd);
     }
+    return categorizedCommands;
+  }
 
-    // Display order for categories
-    const categoryOrder: CommandCategory[] = [
-      "system",
-      "info",
-      "files",
-      "fun",
-      "visual",
-      "games",
-      "audio",
-      "progress",
-      "session",
-      "utility",
-      "live",
-      "plugin",
-      "meta",
-    ];
+  /**
+   * Display category overview (compact view)
+   */
+  displayCategories(term: any): void {
+    const grouped = this.getGroupedCommands();
+    const categories: { name: string; key: string; count: number; color: string }[] = [];
 
-    for (const category of categoryOrder) {
-      const commands = categorizedCommands.get(category);
+    for (const category of this.categoryOrder) {
+      const commands = grouped.get(category);
+      if (!commands || commands.length === 0) continue;
+      const config = CATEGORY_CONFIG[category];
+      categories.push({
+        name: config.name,
+        key: category,
+        count: commands.length,
+        color: config.color,
+      });
+    }
+
+    // Display in rows of 3
+    term.writeln("");
+    for (let i = 0; i < categories.length; i += 3) {
+      const row = categories.slice(i, i + 3);
+      const formatted = row
+        .map((c) => {
+          const label = `${c.key} (${c.count})`;
+          return term.colorize(label.padEnd(18), c.color);
+        })
+        .join("");
+      term.writeln(`  ${formatted}`);
+    }
+  }
+
+  /**
+   * Display commands for a specific category
+   */
+  displayCategory(term: any, categoryName: string): boolean {
+    const category = categoryName.toLowerCase() as CommandCategory;
+    const grouped = this.getGroupedCommands();
+    const commands = grouped.get(category);
+
+    if (!commands || commands.length === 0) {
+      return false;
+    }
+
+    const config = CATEGORY_CONFIG[category];
+    term.writeln("");
+    term.writeln(term.colorize(`${config.name}:`, config.color));
+    term.writeln("");
+
+    for (const cmd of commands) {
+      const displayName = cmd.usage || cmd.name;
+      const paddedName = displayName.padEnd(20);
+      term.writeln(
+        `  ${term.colorize(paddedName, "brightGreen")} ${cmd.description}`
+      );
+    }
+    return true;
+  }
+
+  /**
+   * Display help for a specific command
+   */
+  displayCommandHelp(term: any, commandName: string): boolean {
+    const cmd = this.get(commandName);
+    if (!cmd) return false;
+
+    term.writeln("");
+    term.writeln(term.colorize(cmd.usage || cmd.name, "brightGreen"));
+    term.writeln(`  ${cmd.description}`);
+    if (cmd.aliases && cmd.aliases.length > 0) {
+      term.writeln(`  Aliases: ${cmd.aliases.join(", ")}`);
+    }
+    return true;
+  }
+
+  /**
+   * Display help for all commands (full view)
+   */
+  displayHelp(term: any): void {
+    const grouped = this.getGroupedCommands();
+
+    for (const category of this.categoryOrder) {
+      const commands = grouped.get(category);
       if (!commands || commands.length === 0) continue;
 
       const config = CATEGORY_CONFIG[category];
