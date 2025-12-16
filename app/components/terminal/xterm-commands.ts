@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { themes, getThemeNames, setStoredTheme, getStoredTheme } from "./xterm-themes";
+
 export async function executeCommand(
   term: any,
   command: string
@@ -7,6 +9,9 @@ export async function executeCommand(
   const arg = args.join(" ");
 
   switch (cmd.toLowerCase()) {
+    case "theme":
+      handleThemeCommand(term, args);
+      break;
     case "help":
       displayHelp(term);
       break;
@@ -165,6 +170,22 @@ export async function executeCommand(
       }
       break;
 
+    case "crt":
+      handleCrtCommand(term, args);
+      break;
+
+    case "pipes":
+      displayPipes(term);
+      break;
+
+    case "plasma":
+      displayPlasma(term);
+      break;
+
+    case "fireworks":
+      displayFireworks(term);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -208,6 +229,14 @@ function displayHelp(term: any): void {
     { name: "sl", desc: "Steam locomotive (oops, typo!)" },
   ];
 
+  const visualCommands = [
+    { name: "theme [name]", desc: "List or change terminal theme" },
+    { name: "crt on|off", desc: "Toggle CRT monitor effect" },
+    { name: "pipes", desc: "Classic pipes screensaver" },
+    { name: "plasma", desc: "Retro demoscene plasma effect" },
+    { name: "fireworks", desc: "Celebratory fireworks display" },
+  ];
+
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
   term.writeln("");
   commands.forEach(({ name, desc }) => {
@@ -224,6 +253,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "brightYellow")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Visual & Themes:", "brightBlue"));
+  term.writeln("");
+  visualCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "cyan")} ${desc}`
     );
   });
 
@@ -817,4 +856,123 @@ async function typewriterEffect(
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Phase 2: Theme System
+
+function handleThemeCommand(term: any, args: string[]): void {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (!subCommand || subCommand === "list") {
+    // List available themes
+    term.writeln(term.colorize("Available themes:", "brightCyan"));
+    term.writeln("");
+    const currentTheme = getStoredTheme();
+    getThemeNames().forEach((name) => {
+      const theme = themes[name];
+      const indicator = name === currentTheme ? term.colorize(" ← current", "brightYellow") : "";
+      term.writeln(
+        `  ${term.colorize(theme.displayName.padEnd(12), "brightGreen")} ${theme.description}${indicator}`
+      );
+    });
+    term.writeln("");
+    term.writeln(term.colorize("Usage: theme <name>", "dim"));
+  } else {
+    // Switch theme
+    const themeName = subCommand;
+    const theme = themes[themeName];
+
+    if (theme) {
+      setStoredTheme(themeName);
+
+      // Dispatch event to update terminal theme
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(
+          new CustomEvent("terminal-theme-change", { detail: { theme: themeName } })
+        );
+      }
+
+      term.writeln(term.colorize(`Theme changed to '${theme.displayName}'`, "brightGreen"));
+
+      if (themeName === "light") {
+        term.writeln("");
+        term.writeln(term.colorize("☀️ Light mode? Bold choice for a hacker terminal...", "brightYellow"));
+        term.writeln(term.colorize("Your neighbors can now see everything.", "dim"));
+      }
+    } else {
+      term.writeln(term.colorize(`Unknown theme: ${themeName}`, "brightRed"));
+      term.writeln(`Use ${term.colorize("theme list", "brightYellow")} to see available themes.`);
+    }
+  }
+}
+
+// Phase 2: CRT Effect
+
+const CRT_STORAGE_KEY = "frhd-terminal-crt";
+
+function getCrtEnabled(): boolean {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem(CRT_STORAGE_KEY) === "true";
+}
+
+function setCrtEnabled(enabled: boolean): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(CRT_STORAGE_KEY, enabled ? "true" : "false");
+}
+
+function handleCrtCommand(term: any, args: string[]): void {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (!subCommand) {
+    const isEnabled = getCrtEnabled();
+    term.writeln(`CRT effect is currently ${term.colorize(isEnabled ? "ON" : "OFF", isEnabled ? "brightGreen" : "brightRed")}`);
+    term.writeln("");
+    term.writeln(term.colorize("Usage: crt on|off", "dim"));
+  } else if (subCommand === "on") {
+    setCrtEnabled(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("terminal-crt-change", { detail: { enabled: true } }));
+    }
+    term.writeln(term.colorize("CRT effect enabled", "brightGreen"));
+    term.writeln(term.colorize("📺 Now you're really living in the 80s!", "dim"));
+  } else if (subCommand === "off") {
+    setCrtEnabled(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("terminal-crt-change", { detail: { enabled: false } }));
+    }
+    term.writeln(term.colorize("CRT effect disabled", "brightYellow"));
+  } else {
+    term.writeln(term.colorize("Usage: crt on|off", "brightRed"));
+  }
+}
+
+export { getCrtEnabled };
+
+// Phase 2: Visual Effects
+
+function displayPipes(term: any): void {
+  term.writeln(term.colorize("Launching pipes screensaver...", "brightCyan"));
+  term.writeln(term.colorize("Press 'q' or ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "pipes" } }));
+  }
+}
+
+function displayPlasma(term: any): void {
+  term.writeln(term.colorize("Launching plasma effect...", "brightMagenta"));
+  term.writeln(term.colorize("Press 'q' or ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "plasma" } }));
+  }
+}
+
+function displayFireworks(term: any): void {
+  term.writeln(term.colorize("🎆 Launching fireworks...", "brightYellow"));
+  term.writeln(term.colorize("Press 'q' or ESC to exit", "brightYellow"));
+
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "fireworks" } }));
+  }
 }

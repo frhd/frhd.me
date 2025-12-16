@@ -3,6 +3,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./xterm-theme.css";
+import { getStoredTheme, getTheme, getDefaultTheme } from "./xterm-themes";
 
 // Define the extended terminal interface
 interface ExtendedTerminal {
@@ -14,6 +15,7 @@ interface ExtendedTerminal {
   onData: (callback: (data: string) => void) => void;
   open: (parent: HTMLElement) => void;
   loadAddon: (addon: any) => void;
+  options: any;
   prompt: () => void;
   handleEnter: () => void;
   handleBackspace: () => void;
@@ -31,6 +33,10 @@ export default function XTerminal() {
   const xtermRef = useRef<ExtendedTerminal | null>(null);
   const [showMatrix, setShowMatrix] = useState(false);
   const [MatrixComponent, setMatrixComponent] = useState<any>(null);
+  const [showCrt, setShowCrt] = useState(false);
+  const [CrtComponent, setCrtComponent] = useState<any>(null);
+  const [activeEffect, setActiveEffect] = useState<string | null>(null);
+  const [EffectComponents, setEffectComponents] = useState<Record<string, any>>({});
 
   useEffect(() => {
     // Load the Matrix component dynamically
@@ -39,6 +45,32 @@ export default function XTerminal() {
     }).catch((error) => {
       console.error("Failed to load Matrix component:", error);
     });
+
+    // Load the CRT component dynamically
+    import("./XTermCRT").then((module) => {
+      setCrtComponent(() => module.default);
+    }).catch((error) => {
+      console.error("Failed to load CRT component:", error);
+    });
+
+    // Load visual effect components dynamically
+    Promise.all([
+      import("./XTermPipes"),
+      import("./XTermPlasma"),
+      import("./XTermFireworks"),
+    ]).then(([pipes, plasma, fireworks]) => {
+      setEffectComponents({
+        pipes: pipes.default,
+        plasma: plasma.default,
+        fireworks: fireworks.default,
+      });
+    }).catch((error) => {
+      console.error("Failed to load effect components:", error);
+    });
+
+    // Check initial CRT state from localStorage
+    const crtEnabled = localStorage.getItem("frhd-terminal-crt") === "true";
+    setShowCrt(crtEnabled);
   }, []);
 
   // Use useLayoutEffect for DOM-dependent operations
@@ -79,34 +111,16 @@ export default function XTerminal() {
           document.head.appendChild(link);
         }
 
+        // Get stored theme or default
+        const storedThemeName = getStoredTheme();
+        const storedTheme = getTheme(storedThemeName) || getDefaultTheme();
+
         // Create terminal instance
         const term = new Terminal({
           cursorBlink: true,
           fontSize: 14,
           fontFamily: 'Consolas, "Courier New", monospace',
-          theme: {
-            background: "#0a0a0a",
-            foreground: "#00ff00",
-            cursor: "#00ff00",
-            cursorAccent: "#0a0a0a",
-            selectionBackground: "#00ff0044",
-            black: "#000000",
-            red: "#ff0000",
-            green: "#00ff00",
-            yellow: "#ffff00",
-            blue: "#0080ff",
-            magenta: "#ff00ff",
-            cyan: "#00ffff",
-            white: "#ffffff",
-            brightBlack: "#555555",
-            brightRed: "#ff5555",
-            brightGreen: "#55ff55",
-            brightYellow: "#ffff55",
-            brightBlue: "#5555ff",
-            brightMagenta: "#ff55ff",
-            brightCyan: "#55ffff",
-            brightWhite: "#ffffff",
-          },
+          theme: storedTheme.colors,
         });
 
         // Create addons
@@ -201,10 +215,35 @@ export default function XTerminal() {
         };
         window.addEventListener("matrix-effect", handleMatrixEffect as EventListener);
 
+        // Listen for theme change events
+        const handleThemeChange = (event: CustomEvent) => {
+          const themeName = event.detail.theme;
+          const newTheme = getTheme(themeName);
+          if (newTheme && extendedTerm.options) {
+            extendedTerm.options.theme = newTheme.colors;
+          }
+        };
+        window.addEventListener("terminal-theme-change", handleThemeChange as EventListener);
+
+        // Listen for CRT toggle events
+        const handleCrtChange = (event: CustomEvent) => {
+          setShowCrt(event.detail.enabled);
+        };
+        window.addEventListener("terminal-crt-change", handleCrtChange as EventListener);
+
+        // Listen for visual effect events
+        const handleVisualEffect = (event: CustomEvent) => {
+          setActiveEffect(event.detail.effect);
+        };
+        window.addEventListener("visual-effect", handleVisualEffect as EventListener);
+
         // Cleanup function
         return () => {
           window.removeEventListener("resize", handleResize);
           window.removeEventListener("matrix-effect", handleMatrixEffect as EventListener);
+          window.removeEventListener("terminal-theme-change", handleThemeChange as EventListener);
+          window.removeEventListener("terminal-crt-change", handleCrtChange as EventListener);
+          window.removeEventListener("visual-effect", handleVisualEffect as EventListener);
           extendedTerm.dispose();
         };
       } catch (error) {
@@ -221,39 +260,52 @@ export default function XTerminal() {
     };
   }, []); // Empty dependency array since we want this to run once when the component is ready
 
-  // Handle keyboard events for matrix exit
+  // Handle keyboard events for effect exit
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (showMatrix && (event.key.toLowerCase() === 'q' || event.key === 'Escape')) {
+      if ((showMatrix || activeEffect) && (event.key.toLowerCase() === 'q' || event.key === 'Escape')) {
         setShowMatrix(false);
+        setActiveEffect(null);
         event.preventDefault(); // Prevent other handlers from processing this key
       }
     };
 
-    if (showMatrix) {
+    if (showMatrix || activeEffect) {
       window.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [showMatrix]);
+  }, [showMatrix, activeEffect]);
+
+  // Get active effect component
+  const ActiveEffectComponent = activeEffect ? EffectComponents[activeEffect] : null;
 
   return (
     <>
       <div className="flex min-h-screen w-full items-start justify-center bg-black p-4 pt-8">
         <div className="h-[85vh] w-full max-w-6xl rounded-lg bg-black/90 p-4 shadow-2xl shadow-green-500/10">
           {/* Terminal wrapper with padding */}
-          <div className="h-full w-full p-4">
+          <div className="h-full w-full p-4 relative">
             {/* Terminal container - XTerm.js attaches here */}
             <div ref={terminalRef} className="h-full w-full" />
+
+            {/* CRT overlay effect */}
+            {showCrt && CrtComponent && <CrtComponent />}
           </div>
         </div>
       </div>
-      
+
       {showMatrix && MatrixComponent && (
         <MatrixComponent
           onComplete={() => setShowMatrix(false)}
+        />
+      )}
+
+      {activeEffect && ActiveEffectComponent && (
+        <ActiveEffectComponent
+          onComplete={() => setActiveEffect(null)}
         />
       )}
     </>

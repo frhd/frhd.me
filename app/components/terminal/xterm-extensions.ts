@@ -213,6 +213,12 @@ export function extendTerminal(term: any): void {
         "figlet",
         "find",
         "download",
+        // Phase 2: Visual & theme commands
+        "theme",
+        "crt",
+        "pipes",
+        "plasma",
+        "fireworks",
       ];
 
       const matches = commands.filter((cmd) =>
