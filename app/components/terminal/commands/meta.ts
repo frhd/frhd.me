@@ -19,7 +19,11 @@ import {
   getStats as getAdventureStats,
   type AdventureState,
 } from "../adventure-engine";
-import { getPluginRegistry, examplePlugins } from "../plugin-system";
+import {
+  getPluginRegistry,
+  examplePlugins,
+  type PluginCommand,
+} from "../plugin-system";
 
 // GitHub constants
 const GITHUB_USERNAME = "frhd";
@@ -791,7 +795,7 @@ const pluginCommand: Command = {
           term.writeln(`    ID: ${term.colorize(plugin.id, "dim")}`);
           term.writeln(
             `    Commands: ${plugin.commands
-              .map((c) => term.colorize(c.name, "brightYellow"))
+              .map((c: PluginCommand) => term.colorize(c.name, "brightYellow"))
               .join(", ")}`
           );
           term.writeln("");
@@ -853,7 +857,7 @@ const pluginCommand: Command = {
           );
           term.writeln(
             `New commands: ${plugin.commands
-              .map((c) => term.colorize(c.name, "brightYellow"))
+              .map((c: PluginCommand) => term.colorize(c.name, "brightYellow"))
               .join(", ")}`
           );
         }

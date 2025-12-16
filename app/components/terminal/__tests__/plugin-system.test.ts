@@ -20,7 +20,11 @@ const localStorageMock = (() => {
 vi.stubGlobal("localStorage", localStorageMock);
 
 // Import after mocking
-import { getPluginRegistry, examplePlugins } from "../plugin-system";
+import {
+  getPluginRegistry,
+  examplePlugins,
+  type PluginCommand,
+} from "../plugin-system";
 
 // Reset registry between tests
 function resetRegistry() {
@@ -342,7 +346,7 @@ describe("Plugin System", () => {
       expect(plugin).not.toBeNull();
       expect(plugin?.name).toBe("ASCII Art");
       expect(plugin?.commands).toHaveLength(3);
-      expect(plugin?.commands.map((c) => c.name)).toEqual([
+      expect(plugin?.commands.map((c: PluginCommand) => c.name)).toEqual([
         "shrug",
         "tableflip",
         "unflip",
