@@ -384,4 +384,80 @@ describe('executeCommand', () => {
       expect(output).toContain('Congratulations')
     })
   })
+
+  // Phase 4: Sound System Tests
+
+  describe('sound command', () => {
+    it('displays current sound status when no args', async () => {
+      await executeCommand(term, 'sound')
+      const output = term.getOutput()
+      expect(output).toContain('Sound effects are')
+      expect(output).toContain('Usage: sound on|off')
+    })
+
+    it('enables sound with on argument', async () => {
+      await executeCommand(term, 'sound on')
+      const output = term.getOutput()
+      expect(output).toContain('Sound effects enabled')
+    })
+
+    it('disables sound with off argument', async () => {
+      await executeCommand(term, 'sound off')
+      const output = term.getOutput()
+      expect(output).toContain('Sound effects disabled')
+    })
+
+    it('shows usage for invalid argument', async () => {
+      await executeCommand(term, 'sound invalid')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: sound on|off')
+    })
+  })
+
+  describe('music command', () => {
+    it('displays current music status when no args', async () => {
+      await executeCommand(term, 'music')
+      const output = term.getOutput()
+      expect(output).toContain('Ambient music is')
+      expect(output).toContain('Volume:')
+      expect(output).toContain('Usage: music play|stop|volume')
+    })
+
+    it('displays volume info when volume subcommand has no args', async () => {
+      await executeCommand(term, 'music volume')
+      const output = term.getOutput()
+      expect(output).toContain('Current volume:')
+    })
+
+    it('sets volume with valid value', async () => {
+      await executeCommand(term, 'music volume 50')
+      const output = term.getOutput()
+      expect(output).toContain('Volume set to')
+      expect(output).toContain('50%')
+    })
+
+    it('rejects invalid volume value', async () => {
+      await executeCommand(term, 'music volume 150')
+      const output = term.getOutput()
+      expect(output).toContain('Volume must be a number between 0 and 100')
+    })
+
+    it('rejects non-numeric volume value', async () => {
+      await executeCommand(term, 'music volume abc')
+      const output = term.getOutput()
+      expect(output).toContain('Volume must be a number between 0 and 100')
+    })
+
+    it('shows usage for invalid subcommand', async () => {
+      await executeCommand(term, 'music invalid')
+      const output = term.getOutput()
+      expect(output).toContain('Usage: music play|stop|volume')
+    })
+
+    it('stops music with stop command', async () => {
+      await executeCommand(term, 'music stop')
+      const output = term.getOutput()
+      expect(output).toContain('Music stopped')
+    })
+  })
 })

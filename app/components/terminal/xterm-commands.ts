@@ -1,5 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { themes, getThemeNames, setStoredTheme, getStoredTheme } from "./xterm-themes";
+import {
+  isSoundEnabled,
+  setSoundEnabled,
+  isMusicEnabled,
+  getMusicVolume,
+  setMusicVolume,
+  startMusic,
+  stopMusic,
+  isMusicPlaying,
+  playSound,
+} from "./sound-manager";
 
 export async function executeCommand(
   term: any,
@@ -203,6 +214,15 @@ export async function executeCommand(
       display2048(term);
       break;
 
+    // Phase 4: Sound System
+    case "sound":
+      handleSoundCommand(term, args);
+      break;
+
+    case "music":
+      await handleMusicCommand(term, args);
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -254,6 +274,12 @@ function displayHelp(term: any): void {
     { name: "fireworks", desc: "Celebratory fireworks display" },
   ];
 
+  const soundCommands = [
+    { name: "sound on|off", desc: "Toggle keyboard & command sounds" },
+    { name: "music play|stop", desc: "Toggle ambient lo-fi music" },
+    { name: "music volume <0-100>", desc: "Adjust music volume" },
+  ];
+
   const gameCommands = [
     { name: "snake", desc: "Classic snake game" },
     { name: "tetris", desc: "The classic block game" },
@@ -297,6 +323,16 @@ function displayHelp(term: any): void {
     const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "brightWhite")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Audio:", "brightMagenta"));
+  term.writeln("");
+  soundCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "magenta")} ${desc}`
     );
   });
 
@@ -1048,3 +1084,75 @@ function display2048(term: any): void {
     window.dispatchEvent(new CustomEvent("visual-effect", { detail: { effect: "2048" } }));
   }
 }
+
+// Phase 4: Sound System
+
+function handleSoundCommand(term: any, args: string[]): void {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (!subCommand) {
+    const isEnabled = isSoundEnabled();
+    term.writeln(`Sound effects are ${term.colorize(isEnabled ? "ON" : "OFF", isEnabled ? "brightGreen" : "brightRed")}`);
+    term.writeln("");
+    term.writeln(term.colorize("Usage: sound on|off", "dim"));
+  } else if (subCommand === "on") {
+    setSoundEnabled(true);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("terminal-sound-change", { detail: { enabled: true } }));
+    }
+    playSound("achievement");
+    term.writeln(term.colorize("Sound effects enabled", "brightGreen"));
+  } else if (subCommand === "off") {
+    setSoundEnabled(false);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("terminal-sound-change", { detail: { enabled: false } }));
+    }
+    term.writeln(term.colorize("Sound effects disabled", "brightYellow"));
+  } else {
+    term.writeln(term.colorize("Usage: sound on|off", "brightRed"));
+  }
+}
+
+async function handleMusicCommand(term: any, args: string[]): Promise<void> {
+  const subCommand = args[0]?.toLowerCase();
+
+  if (!subCommand) {
+    const isPlaying = isMusicPlaying();
+    const volume = getMusicVolume();
+    term.writeln(`Ambient music is ${term.colorize(isPlaying ? "PLAYING" : "STOPPED", isPlaying ? "brightGreen" : "brightRed")}`);
+    term.writeln(`Volume: ${term.colorize(volume + "%", "brightCyan")}`);
+    term.writeln("");
+    term.writeln(term.colorize("Usage: music play|stop|volume <0-100>", "dim"));
+  } else if (subCommand === "play" || subCommand === "start") {
+    term.writeln(term.colorize("Starting ambient music...", "brightCyan"));
+    const success = await startMusic();
+    if (success) {
+      term.writeln(term.colorize("🎵 Ambient music playing", "brightGreen"));
+      term.writeln(term.colorize("Tip: Use 'music volume <0-100>' to adjust volume", "dim"));
+    } else {
+      term.writeln(term.colorize("Failed to start music. Try again after interacting with the terminal.", "brightRed"));
+    }
+  } else if (subCommand === "stop" || subCommand === "pause") {
+    stopMusic();
+    term.writeln(term.colorize("Music stopped", "brightYellow"));
+  } else if (subCommand === "volume" || subCommand === "vol") {
+    const volumeArg = args[1];
+    if (!volumeArg) {
+      const currentVolume = getMusicVolume();
+      term.writeln(`Current volume: ${term.colorize(currentVolume + "%", "brightCyan")}`);
+      term.writeln(term.colorize("Usage: music volume <0-100>", "dim"));
+    } else {
+      const volume = parseInt(volumeArg, 10);
+      if (isNaN(volume) || volume < 0 || volume > 100) {
+        term.writeln(term.colorize("Volume must be a number between 0 and 100", "brightRed"));
+      } else {
+        setMusicVolume(volume);
+        term.writeln(`Volume set to ${term.colorize(volume + "%", "brightGreen")}`);
+      }
+    }
+  } else {
+    term.writeln(term.colorize("Usage: music play|stop|volume <0-100>", "brightRed"));
+  }
+}
+
+export { isSoundEnabled, isMusicEnabled };

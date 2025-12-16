@@ -1,4 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  initAudio,
+  markUserInteraction,
+  playKeypressSound,
+  playSound,
+  isSoundEnabled,
+} from "./sound-manager";
+
 interface CustomTerminal {
   write: (data: string) => void;
   writeln: (data: string) => void;
@@ -143,12 +151,21 @@ export function extendTerminal(term: any): void {
       return; // Don't process commands when disconnected
     }
 
+    // Initialize audio on first user interaction
+    markUserInteraction();
+    initAudio();
+
     ext.writeln("");
     const command = ext.currentLine.trim();
 
     if (command) {
       ext.history.push(command);
       ext.historyIndex = ext.history.length;
+
+      // Play command sound
+      if (isSoundEnabled()) {
+        playSound("command");
+      }
 
       // Dynamically import executeCommand to avoid SSR issues
       try {
@@ -157,6 +174,9 @@ export function extendTerminal(term: any): void {
       } catch (error) {
         console.error("Failed to execute command:", error);
         ext.writeln(ext.colorize("Command execution failed", "brightRed"));
+        if (isSoundEnabled()) {
+          playSound("error");
+        }
       }
     }
 
@@ -224,6 +244,9 @@ export function extendTerminal(term: any): void {
         "tetris",
         "typing",
         "2048",
+        // Phase 4: Sound system
+        "sound",
+        "music",
       ];
 
       const matches = commands.filter((cmd) =>
@@ -305,6 +328,11 @@ export function extendTerminal(term: any): void {
     }
     ext.currentLine += data;
     ext.write(data);
+
+    // Play keypress sound (rate-limited)
+    if (isSoundEnabled()) {
+      playKeypressSound();
+    }
   };
 
   // Override dispose to clean up intervals
