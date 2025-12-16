@@ -926,9 +926,9 @@ export default function XTermVim({ onComplete, filename = "readme.txt" }: VimPro
   }, [handleComplete, saveUndoState]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black">
-      <canvas ref={canvasRef} className="w-full h-full" />
-      <div className="absolute top-2 right-4 text-gray-500 text-xs font-mono">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
+      <div style={{ position: "absolute", top: "0.5rem", right: "1rem", color: "#6b7280", fontSize: "0.75rem", fontFamily: "monospace" }}>
         Press ESC for normal mode | :q to quit | :help for commands
       </div>
     </div>

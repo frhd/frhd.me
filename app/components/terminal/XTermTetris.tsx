@@ -543,9 +543,9 @@ export default function XTermTetris({ onComplete }: TetrisProps) {
   }, [handleComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <canvas ref={canvasRef} />
-      <div className="absolute bottom-4 text-green-500 text-sm font-mono text-center">
+      <div style={{ position: "absolute", bottom: "1rem", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace", textAlign: "center" }}>
         Arrow keys or WASD to move | UP/W to rotate | ENTER to hard drop | SPACE to pause | Q/ESC to exit
       </div>
     </div>

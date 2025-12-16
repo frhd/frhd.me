@@ -219,7 +219,7 @@ export default function XTermTyping({ onComplete }: TypingProps) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-50 bg-black flex flex-col items-center justify-center p-8"
+      style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem" }}
     >
       {/* Header */}
       <div className="w-full max-w-4xl mb-4">
@@ -255,7 +255,7 @@ export default function XTermTyping({ onComplete }: TypingProps) {
 
       {/* Completion screen */}
       {isComplete && (
-        <div className="absolute inset-0 bg-black/90 flex items-center justify-center">
+        <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div className="text-center font-mono">
             <h2 className="text-4xl text-green-400 mb-8">Test Complete!</h2>
 

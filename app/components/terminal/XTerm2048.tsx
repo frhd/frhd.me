@@ -420,9 +420,9 @@ export default function XTerm2048({ onComplete }: Game2048Props) {
   }, [handleComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black flex items-center justify-center">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black", display: "flex", alignItems: "center", justifyContent: "center" }}>
       <canvas ref={canvasRef} />
-      <div className="absolute bottom-4 text-green-500 text-sm font-mono">
+      <div style={{ position: "absolute", bottom: "1rem", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace" }}>
         Arrow keys or WASD to move | SPACE to restart | Q/ESC to exit
       </div>
     </div>

@@ -336,9 +336,9 @@ export default function XTermSnake({ onComplete }: SnakeProps) {
   }, [handleComplete]);
 
   return (
-    <div className="fixed inset-0 z-50 bg-black">
-      <canvas ref={canvasRef} className="w-full h-full" />
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 text-green-500 text-sm font-mono">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, backgroundColor: "black" }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
+      <div style={{ position: "absolute", top: "1rem", left: "50%", transform: "translateX(-50%)", color: "#22c55e", fontSize: "0.875rem", fontFamily: "monospace" }}>
         Arrow keys or WASD to move | SPACE to pause | Q or ESC to exit
       </div>
     </div>

@@ -152,9 +152,9 @@ export default function XTermPipes({ onComplete }: PipesProps) {
   }, [onComplete]);
 
   return (
-    <div className="fixed inset-0 z-50">
-      <canvas ref={canvasRef} className="w-full h-full" />
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-green-500 text-sm opacity-50">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50 }}>
+      <canvas ref={canvasRef} style={{ width: "100%", height: "100%" }} />
+      <div style={{ position: "absolute", bottom: "1rem", left: "50%", transform: "translateX(-50%)", color: "#22c55e", fontSize: "0.875rem", opacity: 0.5 }}>
         Press &apos;q&apos; or ESC to exit
       </div>
     </div>

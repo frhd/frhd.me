@@ -75,8 +75,10 @@ export default function XTermCRT() {
   return (
     <canvas
       ref={canvasRef}
-      className="absolute inset-0 pointer-events-none"
       style={{
+        position: "absolute",
+        inset: 0,
+        pointerEvents: "none",
         mixBlendMode: "multiply",
       }}
     />
