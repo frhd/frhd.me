@@ -6,7 +6,17 @@ import {
   playSound,
   isSoundEnabled,
 } from "./sound-manager";
-import { getPluginRegistry } from "./plugin-system";
+import {
+  colorize,
+  renderLogo,
+  renderPrompt,
+  defaultPromptConfig,
+  completeCommand,
+  escapeSequences,
+} from "./terminal";
+
+// Re-export utilities for backwards compatibility
+export { colorize, ansiColors } from "./terminal";
 
 interface CustomTerminal {
   write: (data: string) => void;
@@ -45,55 +55,19 @@ export function extendTerminal(term: any): void {
 
   // Initialize properties
   ext.currentLine = "";
-  ext.user = "guest";
-  ext.host = "frhd.me";
-  ext.cwd = "~";
+  ext.user = defaultPromptConfig.user;
+  ext.host = defaultPromptConfig.host;
+  ext.cwd = defaultPromptConfig.cwd;
   ext.history = [];
   ext.historyIndex = -1;
   ext.disconnected = false;
 
-  // Helper function to colorize text
-  ext.colorize = (text: string, color: string): string => {
-    const colors: Record<string, string> = {
-      black: "\x1b[30m",
-      red: "\x1b[31m",
-      green: "\x1b[32m",
-      yellow: "\x1b[33m",
-      blue: "\x1b[34m",
-      magenta: "\x1b[35m",
-      cyan: "\x1b[36m",
-      white: "\x1b[37m",
-      brightBlack: "\x1b[90m",
-      brightRed: "\x1b[91m",
-      brightGreen: "\x1b[92m",
-      brightYellow: "\x1b[93m",
-      brightBlue: "\x1b[94m",
-      brightMagenta: "\x1b[95m",
-      brightCyan: "\x1b[96m",
-      brightWhite: "\x1b[97m",
-      bold: "\x1b[1m",
-      dim: "\x1b[2m",
-      italic: "\x1b[3m",
-      underline: "\x1b[4m",
-      reset: "\x1b[0m",
-    };
-    return `${colors[color] || ""}${text}${colors.reset}`;
-  };
-
-  // ASCII art logo
-  const logo = [
-    "  __      _         _                  ",
-    " / _|    | |       | |                 ",
-    "| |_ _ __| |__   __| |  _ __ ___   ___ ",
-    "|  _| '__| '_ \\ / _` | | '_ ` _ \\ / _ \\",
-    "| | | |  | | | | (_| |_| | | | | |  __/",
-    "|_| |_|  |_| |_|\\__,_(_)_| |_| |_|\\___|",
-    "",
-  ];
+  // Helper function to colorize text (bound to terminal for backwards compatibility)
+  ext.colorize = colorize;
 
   // Display logo on initialization
-  logo.forEach((line) => {
-    ext.writeln(ext.colorize(line, "brightGreen"));
+  renderLogo().forEach((line) => {
+    ext.writeln(line);
   });
 
   // Display prompt
@@ -101,28 +75,29 @@ export function extendTerminal(term: any): void {
     if (ext.disconnected) {
       return; // Don't show prompt when disconnected
     }
-    const prompt = `${ext.colorize(ext.user, "brightYellow")}@${ext.colorize(
-      ext.host,
-      "brightGreen"
-    )}:${ext.colorize(ext.cwd, "brightBlue")}$ `;
+    const prompt = renderPrompt({
+      user: ext.user,
+      host: ext.host,
+      cwd: ext.cwd,
+    });
     ext.write(prompt);
   };
 
   // Disconnect method
   ext.disconnect = () => {
     ext.disconnected = true;
-    
+
     // Hide the cursor
-    ext.write("\x1b[?25l");
-    
+    ext.write(escapeSequences.hideCursor);
+
     ext.writeln("");
-    ext.writeln(ext.colorize("Connection to frhd.me closed.", "brightRed"));
-    
+    ext.writeln(colorize("Connection to frhd.me closed.", "brightRed"));
+
     // Show blinking disconnected status
     let blinkState = true;
     const blinkInterval = setInterval(() => {
       if (blinkState) {
-        ext.write(`\r${ext.colorize("[Disconnected]", "dim")}`);
+        ext.write(`\r${colorize("[Disconnected]", "dim")}`);
       } else {
         ext.write(`\r${" ".repeat(14)}`); // Clear the text
       }
@@ -135,7 +110,7 @@ export function extendTerminal(term: any): void {
 
   // Clear current line
   ext.clearCurrentLine = () => {
-    ext.write("\r\x1b[K");
+    ext.write(escapeSequences.clearLine);
   };
 
   // Set current line
@@ -174,7 +149,7 @@ export function extendTerminal(term: any): void {
         await executeCommand(ext, command);
       } catch (error) {
         console.error("Failed to execute command:", error);
-        ext.writeln(ext.colorize("Command execution failed", "brightRed"));
+        ext.writeln(colorize("Command execution failed", "brightRed"));
         if (isSoundEnabled()) {
           playSound("error");
         }
@@ -194,7 +169,7 @@ export function extendTerminal(term: any): void {
     }
     if (ext.currentLine.length > 0) {
       ext.currentLine = ext.currentLine.slice(0, -1);
-      ext.write("\b \b");
+      ext.write(escapeSequences.backspace);
     }
   };
 
@@ -203,97 +178,21 @@ export function extendTerminal(term: any): void {
     if (ext.disconnected) {
       return; // Don't process input when disconnected
     }
-    // Simple tab completion for commands
-    if (!ext.currentLine.includes(" ")) {
-      const commands = [
-        "help",
-        "clear",
-        "about",
-        "matrix",
-        "decrypt",
-        "glitch",
-        "scan",
-        "access",
-        "whoami",
-        "contact",
-        "ls",
-        "cat",
-        "pwd",
-        "cd",
-        "echo",
-        "date",
-        "neofetch",
-        "exit",
-        // Phase 1: New fun commands
-        "sudo",
-        "rm",
-        "ping",
-        "sl",
-        "cowsay",
-        "fortune",
-        "figlet",
-        "find",
-        "download",
-        // Phase 2: Visual & theme commands
-        "theme",
-        "crt",
-        "pipes",
-        "plasma",
-        "fireworks",
-        // Phase 3: Mini-games
-        "snake",
-        "tetris",
-        "typing",
-        "2048",
-        // Phase 4: Sound system
-        "sound",
-        "music",
-        // Phase 5: Achievements
-        "achievements",
-        // Phase 6: Time-based features
-        "uptime",
-        "last",
-        // Phase 7: Utilities
-        "qr",
-        "base64",
-        "calc",
-        "uuid",
-        "timestamp",
-        "weather",
-        // Phase 8: Text Adventure
-        "adventure",
-        // Phase 9: Live Data
-        "github",
-        "status",
-        "news",
-        // Phase 12: Advanced Editor
-        "vim",
-        "vi",
-        "nano",
-        // Phase 13: Plugin System
-        "plugin",
-      ];
 
-      // Add plugin commands dynamically
-      const pluginCommands = getPluginRegistry().getCommandNames();
-      const allCommands = [...commands, ...pluginCommands];
+    const result = completeCommand(ext.currentLine);
 
-      const matches = allCommands.filter((cmd) =>
-        cmd.startsWith(ext.currentLine)
-      );
-
-      if (matches.length === 1) {
-        const completion = matches[0].slice(ext.currentLine.length);
-        ext.currentLine += completion;
-        ext.write(completion);
-      } else if (matches.length > 1) {
-        ext.writeln("");
-        matches.forEach((match) => {
-          ext.writeln(`  ${match}`);
-        });
-        ext.prompt();
-        ext.write(ext.currentLine);
-      }
+    if (result.completion !== undefined) {
+      // Single match - complete it
+      ext.currentLine = result.newLine!;
+      ext.write(result.completion);
+    } else if (result.matches) {
+      // Multiple matches - show them
+      ext.writeln("");
+      result.matches.forEach((match) => {
+        ext.writeln(`  ${match}`);
+      });
+      ext.prompt();
+      ext.write(ext.currentLine);
     }
   };
 
