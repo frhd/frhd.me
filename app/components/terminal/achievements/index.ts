@@ -1,17 +1,18 @@
 /**
- * Achievements System for Terminal
- * Re-exports from modular achievements system for backwards compatibility
+ * Achievements Module
+ * Barrel export for achievement system
  */
 
-// Re-export everything from the new modular system
+// Export definitions
 export {
-  // Types
-  type AchievementId,
-  type Achievement,
-  // Constants
   ACHIEVEMENTS,
   ALL_COMMANDS,
-  // Tracker functions
+  type AchievementId,
+  type Achievement,
+} from "./definitions";
+
+// Export tracker functions
+export {
   isAchievementUnlocked,
   getUnlockedAchievements,
   getAchievementUnlockTime,
@@ -23,4 +24,4 @@ export {
   resetAchievements,
   formatAchievement,
   getAchievement,
-} from "./achievements/index";
+} from "./tracker";

@@ -42,3 +42,33 @@ export {
   getHomeCursorMove,
   getEndCursorMove,
 } from "./input";
+
+// Theme management
+export {
+  initializeTheme,
+  applyTheme,
+  createThemeChangeHandler,
+  dispatchThemeChange,
+  getStoredTheme,
+  getTheme,
+  getDefaultTheme,
+} from "./theme-manager";
+
+// Effects management
+export {
+  loadEffectComponents,
+  loadMatrixComponent,
+  loadCrtComponent,
+  isCrtEnabled,
+  setCrtEnabled,
+  dispatchVisualEffect,
+  dispatchMatrixEffect,
+  dispatchCrtChange,
+  createEffectExitHandler,
+  effectHandlesOwnExit,
+  type EffectComponentProps,
+  type EffectComponent,
+  type EffectRegistry,
+  type EffectName,
+  type PendingEffect,
+} from "./effects";
