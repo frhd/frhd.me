@@ -117,6 +117,54 @@ export async function executeCommand(
       await displayExit(term);
       break;
 
+    case "sudo":
+      await displaySudo(term, arg);
+      break;
+
+    case "rm":
+      if (arg.startsWith("-rf") && arg.includes("/")) {
+        await displayRmRf(term);
+      } else {
+        term.writeln(term.colorize(`rm: cannot remove '${arg}': Permission denied`, "brightRed"));
+      }
+      break;
+
+    case ":(){ :|:& };:":
+      displayForkBomb(term);
+      break;
+
+    case "ping":
+      if (arg) {
+        await displayPing(term, arg);
+      } else {
+        term.writeln(term.colorize("ping: missing host operand", "brightRed"));
+      }
+      break;
+
+    case "sl":
+      await displaySteamLocomotive(term);
+      break;
+
+    case "cowsay":
+      displayCowsay(term, arg || "Moo!");
+      break;
+
+    case "fortune":
+      displayFortune(term);
+      break;
+
+    case "figlet":
+      displayFiglet(term, arg || "Hello");
+      break;
+
+    case "find":
+      if (arg.includes("-name") && arg.includes("*.secret")) {
+        displayFindSecrets(term);
+      } else {
+        term.writeln(term.colorize("find: limited functionality in demo mode", "brightYellow"));
+      }
+      break;
+
     default:
       if (command.trim()) {
         term.writeln(
@@ -152,14 +200,35 @@ function displayHelp(term: any): void {
     { name: "exit", desc: "Close terminal" },
   ];
 
+  const funCommands = [
+    { name: "cowsay <msg>", desc: "Make a cow say something" },
+    { name: "fortune", desc: "Get a random programming quote" },
+    { name: "figlet <text>", desc: "Create ASCII art text" },
+    { name: "ping <host>", desc: "Ping a host (try google.com)" },
+    { name: "sl", desc: "Steam locomotive (oops, typo!)" },
+  ];
+
   term.writeln(term.colorize("Available Commands:", "brightCyan"));
   term.writeln("");
   commands.forEach(({ name, desc }) => {
-    const paddedName = name.padEnd(16);
+    const paddedName = name.padEnd(24);
     term.writeln(
       `  ${term.colorize(paddedName, "brightGreen")} ${desc}`
     );
   });
+
+  term.writeln("");
+  term.writeln(term.colorize("Fun Commands:", "brightMagenta"));
+  term.writeln("");
+  funCommands.forEach(({ name, desc }) => {
+    const paddedName = name.padEnd(24);
+    term.writeln(
+      `  ${term.colorize(paddedName, "brightYellow")} ${desc}`
+    );
+  });
+
+  term.writeln("");
+  term.writeln(term.colorize("Hint: Try 'find / -name \"*.secret\"' to discover hidden files...", "dim"));
 }
 
 function displayAbout(term: any): void {
@@ -261,7 +330,44 @@ function displayCat(term: any, filename: string): void {
       "- Email: hello@frhd.me",
       "- LinkedIn: linkedin.com/in/frhd",
     ],
-    ".secrets": ["Nice try ;)"],
+    ".secrets": [
+      "You found the secrets file! But is this all there is?",
+      "",
+      "Hint: The rabbit hole goes deeper...",
+      "Try: cat .deeper",
+    ],
+    ".deeper": [
+      "██████████████████████████████████████████",
+      "█                                        █",
+      "█  You're getting warmer...              █",
+      "█                                        █",
+      "█  The truth awaits those who seek it.   █",
+      "█                                        █",
+      "█  One more level remains: .rabbit_hole  █",
+      "█                                        █",
+      "██████████████████████████████████████████",
+    ],
+    ".rabbit_hole": [
+      "",
+      "  ╔═══════════════════════════════════════════════════════╗",
+      "  ║                                                       ║",
+      "  ║   🐰 YOU FOUND THE RABBIT HOLE 🐰                     ║",
+      "  ║                                                       ║",
+      "  ║   \"The Matrix has you...\"                             ║",
+      "  ║                                                       ║",
+      "  ║   Congratulations, curious explorer.                  ║",
+      "  ║   You've discovered the deepest secret.               ║",
+      "  ║                                                       ║",
+      "  ║   Here's a truth: The best code is                    ║",
+      "  ║   the code you didn't have to write.                  ║",
+      "  ║                                                       ║",
+      "  ║   Thanks for exploring. Stay curious.                 ║",
+      "  ║                                                       ║",
+      "  ║   - Farhad                                            ║",
+      "  ║                                                       ║",
+      "  ╚═══════════════════════════════════════════════════════╝",
+      "",
+    ],
   };
 
   if (files[filename]) {
@@ -394,6 +500,307 @@ async function displayExit(term: any): Promise<void> {
 
   // Disconnect the terminal session
   term.disconnect();
+}
+
+// Phase 1: Joke/Easter Egg Commands
+
+async function displaySudo(term: any, arg: string): Promise<void> {
+  if (!arg) {
+    term.writeln(term.colorize("sudo: missing command", "brightRed"));
+    return;
+  }
+
+  term.writeln(term.colorize("[sudo] password for guest: ", "brightYellow"));
+  await sleep(800);
+  term.writeln("");
+  term.writeln(term.colorize("Nice try. This incident will be reported.", "brightRed"));
+  term.writeln("");
+  term.writeln(term.colorize("Dec 16 03:14:15 frhd.me sudo: guest : command not allowed ; TTY=xterm ; PWD=~ ; USER=root ; COMMAND=/usr/bin/" + arg.split(" ")[0], "dim"));
+}
+
+async function displayRmRf(term: any): Promise<void> {
+  term.writeln(term.colorize("WARNING: NUCLEAR OPTION DETECTED", "brightRed"));
+  term.writeln("");
+
+  const files = [
+    "/etc/passwd",
+    "/var/log/*",
+    "/home/*",
+    "/usr/bin/*",
+    "/boot/vmlinuz",
+    "/root/.ssh/*",
+    "/var/www/*",
+    "/.secrets",
+    "/consciousness.exe",
+    "/reality.dll",
+  ];
+
+  for (const file of files) {
+    term.writeln(`${term.colorize("rm:", "brightRed")} removing '${file}'`);
+    await sleep(150);
+  }
+
+  term.writeln("");
+  term.writeln(term.colorize("SYSTEM FAILURE IMMINENT", "brightRed"));
+  await sleep(500);
+
+  // Glitch effect
+  for (let i = 0; i < 5; i++) {
+    const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/~`";
+    let glitched = "";
+    for (let j = 0; j < 40; j++) {
+      glitched += glitchChars[Math.floor(Math.random() * glitchChars.length)];
+    }
+    term.writeln(term.colorize(glitched, "brightRed"));
+    await sleep(100);
+  }
+
+  term.writeln("");
+  await sleep(500);
+  term.writeln(term.colorize("Just kidding! 😎", "brightGreen"));
+  term.writeln(term.colorize("You didn't really think I'd let you do that, did you?", "brightYellow"));
+}
+
+function displayForkBomb(term: any): void {
+  term.writeln(term.colorize("⚠️  FORK BOMB DETECTED", "brightRed"));
+  term.writeln("");
+  term.writeln("Nice try, hacker. 😏");
+  term.writeln("");
+  term.writeln(term.colorize("This classic bash fork bomb has been neutralized.", "brightYellow"));
+  term.writeln(term.colorize("Your hacking skills are impressive, but not here.", "dim"));
+}
+
+async function displayPing(term: any, host: string): Promise<void> {
+  const wittyResponses: Record<string, string[]> = {
+    "google.com": [
+      "64 bytes from the void: icmp_seq=1 ttl=∞ time=0.001ms",
+      "Google knows you're pinging them. They already knew.",
+      "64 bytes from the omniscient cloud: time=instant",
+    ],
+    "localhost": [
+      "64 bytes from yourself: Are you okay?",
+      "Pinging yourself? That's deep.",
+      "127.0.0.1 is lonely and appreciates the attention",
+    ],
+    "github.com": [
+      "64 bytes from the code repository of dreams",
+      "Response: 'Have you committed today?'",
+      "GitHub responds: 'Your PR is still pending review'",
+    ],
+    "stackoverflow.com": [
+      "64 bytes from the sacred texts",
+      "Response: 'This question was marked as duplicate'",
+      "Connection redirected to an answer from 2009",
+    ],
+    "frhd.me": [
+      "64 bytes from home: You're already here!",
+      "Response: 'Stop pinging yourself'",
+      "Latency: 0ms (you're literally inside me)",
+    ],
+  };
+
+  term.writeln(`PING ${host} (${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}): 56 data bytes`);
+
+  const responses = wittyResponses[host.toLowerCase()] || [
+    `64 bytes from ${host}: icmp_seq=1 ttl=64 time=${(Math.random() * 100).toFixed(2)}ms`,
+    `64 bytes from the digital ether: host seems confused`,
+    `Response from ${host}: "Who are you and why are you pinging me?"`,
+  ];
+
+  for (let i = 0; i < 3; i++) {
+    await sleep(800);
+    term.writeln(responses[i % responses.length]);
+  }
+
+  term.writeln("");
+  term.writeln(`--- ${host} ping statistics ---`);
+  term.writeln("3 packets transmitted, 3 received, 0% packet loss, time 2400ms");
+}
+
+async function displaySteamLocomotive(term: any): Promise<void> {
+  const frames = [
+    [
+      "      ====        ________                ___________ ",
+      "  _D _|  |_______/        \\__I_I_____===__|_________| ",
+      "   |(_)---  |   H\\________/ |   |        =|___ ___|   ",
+      "   /     |  |   H  |  |     |   |         ||_| |_||   ",
+      "  |      |  |   H  |__--------------------| [___] |   ",
+      "  | ________|___H__/__|_____/[][]~\\_______|       |   ",
+      "  |/ |   |-----------I_____I [][] []  D   |=======|__ ",
+      "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ",
+      " |/-=|___|=    ||    ||    ||    |_____/~\\___/        ",
+      "  \\_/      \\O=====O=====O=====O_/      \\_/            ",
+    ],
+    [
+      "      ====        ________                ___________ ",
+      "  _D _|  |_______/        \\__I_I_____===__|_________| ",
+      "   |(_)---  |   H\\________/ |   |        =|___ ___|   ",
+      "   /     |  |   H  |  |     |   |         ||_| |_||   ",
+      "  |      |  |   H  |__--------------------| [___] |   ",
+      "  | ________|___H__/__|_____/[][]~\\_______|       |   ",
+      "  |/ |   |-----------I_____I [][] []  D   |=======|__ ",
+      "__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__ ",
+      " |/-=|___|=   O=====O=====O=====O|_____/~\\___/        ",
+      "  \\_/      \\_/      \\_/     \\_/  \\_/      \\_/         ",
+    ],
+  ];
+
+  term.writeln(term.colorize("🚂 Choo choo! You meant 'ls', didn't you?", "brightYellow"));
+  term.writeln("");
+
+  for (let i = 0; i < 4; i++) {
+    const frame = frames[i % 2];
+    for (const line of frame) {
+      term.writeln(term.colorize(line, "brightCyan"));
+    }
+    await sleep(300);
+    if (i < 3) {
+      // Clear the frame for animation effect
+      for (let j = 0; j < frame.length; j++) {
+        term.write("\x1b[A"); // Move cursor up
+        term.write("\r\x1b[K"); // Clear line
+      }
+    }
+  }
+}
+
+function displayCowsay(term: any, message: string): void {
+  const maxWidth = 40;
+  const words = message.split(" ");
+  const lines: string[] = [];
+  let currentLine = "";
+
+  for (const word of words) {
+    if ((currentLine + " " + word).trim().length <= maxWidth) {
+      currentLine = (currentLine + " " + word).trim();
+    } else {
+      if (currentLine) lines.push(currentLine);
+      currentLine = word;
+    }
+  }
+  if (currentLine) lines.push(currentLine);
+
+  const longestLine = Math.max(...lines.map(l => l.length));
+  const border = "-".repeat(longestLine + 2);
+
+  term.writeln(` ${border}`);
+  lines.forEach((line, i) => {
+    const padding = " ".repeat(longestLine - line.length);
+    if (lines.length === 1) {
+      term.writeln(`< ${line}${padding} >`);
+    } else if (i === 0) {
+      term.writeln(`/ ${line}${padding} \\`);
+    } else if (i === lines.length - 1) {
+      term.writeln(`\\ ${line}${padding} /`);
+    } else {
+      term.writeln(`| ${line}${padding} |`);
+    }
+  });
+  term.writeln(` ${border}`);
+  term.writeln("        \\   ^__^");
+  term.writeln("         \\  (oo)\\_______");
+  term.writeln("            (__)\\       )\\/\\");
+  term.writeln("                ||----w |");
+  term.writeln("                ||     ||");
+}
+
+const FORTUNES = [
+  "There are only two hard things in Computer Science: cache invalidation and naming things. — Phil Karlton",
+  "Any fool can write code that a computer can understand. Good programmers write code that humans can understand. — Martin Fowler",
+  "First, solve the problem. Then, write the code. — John Johnson",
+  "The best error message is the one that never shows up. — Thomas Fuchs",
+  "Debugging is twice as hard as writing the code in the first place. — Brian Kernighan",
+  "It's not a bug – it's an undocumented feature. — Anonymous",
+  "Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live. — John Woods",
+  "Weeks of coding can save you hours of planning. — Unknown",
+  "There is no Ctrl-Z in life. — Unknown",
+  "Code is like humor. When you have to explain it, it's bad. — Cory House",
+  "The only way to learn a new programming language is by writing programs in it. — Dennis Ritchie",
+  "Programming today is a race between software engineers striving to build bigger and better idiot-proof programs, and the Universe trying to produce bigger and better idiots. So far, the Universe is winning. — Rick Cook",
+  "Walking on water and developing software from a specification are easy if both are frozen. — Edward V. Berard",
+  "Give a man a program, frustrate him for a day. Teach a man to program, frustrate him for a lifetime. — Muhammad Waseem",
+  "A good programmer is someone who always looks both ways before crossing a one-way street. — Doug Linder",
+  "Measuring programming progress by lines of code is like measuring aircraft building progress by weight. — Bill Gates",
+  "Before software can be reusable it first has to be usable. — Ralph Johnson",
+  "The computer was born to solve problems that did not exist before. — Bill Gates",
+  "In order to understand recursion, one must first understand recursion. — Unknown",
+  "Talk is cheap. Show me the code. — Linus Torvalds",
+  "99 little bugs in the code. 99 little bugs. Take one down, patch it around. 127 little bugs in the code. — Unknown",
+  "Programming is like sex: one mistake and you have to support it for the rest of your life. — Michael Sinz",
+  "Software and cathedrals are much the same – first we build them, then we pray. — Sam Redwine",
+  "The most disastrous thing that you can ever learn is your first programming language. — Alan Kay",
+  "A SQL query walks into a bar, walks up to two tables and asks... 'Can I join you?' — Unknown",
+];
+
+function displayFortune(term: any): void {
+  const fortune = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+  term.writeln(term.colorize("🔮 " + fortune, "brightCyan"));
+}
+
+const FIGLET_CHARS: Record<string, string[]> = {
+  "A": ["  █  ", " █ █ ", "█████", "█   █", "█   █"],
+  "B": ["████ ", "█   █", "████ ", "█   █", "████ "],
+  "C": [" ████", "█    ", "█    ", "█    ", " ████"],
+  "D": ["████ ", "█   █", "█   █", "█   █", "████ "],
+  "E": ["█████", "█    ", "████ ", "█    ", "█████"],
+  "F": ["█████", "█    ", "████ ", "█    ", "█    "],
+  "G": [" ████", "█    ", "█  ██", "█   █", " ████"],
+  "H": ["█   █", "█   █", "█████", "█   █", "█   █"],
+  "I": ["█████", "  █  ", "  █  ", "  █  ", "█████"],
+  "J": ["█████", "   █ ", "   █ ", "█  █ ", " ██  "],
+  "K": ["█   █", "█  █ ", "███  ", "█  █ ", "█   █"],
+  "L": ["█    ", "█    ", "█    ", "█    ", "█████"],
+  "M": ["█   █", "██ ██", "█ █ █", "█   █", "█   █"],
+  "N": ["█   █", "██  █", "█ █ █", "█  ██", "█   █"],
+  "O": [" ███ ", "█   █", "█   █", "█   █", " ███ "],
+  "P": ["████ ", "█   █", "████ ", "█    ", "█    "],
+  "Q": [" ███ ", "█   █", "█   █", "█  █ ", " ██ █"],
+  "R": ["████ ", "█   █", "████ ", "█  █ ", "█   █"],
+  "S": [" ████", "█    ", " ███ ", "    █", "████ "],
+  "T": ["█████", "  █  ", "  █  ", "  █  ", "  █  "],
+  "U": ["█   █", "█   █", "█   █", "█   █", " ███ "],
+  "V": ["█   █", "█   █", "█   █", " █ █ ", "  █  "],
+  "W": ["█   █", "█   █", "█ █ █", "██ ██", "█   █"],
+  "X": ["█   █", " █ █ ", "  █  ", " █ █ ", "█   █"],
+  "Y": ["█   █", " █ █ ", "  █  ", "  █  ", "  █  "],
+  "Z": ["█████", "   █ ", "  █  ", " █   ", "█████"],
+  " ": ["     ", "     ", "     ", "     ", "     "],
+  "0": [" ███ ", "█  ██", "█ █ █", "██  █", " ███ "],
+  "1": ["  █  ", " ██  ", "  █  ", "  █  ", " ███ "],
+  "2": [" ███ ", "█   █", "  ██ ", " █   ", "█████"],
+  "3": ["████ ", "    █", " ███ ", "    █", "████ "],
+  "4": ["█   █", "█   █", "█████", "    █", "    █"],
+  "5": ["█████", "█    ", "████ ", "    █", "████ "],
+  "6": [" ███ ", "█    ", "████ ", "█   █", " ███ "],
+  "7": ["█████", "   █ ", "  █  ", " █   ", "█    "],
+  "8": [" ███ ", "█   █", " ███ ", "█   █", " ███ "],
+  "9": [" ███ ", "█   █", " ████", "    █", " ███ "],
+  "!": ["  █  ", "  █  ", "  █  ", "     ", "  █  "],
+  "?": [" ███ ", "█   █", "  █  ", "     ", "  █  "],
+};
+
+function displayFiglet(term: any, text: string): void {
+  const upperText = text.toUpperCase().slice(0, 10); // Limit to 10 chars
+  const lines: string[] = ["", "", "", "", ""];
+
+  for (const char of upperText) {
+    const charArt = FIGLET_CHARS[char] || FIGLET_CHARS[" "];
+    for (let i = 0; i < 5; i++) {
+      lines[i] += charArt[i];
+    }
+  }
+
+  lines.forEach(line => term.writeln(term.colorize(line, "brightGreen")));
+}
+
+function displayFindSecrets(term: any): void {
+  term.writeln(term.colorize("Searching for hidden secrets...", "brightYellow"));
+  term.writeln("");
+  term.writeln("/.secrets");
+  term.writeln("/.deeper");
+  term.writeln("/.rabbit_hole");
+  term.writeln("");
+  term.writeln(term.colorize("Hint: Use 'cat' to read these files...", "dim"));
 }
 
 // Helper functions

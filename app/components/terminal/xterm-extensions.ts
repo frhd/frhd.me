@@ -203,6 +203,16 @@ export function extendTerminal(term: any): void {
         "date",
         "neofetch",
         "exit",
+        // Phase 1: New fun commands
+        "sudo",
+        "rm",
+        "ping",
+        "sl",
+        "cowsay",
+        "fortune",
+        "figlet",
+        "find",
+        "download",
       ];
 
       const matches = commands.filter((cmd) =>

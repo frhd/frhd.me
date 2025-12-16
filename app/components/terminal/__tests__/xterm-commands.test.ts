@@ -250,4 +250,138 @@ describe('executeCommand', () => {
       expect(output).toContain('Usage: download --consciousness')
     })
   })
+
+  // Phase 1: New Command Tests
+
+  describe('sudo command', () => {
+    it('displays incident reported message', async () => {
+      await executeCommand(term, 'sudo rm something')
+      const output = term.getOutput()
+      expect(output).toContain('Nice try')
+      expect(output).toContain('incident will be reported')
+    })
+
+    it('shows missing command error when no args', async () => {
+      await executeCommand(term, 'sudo')
+      const output = term.getOutput()
+      expect(output).toContain('missing command')
+    })
+  })
+
+  describe('rm command', () => {
+    it('displays fake self-destruct for rm -rf /', async () => {
+      await executeCommand(term, 'rm -rf /')
+      const output = term.getOutput()
+      expect(output).toContain('NUCLEAR OPTION')
+      expect(output).toContain('Just kidding')
+    })
+
+    it('shows permission denied for other rm commands', async () => {
+      await executeCommand(term, 'rm somefile')
+      const output = term.getOutput()
+      expect(output).toContain('Permission denied')
+    })
+  })
+
+  describe('ping command', () => {
+    it('displays ping response for valid host', async () => {
+      await executeCommand(term, 'ping google.com')
+      const output = term.getOutput()
+      expect(output).toContain('PING google.com')
+      expect(output).toContain('packets transmitted')
+    })
+
+    it('shows error when no host specified', async () => {
+      await executeCommand(term, 'ping')
+      const output = term.getOutput()
+      expect(output).toContain('missing host operand')
+    })
+  })
+
+  describe('sl command', () => {
+    it('displays steam locomotive message', async () => {
+      await executeCommand(term, 'sl')
+      const output = term.getOutput()
+      expect(output).toContain('Choo choo')
+      expect(output).toContain("You meant 'ls'")
+    })
+  })
+
+  describe('cowsay command', () => {
+    it('displays cow saying message', async () => {
+      await executeCommand(term, 'cowsay Hello')
+      const output = term.getOutput()
+      expect(output).toContain('Hello')
+      expect(output).toContain('(oo)')
+      expect(output).toContain('^__^')
+    })
+
+    it('displays default Moo message when no args', async () => {
+      await executeCommand(term, 'cowsay')
+      const output = term.getOutput()
+      expect(output).toContain('Moo!')
+    })
+  })
+
+  describe('fortune command', () => {
+    it('displays a programming quote', async () => {
+      await executeCommand(term, 'fortune')
+      // Fortune should contain some text (quotes contain various content)
+      expect(term.writeln).toHaveBeenCalled()
+    })
+  })
+
+  describe('figlet command', () => {
+    it('displays ASCII art text', async () => {
+      await executeCommand(term, 'figlet HI')
+      const output = term.getOutput()
+      // Check for block characters that figlet uses
+      expect(output).toContain('█')
+    })
+
+    it('displays default Hello when no args', async () => {
+      await executeCommand(term, 'figlet')
+      const output = term.getOutput()
+      expect(output).toContain('█')
+    })
+  })
+
+  describe('find command', () => {
+    it('lists secret files when searching for *.secret', async () => {
+      await executeCommand(term, 'find / -name "*.secret"')
+      const output = term.getOutput()
+      expect(output).toContain('.secrets')
+      expect(output).toContain('.deeper')
+      expect(output).toContain('.rabbit_hole')
+    })
+
+    it('shows limited functionality for other find commands', async () => {
+      await executeCommand(term, 'find /')
+      const output = term.getOutput()
+      expect(output).toContain('limited functionality')
+    })
+  })
+
+  describe('deeper secrets', () => {
+    it('displays .secrets with hint about deeper', async () => {
+      await executeCommand(term, 'cat .secrets')
+      const output = term.getOutput()
+      expect(output).toContain('rabbit hole goes deeper')
+      expect(output).toContain('cat .deeper')
+    })
+
+    it('displays .deeper with hint about rabbit_hole', async () => {
+      await executeCommand(term, 'cat .deeper')
+      const output = term.getOutput()
+      expect(output).toContain('getting warmer')
+      expect(output).toContain('.rabbit_hole')
+    })
+
+    it('displays .rabbit_hole final secret', async () => {
+      await executeCommand(term, 'cat .rabbit_hole')
+      const output = term.getOutput()
+      expect(output).toContain('RABBIT HOLE')
+      expect(output).toContain('Congratulations')
+    })
+  })
 })
