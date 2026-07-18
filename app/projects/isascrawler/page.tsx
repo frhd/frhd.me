@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import CrawlerScene from '@/app/components/isascrawler/ClientSceneWrapper'
 
 export const metadata: Metadata = {
   title: 'ISAScrawler — farhad omid',
@@ -24,17 +25,15 @@ export default function IsascrawlerPage() {
         became a ground-up redesign.
       </p>
 
-      {/* 3D scene mounts here in a later task; the photo is its permanent fallback */}
+      {/* The interactive 3D scene; the photo is its permanent fallback */}
       <figure className="mt-8">
-        <img
-          src="/projects/isascrawler/prototype.jpg"
-          alt="The ISAScrawler prototype: three servo-driven leg segments under a copper PCB trunk carrying a LiPo battery and an XBee radio module"
-          width={1200}
-          height={747}
-          className="h-auto w-full"
+        <CrawlerScene
+          fallbackSrc="/projects/isascrawler/prototype.jpg"
+          fallbackAlt="The ISAScrawler prototype: three servo-driven leg segments under a copper PCB trunk carrying a LiPo battery and an XBee radio module"
         />
         <figcaption className="mt-2 text-sm opacity-60">
-          The finished prototype, 16 cm and 160 g.
+          The crawler, rebuilt in code from the thesis drawings, walking its
+          forward gait. Drag to orbit.
         </figcaption>
       </figure>
 
