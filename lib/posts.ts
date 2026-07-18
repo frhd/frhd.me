@@ -121,7 +121,8 @@ export function getAllPosts(dir: string = POSTS_DIR): PostMeta[] {
     const slug = slugFromFilename(filename)
     const raw = fs.readFileSync(path.join(dir, filename), 'utf8')
     // Discard the body; the listing only needs metadata.
-    const { content: _body, ...meta } = parsePost(slug, raw)
+    const { content, ...meta } = parsePost(slug, raw)
+    void content
     return meta
   })
 
