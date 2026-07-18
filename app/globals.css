@@ -180,75 +180,122 @@ html:has(.terminal-page) body {
 
 /* --- Quiet homepage -------------------------------------------------- */
 
-.home {
-  max-width: 68ch;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
-  font-size: 0.95rem;
-  line-height: 1.75;
-}
-
-.home-name {
-  margin: 0 0 1.25rem;
-  font-size: 1.05rem;
-  font-weight: 600;
-}
-
+/* Serif lede beneath the header. */
 .home-intro {
-  margin: 0 0 2.75rem;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  max-width: 60ch;
+  margin: 0 0 3.5rem;
   color: var(--fg);
 }
 
-.home-section {
-  margin: 0 0 2.25rem;
+/* Single column on mobile, two even columns from tablet up. */
+.home-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+}
+
+@media (min-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+  }
+}
+
+/* Right column stacks writing / now / elsewhere. */
+.home-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .home-heading {
-  margin: 0 0 0.6rem;
+  margin: 0 0 1rem;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--fg);
+}
+
+.entry {
+  margin: 0 0 1.5rem;
+}
+
+.entry:last-child {
+  margin-bottom: 0;
+}
+
+/* Title + date share a baseline row; the title keeps its own flex item so a
+   long title wraps normally instead of the date breaking it mid-line. */
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.entry-title {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
   font-size: 0.95rem;
   font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.entry-title:hover {
+  text-decoration: underline;
+}
+
+.entry-date {
+  flex: none;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 0.8rem;
   color: var(--muted);
-}
-
-.home-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.home-item {
-  margin: 0 0 0.35rem;
-}
-
-.home-dim {
-  color: var(--muted);
-}
-
-.home-date {
   white-space: nowrap;
+}
+
+.entry-blurb {
+  margin: 2px 0 0;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--muted);
 }
 
 .home-now,
 .home-elsewhere {
   margin: 0;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--fg);
 }
 
-.home a,
-.home-link {
+.home-now a,
+.home-elsewhere a {
   color: var(--accent);
   text-decoration: none;
 }
 
-.home a:hover,
-.home-link:hover {
+.home-now a:hover,
+.home-elsewhere a:hover {
   text-decoration: underline;
 }
 
+.home-sep {
+  color: var(--muted);
+}
+
 .home-footer {
-  margin-top: 3.5rem;
+  margin-top: 4rem;
 }
 
 .home-hint {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8rem;
   color: var(--muted);
   opacity: 0.65;
 }

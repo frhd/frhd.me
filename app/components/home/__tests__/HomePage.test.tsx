@@ -29,20 +29,38 @@ describe('HomePage', () => {
     ).toBeInTheDocument()
   })
 
-  it('renders the two-line intro', () => {
+  it('renders the header nav anchor links to the in-page sections', () => {
+    render(<HomePage posts={posts} projects={projects} />)
+    expect(screen.getByRole('link', { name: 'Work' })).toHaveAttribute(
+      'href',
+      '#work',
+    )
+    expect(screen.getByRole('link', { name: 'Writing' })).toHaveAttribute(
+      'href',
+      '#writing',
+    )
+    expect(screen.getByRole('link', { name: 'Now' })).toHaveAttribute(
+      'href',
+      '#now',
+    )
+  })
+
+  it('renders the serif intro paragraph', () => {
     render(<HomePage posts={posts} projects={projects} />)
     expect(
       screen.getByText(/i build tools, toys, and long-running experiments/i),
     ).toBeInTheDocument()
-    expect(screen.getByText(/this page is plain on purpose/i)).toBeInTheDocument()
+    expect(
+      screen.getByText(/teaching this website to stop pretending/i),
+    ).toBeInTheDocument()
   })
 
-  it('renders the four sections as level-2 headings in order', () => {
+  it('renders the four sections as level-2 headings in order (no "##" prefix)', () => {
     render(<HomePage posts={posts} projects={projects} />)
     const headings = screen
       .getAllByRole('heading', { level: 2 })
       .map((h) => h.textContent)
-    expect(headings).toEqual(['## work', '## writing', '## now', '## elsewhere'])
+    expect(headings).toEqual(['Work', 'Writing', 'Now', 'Elsewhere'])
   })
 
   it('links external projects to their href and slug projects to /projects/<slug>/', () => {
@@ -57,7 +75,7 @@ describe('HomePage', () => {
     )
   })
 
-  it('shows each project one-liner', () => {
+  it('shows each project one-liner as a blurb', () => {
     render(<HomePage posts={posts} projects={projects} />)
     expect(screen.getByText('external one')).toBeInTheDocument()
     expect(screen.getByText('internal one')).toBeInTheDocument()
@@ -77,11 +95,21 @@ describe('HomePage', () => {
     expect(screen.getByText('2026-06-01')).toBeInTheDocument()
   })
 
-  it('renders the now section text', () => {
+  it('shows a post summary as a blurb when present', () => {
+    render(<HomePage posts={posts} projects={projects} />)
+    // Only the first post has a summary; the second must not render a blurb.
+    expect(screen.getByText('s')).toBeInTheDocument()
+  })
+
+  it('renders the now section text and links the /terminal path', () => {
     render(<HomePage posts={posts} projects={projects} />)
     expect(
-      screen.getByText(/making this line update itself/i),
+      screen.getByText(/redesigning this site for reading/i),
     ).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: '/terminal' })).toHaveAttribute(
+      'href',
+      '/terminal',
+    )
   })
 
   it('renders the elsewhere links: github, email, and rss', () => {

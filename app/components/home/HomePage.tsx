@@ -2,10 +2,12 @@ import type { PostMeta } from '@/lib/posts'
 import type { Project } from '@/lib/projects'
 
 /**
- * The quiet, text-first homepage. Purely presentational: it receives the
- * already-loaded content so it can be unit-tested without touching the
- * filesystem or async RSC plumbing. The `##` prefixes are literal README-voice
- * text rendered inside real semantic headings.
+ * The editorial homepage: a single page with a wide two-column reading layout
+ * and in-page anchor navigation (#work / #writing / #now). Purely
+ * presentational — it receives already-loaded content so it can be unit-tested
+ * without touching the filesystem or async RSC plumbing. Headings, nav, and
+ * entry titles are set in Geist Sans; running prose (intro, blurbs, "now",
+ * "elsewhere") is the Benne serif.
  */
 export interface HomePageProps {
   posts: PostMeta[]
@@ -21,74 +23,81 @@ function projectHref(project: Project): string {
 
 export default function HomePage({ posts, projects }: HomePageProps) {
   return (
-    <main className="home">
-      <h1 className="home-name">farhad omid</h1>
+    <main className="site">
+      <header className="site-header">
+        <h1 className="site-name">Farhad Omid</h1>
+        <nav className="site-nav">
+          <a href="#work">Work</a>
+          <a href="#writing">Writing</a>
+          <a href="#now">Now</a>
+        </nav>
+      </header>
+
       <p className="home-intro">
-        software engineer. i build tools, toys, and long-running experiments.
-        <br />
-        this page is plain on purpose.
+        Software engineer. I build tools, toys, and long-running experiments —
+        most recently teaching this website to stop pretending it&rsquo;s a
+        computer.
       </p>
 
-      <section className="home-section" aria-labelledby="work-heading">
-        <h2 id="work-heading" className="home-heading">
-          ## work
-        </h2>
-        <ul className="home-list">
+      <div className="home-grid">
+        <section id="work" aria-labelledby="work-heading">
+          <h2 id="work-heading" className="home-heading">
+            Work
+          </h2>
           {projects.map((project) => (
-            <li key={project.name} className="home-item">
-              <a className="home-link" href={projectHref(project)}>
+            <div key={project.name} className="entry">
+              <a className="entry-title" href={projectHref(project)}>
                 {project.name}
-              </a>{' '}
-              <span className="home-dim">{project.oneLiner}</span>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="home-section" aria-labelledby="writing-heading">
-        <h2 id="writing-heading" className="home-heading">
-          ## writing
-        </h2>
-        <ul className="home-list">
-          {posts.map((post) => (
-            <li key={post.slug} className="home-item">
-              <span className="home-dim home-date">{post.date}</span>{' '}
-              <a className="home-link" href={`/writing/${post.slug}/`}>
-                {post.title}
               </a>
-            </li>
+              <p className="entry-blurb">{project.oneLiner}</p>
+            </div>
           ))}
-        </ul>
-      </section>
+        </section>
 
-      <section className="home-section" aria-labelledby="now-heading">
-        <h2 id="now-heading" className="home-heading">
-          ## now
-        </h2>
-        <p className="home-now">
-          rebuilding this site as plain text. next: making this line update
-          itself.
-        </p>
-      </section>
+        <div className="home-col">
+          <section id="writing" aria-labelledby="writing-heading">
+            <h2 id="writing-heading" className="home-heading">
+              Writing
+            </h2>
+            {posts.map((post) => (
+              <div key={post.slug} className="entry">
+                <div className="entry-head">
+                  <a className="entry-title" href={`/writing/${post.slug}/`}>
+                    {post.title}
+                  </a>
+                  <span className="entry-date">{post.date}</span>
+                </div>
+                {post.summary ? (
+                  <p className="entry-blurb">{post.summary}</p>
+                ) : null}
+              </div>
+            ))}
+          </section>
 
-      <section className="home-section" aria-labelledby="elsewhere-heading">
-        <h2 id="elsewhere-heading" className="home-heading">
-          ## elsewhere
-        </h2>
-        <p className="home-elsewhere">
-          <a className="home-link" href="https://github.com/frhd">
-            github.com/frhd
-          </a>
-          <span className="home-dim"> · </span>
-          <a className="home-link" href="mailto:farhad@omid.cc">
-            farhad@omid.cc
-          </a>
-          <span className="home-dim"> · </span>
-          <a className="home-link" href="/rss.xml">
-            rss
-          </a>
-        </p>
-      </section>
+          <section id="now" aria-labelledby="now-heading">
+            <h2 id="now-heading" className="home-heading">
+              Now
+            </h2>
+            <p className="home-now">
+              Redesigning this site for reading. The terminal it used to be
+              still lives at <a href="/terminal">/terminal</a>.
+            </p>
+          </section>
+
+          <section aria-labelledby="elsewhere-heading">
+            <h2 id="elsewhere-heading" className="home-heading">
+              Elsewhere
+            </h2>
+            <p className="home-elsewhere">
+              <a href="https://github.com/frhd">github.com/frhd</a>
+              <span className="home-sep"> · </span>
+              <a href="mailto:farhad@omid.cc">farhad@omid.cc</a>
+              <span className="home-sep"> · </span>
+              <a href="/rss.xml">rss</a>
+            </p>
+          </section>
+        </div>
+      </div>
 
       <footer className="home-footer">
         <span className="home-hint">press t</span>
