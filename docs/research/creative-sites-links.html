@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Creative personal sites — investigation index</title>
+<style>
+  :root {
+    --bg: #fcfcf9; --fg: #1b1b19; --muted: #6b6b62; --accent: #1a56db;
+    --border: #e6e5dd; --badge-bg: #f1f0ea; --visited: #9a988c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #121212; --fg: #eae8e2; --muted: #8b897f; --accent: #7cb0ff;
+      --border: #2a2a27; --badge-bg: #1f1f1d; --visited: #6d6b62;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 3rem 1.5rem 6rem;
+    background: var(--bg); color: var(--fg);
+    font: 16px/1.55 ui-sans-serif, system-ui, sans-serif;
+  }
+  main { max-width: 46rem; margin: 0 auto; }
+  h1 { font-size: 1.5rem; letter-spacing: -0.01em; margin: 0 0 0.4rem; }
+  .lede { color: var(--muted); margin: 0 0 0.5rem; }
+  .tip { color: var(--muted); font-size: 0.85rem; margin: 0 0 2.5rem; }
+  h2 {
+    font-size: 1.05rem; margin: 2.75rem 0 0.25rem;
+    padding-top: 1.5rem; border-top: 1px solid var(--border);
+  }
+  .section-note { color: var(--muted); font-size: 0.9rem; margin: 0 0 1.25rem; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  li { margin: 0 0 1.1rem; }
+  a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  a:hover { text-decoration: underline; }
+  a:visited { color: var(--visited); }
+  .creator { color: var(--muted); font-weight: 400; }
+  .badge {
+    display: inline-block; margin-left: 0.4rem; padding: 0.05rem 0.45rem;
+    font-size: 0.72rem; font-weight: 500; color: var(--muted);
+    background: var(--badge-bg); border: 1px solid var(--border);
+    border-radius: 99px; vertical-align: 1px; white-space: nowrap;
+  }
+  .desc { margin: 0.15rem 0 0; font-size: 0.95rem; }
+  .extra { font-size: 0.85rem; color: var(--muted); }
+  .extra a { font-weight: 500; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Creative personal sites — investigation index</h1>
+  <p class="lede">Every site and source from the verified research run (2026-07-19), grouped for a browsing session. Full findings: <code>docs/research/creative-sites-report.md</code>.</p>
+  <p class="tip">Tip: links you've already visited fade to gray, so you can work through the list.</p>
+
+  <h2>Deep-dived canonical sites</h2>
+  <p class="section-note">The five sites the research verified in depth — start here.</p>
+  <ul>
+    <li>
+      <a href="https://bruno-simon.com/">bruno-simon.com</a> <span class="creator">— Bruno Simon</span><span class="badge">SOTD 2019 · Site of the Month Jan 2026</span>
+      <p class="desc">Navigation is a drivable 3D car world — no menu exists. Achievements with unlockable skins, a daily top-10 leaderboard, a 30-character multiplayer "Whispers" wall, and jokes in functional UI copy ("I'm stuck!"). The maximalist end of discovery-as-interface.</p>
+      <p class="extra">Also: <a href="https://medium.com/@bruno_simon/bruno-simon-portfolio-case-study-960402cc259b">his case study</a> · <a href="https://www.awwwards.com/sites/brunos-portfolio">Awwwards page (rebuild)</a></p>
+    </li>
+    <li>
+      <a href="https://www.joshwcomeau.com/">joshwcomeau.com</a> <span class="creator">— Josh Comeau</span><span class="badge">closest architectural match</span>
+      <p class="desc">Whimsy layered on a readable editorial blog. Cursor-reactive rainbow hero with a configurator that appears only on hover — and syncs live to every other visitor via WebSockets. MDX posts embed custom interactive components; same stack family as frhd.me.</p>
+      <p class="extra">Also: <a href="https://www.joshwcomeau.com/blog/how-i-built-my-blog-v2/">How I Built My Blog v2</a></p>
+    </li>
+    <li>
+      <a href="https://lynnandtonic.com/">lynnandtonic.com</a> <span class="creator">— Lynn Fisher</span><span class="badge">editorial + one committed metaphor</span>
+      <p class="desc">The site is a printed paperback: fixed 436px book column, paper texture (dust in dark mode), chapter headers. Its signature easter egg appears only when you resize the window — the page stretches elastically and snaps back. Famous for total annual redesigns.</p>
+      <p class="extra">Also: <a href="https://lynnandtonic.com/thoughts/entries/case-study-2025-refresh/">2025 refresh case study</a> · <a href="https://rachsmith.com/the-incredible-websites-of-lynn-fisher/">Rach Smith's tour of her past sites</a></p>
+    </li>
+    <li>
+      <a href="https://gwern.net/">gwern.net</a> <span class="creator">— Gwern Branwen</span><span class="badge">typography reference</span>
+      <p class="desc">A reading machine: Tufte-style sidenotes in the margins, three visually distinct link-underline styles, recursive preview popups — all progressive enhancement over a core that needs no JavaScript. Maps directly onto a static-export site.</p>
+      <p class="extra">Also: <a href="https://gwern.net/design">Design of This Website</a> · <a href="https://gwern.net/sidenote">the sidenotes essay</a></p>
+    </li>
+    <li>
+      <a href="https://www.cassie.codes/">cassie.codes</a> <span class="creator">— Cassie Evans</span><span class="badge">playful SVG/motion</span>
+      <p class="desc">Interactive animated SVG self-portrait and playful GSAP motion throughout — personality through animation on an otherwise readable base.</p>
+      <p class="extra">Also: <a href="https://www.cassie.codes/posts/making-a-lil-me-part-1/">Making a lil' me</a></p>
+    </li>
+  </ul>
+
+  <h2>Award-validated portfolios</h2>
+  <p class="section-note">Verified against Awwwards' own records; newest first. Good for a rapid-fire tour of the current state of the art.</p>
+  <ul>
+    <li>
+      <a href="https://www.hirotos.com">hirotos.com</a> <span class="creator">— Hiroto Sato</span><span class="badge">SOTD + Dev Award Jul 2026</span>
+      <p class="desc">Creative developer; 3D and motion-driven portfolio, awarded days before this research ran.</p>
+    </li>
+    <li>
+      <a href="https://www.juliencalot.com">juliencalot.com</a> <span class="creator">— Julien Calot</span><span class="badge">SOTD Jul 2026 · agency-built</span>
+      <p class="desc">Visual artist portfolio built by studio FLOT NOIR — study the craft, but note it's not a solo build.</p>
+    </li>
+    <li>
+      <a href="https://pacomepertant.com">pacomepertant.com</a> <span class="creator">— Pacôme Pertant</span><span class="badge">SOTD Jun 2026</span>
+      <p class="desc">Motion/sound designer's site — strong on choreography and audio-reactive feel.</p>
+    </li>
+    <li>
+      <a href="https://elliott.mangham.dev">elliott.mangham.dev</a> <span class="creator">— Elliott Mangham</span><span class="badge">SOTD Dec 2025 · self-made</span>
+      <p class="desc">Unambiguously self-made developer portfolio at award level.</p>
+    </li>
+    <li>
+      <a href="https://gianlucagradogna.com">gianlucagradogna.com</a> <span class="creator">— Gianluca Gradogna</span><span class="badge">SOTD Jan 2025</span>
+      <p class="desc">Multidisciplinary designer's portfolio.</p>
+    </li>
+    <li>
+      <a href="https://wodniack.dev">wodniack.dev</a> <span class="creator">— Antoine Wodniack</span><span class="badge">SOTD Dec 2024 · self-made</span>
+      <p class="desc">Self-made developer portfolio at award level.</p>
+    </li>
+    <li>
+      <a href="https://guillaumecolombel.fr">guillaumecolombel.fr</a> <span class="creator">— Guillaume Colombel</span><span class="badge">SOTD + Dev Award Oct 2024 · self-made</span>
+      <p class="desc">Index-as-homepage layout plus depth-mapped scroll animations — pattern-scale ideas that fit an editorial site.</p>
+      <p class="extra">Also: <a href="https://www.awwwards.com/sites/g-colombel-portfolio-2024">Awwwards page</a></p>
+    </li>
+    <li>
+      <a href="https://samsy.ninja/">samsy.ninja</a> <span class="creator">— Samuel Honigstein</span><span class="badge">FWA Site of the Year · SOTD Oct 2025</span>
+      <p class="desc">WebGPU/three.js immersive multiplayer 3D world by a creative graphics engineer.</p>
+    </li>
+    <li>
+      <a href="https://grit.pictures/">grit.pictures</a> <span class="creator">— Grit Pictures (studio)</span><span class="badge">Awwwards Honorable Mention</span>
+      <p class="desc">Collage/scrapbook aesthetic: torn edges, retro Nokia/VHS props, GIF-plus-static collages. A transferable way to add tactile texture to an editorial page.</p>
+    </li>
+  </ul>
+
+  <h2>Single-pattern examples</h2>
+  <p class="section-note">Each demonstrates one specific transferable idea.</p>
+  <ul>
+    <li>
+      <a href="https://chevez.shop">chevez.shop</a> <span class="creator">— Bartlomiej Pierzchala</span>
+      <p class="desc">Draggable 3D-polaroid hero.</p>
+    </li>
+    <li>
+      <a href="https://aaronmcguire.design">aaronmcguire.design</a> <span class="creator">— Aaron McGuire</span>
+      <p class="desc">Randomized color-theme switcher — a cheap trick for making every visit feel slightly different.</p>
+    </li>
+    <li>
+      <a href="https://term.m4tt72.com">term.m4tt72.com</a> <span class="creator">— m4tt72</span>
+      <p class="desc">Full terminal-style personal site — what frhd.me used to be; useful as contrast for the terminal-flavored-editorial idea.</p>
+      <p class="extra">Also: <a href="https://dev.to/m4tt72/i-created-a-terminal-style-website-1jb2">his write-up</a></p>
+    </li>
+  </ul>
+
+  <h2>Directories &amp; collections</h2>
+  <p class="section-note">Seed pools for when the shortlist above runs dry.</p>
+  <ul>
+    <li>
+      <a href="https://www.awwwards.com/websites/winner_category_portfolio/">Awwwards — Portfolio winners archive</a>
+      <p class="desc">Juried, dated archive of every portfolio-category winner (Apr 2024–Jun 2026).</p>
+    </li>
+    <li>
+      <a href="https://www.awwwards.com/awwwards/collections/freelance-portfolio/">Awwwards — Freelance Portfolios collection</a>
+      <p class="desc">360 curated items; the element cards call out specific interactions with named creators.</p>
+    </li>
+    <li>
+      <a href="https://www.awwwards.com/websites/developer-portfolio/">Awwwards — Developer portfolios</a>
+      <p class="desc">Nominees and winners filtered to developer sites specifically.</p>
+    </li>
+    <li>
+      <a href="https://brutalistwebsites.com/">brutalistwebsites.com</a>
+      <p class="desc">~1,599 weird-web entries; ~925 include first-person creator interviews ("Why do you have a Brutalist Website?").</p>
+    </li>
+    <li>
+      <a href="https://whimsical.club/">whimsical.club — The Whimsical Web</a>
+      <p class="desc">Curated list of personal sites "with an extra bit of fun" — closest in spirit to what frhd.me is missing.</p>
+    </li>
+    <li>
+      <a href="https://personalsit.es/">personalsit.es</a>
+      <p class="desc">Community directory of personal sites, all skill levels.</p>
+    </li>
+    <li>
+      <a href="https://github.com/stars/brianlovin/lists/personal-websites">Brian Lovin's personal-websites list</a>
+      <p class="desc">A well-known designer's running GitHub list of favorite personal sites.</p>
+    </li>
+    <li>
+      <a href="https://www.siteinspire.com/websites/category/typographic">Siteinspire — Typographic</a>
+      <p class="desc">Curated gallery of the best typography-driven sites.</p>
+    </li>
+    <li>
+      <a href="https://muz.li/blog/top-100-most-creative-and-unique-portfolio-websites-of-2025/">Muzli — 100 most creative portfolios of 2025</a>
+      <p class="desc">Listicle (medium confidence as a source), but broad and current; where Samsy and Grit Pictures surfaced.</p>
+    </li>
+    <li>
+      <a href="https://onepagelove.com/brutalist-websites">One Page Love — Brutalist</a>
+      <p class="desc">Brutalist one-pagers, lighter-weight browsing than the main directory.</p>
+    </li>
+  </ul>
+
+  <h2>Essays &amp; write-ups</h2>
+  <p class="section-note">The thinking behind the sites — worth reading before the design phase.</p>
+  <ul>
+    <li>
+      <a href="https://mxb.dev/blog/the-whimsical-web/">The Whimsical Web — Max Böck</a>
+      <p class="desc">The case for why personal sites deserve easter eggs and personality.</p>
+    </li>
+    <li>
+      <a href="https://blog.readymag.com/award-winning-portfolios/">Readymag — What sets award-winning portfolios apart</a>
+      <p class="desc">Cross-cutting analysis of what juries actually reward.</p>
+    </li>
+    <li>
+      <a href="https://www.viget.com/articles/breaking-the-konami-code-adding-an-easter-egg-to-your-site">Viget — Breaking the Konami Code</a>
+      <p class="desc">Practical easter-egg implementation patterns.</p>
+    </li>
+    <li>
+      <a href="https://www.amitmerchant.com/implement-konami-code-easter-egg/">Amit Merchant — Konami code easter egg</a>
+      <p class="desc">A minimal konami-style secret on a personal blog.</p>
+    </li>
+    <li>
+      <a href="https://practicaltypography.com/">Butterick's Practical Typography</a>
+      <p class="desc">The typography fundamentals reference, itself a demonstration of its own rules.</p>
+    </li>
+    <li>
+      <a href="https://www.robinrendle.com/notes/redesigning-in-public/">Robin Rendle — Redesigning in public</a>
+      <p class="desc">On iterating a personal site openly instead of in big-bang redesigns.</p>
+    </li>
+    <li>
+      <a href="https://news.ycombinator.com/item?id=41645265">Ask HN — well-designed personal sites</a>
+      <p class="desc">Crowd-sourced favorites; good for tastes outside the awards circuit.</p>
+    </li>
+  </ul>
+</main>
+</body>
+</html>

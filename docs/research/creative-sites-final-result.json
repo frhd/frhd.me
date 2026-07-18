@@ -1,0 +1,269 @@
+{
+  "question": "Find super creative, distinctive personal websites/portfolios (developers, designers, artists) to draw redesign inspiration for frhd.me — collect concrete examples with what makes each one special (interaction, typography, layout, motion, humor, weirdness), spanning award-winning portfolios, brutalist/weird-web, interactive/playful sites, and typography-driven editorial sites. For each site: URL, creator, what's distinctive, and which ideas could transfer to a developer's personal site with an editorial base and a hidden terminal easter egg.",
+  "summary": "The research surfaced three complementary veins of redesign inspiration for frhd.me. First, large quality-filtered seed pools exist for ongoing mining: Awwwards' juried Portfolio Honors archive and its 360-item Freelance Portfolios collection (which isolates pattern-level elements like draggable 3D-polaroid heroes and randomized color-theme switchers with named creators), plus brutalistwebsites.com's ~1,599-entry weird-web directory with ~925 first-person creator interviews. Second, concrete canonical examples were verified in depth: Bruno Simon's bruno-simon.com (navigation as a drivable 3D world with hidden secrets, achievements, a leaderboard, a 30-character multiplayer 'Whispers' system, and humor baked into UI microcopy), Josh Comeau's cursor-reactive rainbow with a hidden configurator whose changes sync to all visitors via PartyKit WebSockets, and Lynn Fisher's 2025 refresh whose signature elastic-resize easter egg and 436px printed-paperback typography show how a fixed editorial layout can hide delight. Third, for the editorial base specifically, gwern.net demonstrates typography-driven devices (sidenotes in margins, three visually distinct link-underline styles with recursive preview popups) built on a no-JS-required progressive-enhancement core that is directly compatible with frhd.me's static-export Next.js architecture. The clearest transferable theme across all verified sites: distinctiveness comes from one committed concept (a world, a book, a rainbow, a margin) plus hidden discoverable layers — exactly the pattern frhd.me's terminal easter egg already starts, and which could be extended with playful microcopy, discovery rewards, and MDX-embedded interactive components in writing posts.",
+  "findings": [
+    {
+      "claim": "Two curated Awwwards resources form reliable, quality-filtered seed pools for portfolio inspiration: the juried 'Portfolio Honors' winner archive (dated entries spanning Apr 2024–Jun 2026) and the official 360-item 'Freelance Portfolios' collection.",
+      "confidence": "high",
+      "sources": [
+        "https://www.awwwards.com/websites/winner_category_portfolio/",
+        "https://www.awwwards.com/awwwards/collections/freelance-portfolio/"
+      ],
+      "evidence": "Both pages verified by direct fetch (2026-07-19). The winner-category page is a live dated archive of jury-vetted portfolio winners (~18 jurors scoring Design 40%/Usability 30%/Creativity 20%/Content 10%); the collection is curated by the official @awwwards account, described as 'A great portfolio allows the work to speak for itself. Here are some of the best.' with exactly 360 items. Minor qualification: the final monthly Honors selection adds a voting round atop jury vetting.",
+      "vote": "3-0 (both claims)"
+    },
+    {
+      "claim": "brutalistwebsites.com is a large concrete pool of weird-web personal-site examples: ~1,599 screenshot-plus-link entries (including designer/developer personal sites such as jonasersland.net, nelsonheinemann.com, velstudio.it), and roughly 925 of them link to hosted creator interviews built around the standard question 'Why do you have a Brutalist Website?' — making it a first-hand archive of designers explaining their distinctive choices.",
+      "confidence": "high",
+      "sources": [
+        "https://brutalistwebsites.com/"
+      ],
+      "evidence": "Live fetch 2026-07-19: exactly 1,599 class=\"screenshot\" blocks counted; 926 internal interview links (one is a magazine index, leaving ~925 interviews). All sampled interview pages contain the standard question plus first-person answers (e.g. zackwellin.com: 'The only way to express anything new with web design is to break that monotony.'). Note: a separate claim that the directory itself articulates a unifying anti-mainstream design philosophy was REFUTED (0-3) — the directory catalogs; it does not editorialize.",
+      "vote": "3-0 (both claims); related philosophy claim refuted 0-3"
+    },
+    {
+      "claim": "Bruno Simon's bruno-simon.com is the canonical, most-decorated playful developer portfolio: SOTD Nov 11 2019 (8.04/10, Creativity 8.95) for the original, and for the current rebuild Portfolio Honors (Dec 2025), Developer Award, and Site of the Month (Jan 2026).",
+      "confidence": "high",
+      "sources": [
+        "https://www.awwwards.com/sites/bruno-simon-portfolio",
+        "https://www.awwwards.com/websites/winner_category_portfolio/",
+        "https://www.awwwards.com/sites/brunos-portfolio"
+      ],
+      "evidence": "Both Awwwards award pages verified directly (the awarding body's own records). The 2019 site also won Site of the Month Nov 2019; the 2025/2026 rebuild's awards are current as of July 2026. Two claims merged (original-site awards + rebuild awards).",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "Bruno Simon's core transferable mechanic is navigation-as-explorable-world: the visitor drives a car through a Three.js/WebGL (now WebGPU-capable TSL) 3D world where social links and project navigation are drivable game elements, with hidden secrets deliberately scattered so exploration and easter-egg discovery replace the menu entirely ('drive around to learn more about me and discover the many secrets of this world').",
+      "confidence": "high",
+      "sources": [
+        "https://bruno-simon.com/",
+        "https://www.awwwards.com/sites/bruno-simon-portfolio",
+        "https://medium.com/@bruno_simon/bruno-simon-portfolio-case-study-960402cc259b"
+      ],
+      "evidence": "Live site fetch (2026-07-19) confirms the quote verbatim and the absence of any traditional HTML nav menu; Awwwards lists '3D game social media links' and '3D game project navigation' as highlighted elements; Bruno's own case study documents the car/physics/areas architecture. Two claims merged (3D-game mechanic + exploration-as-navigation model). Directly relevant to frhd.me: this is the maximalist end of the same idea as a hidden terminal — making discovery itself the interface.",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "Bruno Simon layers humor and real game mechanics onto personal-site content: joking UI microcopy embedded in functional controls ('And don't break anything!', teleport button labeled 'I'm stuck!'), an achievement system with timed rewards and unlockable skins, a racing circuit with a daily top-10 leaderboard, and a visitor-contributed multiplayer 'Whispers' message system (max 30 characters, max 30 messages, one per user).",
+      "confidence": "high",
+      "sources": [
+        "https://bruno-simon.com/"
+      ],
+      "evidence": "All elements confirmed by direct fetch of the live site 2026-07-19; whispers/achievements corroborated by Bruno's own devlogs. Transferable ideas for frhd.me: humor in microcopy costs nothing and needs no 3D; lightweight discovery rewards (achievements for finding the terminal, konami-style secrets) and even a tiny shared visitor-message mechanic are all proven patterns here. Two claims merged (microcopy humor + game-mechanics layer).",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "A concrete roster of recently award-validated individual personal sites to study: Hiroto Sato (hirotos.com, SOTD Jul 17 2026 + Developer Award — creative dev, 3D/motion), Julien Calot (juliencalot.com, SOTD Jul 8 2026, visual artist, built by studio FLOT NOIR), Pacôme Pertant (pacomepertant.com, SOTD Jun 9 2026), Elliott Mangham (elliott.mangham.dev, SOTD Dec 2 2025), Gianluca Gradogna (gianlucagradogna.com, SOTD Jan 23 2025), Antoine Wodniack (wodniack.dev, SOTD Dec 12 2024), and Guillaume Colombel (guillaumecolombel.fr, SOTD + Developer Award Oct 20 2024).",
+      "confidence": "high",
+      "sources": [
+        "https://www.awwwards.com/websites/developer-portfolio/",
+        "https://www.awwwards.com/websites/winner_category_portfolio/",
+        "https://www.awwwards.com/sites/hiroto-sato",
+        "https://www.awwwards.com/sites/julien-calot",
+        "https://www.awwwards.com/sites/g-colombel-portfolio-2024"
+      ],
+      "evidence": "Every award, date, and URL verified against individual Awwwards award pages (the awarding body's primary records), several only days old as of 2026-07-19. Qualifications: Calot is an artist site built by an agency; Pertant is a motion/sound designer's site built by developers; Gradogna is a multidisciplinary designer — Mangham, Wodniack, Sato, and Colombel are unambiguous self-made developer portfolios. Three claims merged.",
+      "vote": "3-0 (all three merged claims)"
+    },
+    {
+      "claim": "The Awwwards Freelance Portfolios collection isolates pattern-level, directly transferable interaction ideas with named creators and URLs: a draggable 3D-polaroid hero by Bartlomiej Pierzchala (chevez.shop), a randomized color-theme switcher by Aaron McGuire (aaronmcguire.design), and Guillaume Colombel's index-page layout plus depth-mapped scroll animations (guillaumecolombel.fr).",
+      "confidence": "high",
+      "sources": [
+        "https://www.awwwards.com/awwwards/collections/freelance-portfolio/",
+        "https://www.awwwards.com/sites/g-colombel-portfolio-2024"
+      ],
+      "evidence": "Raw HTML of the collection fetched 2026-07-19 confirms all element cards, creator attributions, and outbound links verbatim. These pattern-scale ideas (a randomized theme switcher, an index-as-homepage layout) fit an editorial site far more readily than full-3D approaches. Two claims merged.",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "gwern.net is the strongest typography-driven editorial reference: footnotes render as sidenotes/margin notes on wide screens (Tufte-style, inspired by historical book design, falling back to floating footnotes on mobile); links carry three visually distinct underline styles (solid = ordinary, solid-with-hook = live preview, dotted = annotated popup) enabling recursive in-page exploration of linked content; and the entire core reading experience works without JavaScript, with all of the above layered on as progressive enhancement.",
+      "confidence": "high",
+      "sources": [
+        "https://gwern.net/design",
+        "https://gwern.net/sidenote"
+      ],
+      "evidence": "All three behaviors confirmed verbatim on the primary source ('JavaScript is *not* required for the core reading experience, only for (mostly) optional features'; 'popups can be recursive'). This philosophy maps one-to-one onto frhd.me's static-export Next.js constraint: readable pre-rendered HTML with optional interactive islands (of which the hidden terminal is already one). Minor nuance: gwern distinguishes 'sidenotes' from 'margin notes', and a few auxiliary sections (backlinks, tags) are JS-only. Three claims merged.",
+      "vote": "3-0 (all three merged claims)"
+    },
+    {
+      "claim": "joshwcomeau.com models both halves of what frhd.me wants: (a) a hidden interactive easter egg with a multiplayer twist — a cursor-reactive homepage rainbow whose configurator appears only after hovering, and whose edits broadcast in real time to every visitor via PartyKit WebSockets ('you're not just changing the rainbow on your device, you're changing it for everybody'); and (b) an editorial engine built on MDX specifically so posts embed custom interactive components, the core mechanism of his interactive-article feel.",
+      "confidence": "high",
+      "sources": [
+        "https://www.joshwcomeau.com/blog/how-i-built-my-blog-v2/"
+      ],
+      "evidence": "First-person primary source (published 2024-09-24, updated 2026-05-05) verified against raw page text; the PartyKit endpoint was independently found in the site's current production JS, confirming the feature is live. Stack is Next.js 15 + next-mdx-remote, compatible with frhd.me's static export and content/writing structure. Caveats from the author himself: launch chaos with hundreds of simultaneous editors (moderation needed for shared-state eggs), and MDX v1→v3 migration was painful. Two claims merged.",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "Lynn Fisher's lynnandtonic.com 2025 refresh shows an editorial site earning distinctiveness from a committed print metaphor plus one hidden interaction: a typography-led printed-paperback concept (fixed 436px book-page column, Hubano Rough and Sydonia Atramentiqua display fonts, paper texture in light mode / dust in dark mode, table-of-contents landing and chapter headers) whose signature easter egg — the page stretching elastically during browser resize and snapping back with a bounce — is discoverable only by resizing, directly analogous to frhd.me hiding a terminal behind a hotkey.",
+      "confidence": "high",
+      "sources": [
+        "https://lynnandtonic.com/thoughts/entries/case-study-2025-refresh/"
+      ],
+      "evidence": "The creator's own case study (posted 2026-01-13) confirms every specific verbatim, including 'you have to resize to discover it' and 'I added a little bounce transition when the reset happens.' Nuance: the 436px width was originally chosen for the resize effect and macOS minimum window width, with the paperback metaphor derived from it; the site at rest is static, so the print-not-motion framing holds for ambient browsing. Two claims merged.",
+      "vote": "3-0 (both merged claims)"
+    },
+    {
+      "claim": "Two further featured examples from muz.li's 2025 top-100 list round out the spectrum: Samsy Ninja (samsy.ninja, Samuel Honigstein) — a WebGPU/three.js immersive multiplayer 3D world by a creative graphics engineer with 50+ international awards including Cannes Lions, FWA Site of the Year, and Awwwards SOTD — and Grit Pictures (grit.pictures), whose collage/scrapbook aesthetic (bold textures, torn edges, retro Nokia/VHS props, GIF-plus-static collage) is a transferable way to add tactile weird-web texture to an otherwise editorial site.",
+      "confidence": "medium",
+      "sources": [
+        "https://muz.li/blog/top-100-most-creative-and-unique-portfolio-websites-of-2025/",
+        "https://samsy.ninja/",
+        "https://grit.pictures/",
+        "https://www.awwwards.com/sites/grit-pictures"
+      ],
+      "evidence": "Both verified beyond the blog: Samsy's awards corroborated by FWA's own profile and an Awwwards SOTD + Developer Award for the Gen-02 portfolio (Oct 2025), though the exact '50+' figure traces to self-reported bio copy; Grit Pictures confirmed by direct fetch of the live site and an Awwwards Honorable Mention describing the same scrapbook style. Qualifier: Grit Pictures is a commercial film studio's site, not an individual's. Rated medium because the organizing source is a blog listicle, despite strong primary corroboration of the specifics.",
+      "vote": "3-0 (both merged claims)"
+    }
+  ],
+  "caveats": "Time-sensitivity: award facts are permanent records, but the live sites they point to redesign frequently — several verified examples (Hiroto Sato, Julien Calot) won SOTD within days of the research date, and Bruno Simon's site was rebuilt end-2025, so any specific interaction described should be re-checked at visit time. Source quality is uneven at the edges: the Samsy Ninja and Grit Pictures entries originate from a muz.li blog listicle (medium confidence despite primary corroboration), and Samsy's '50+ awards' count is self-reported bio copy anchored by independently verifiable wins. Categorization wobble: not every 'developer portfolio' is self-made by a developer — Julien Calot's site is an agency-built artist portfolio and Pacôme Pertant is a motion designer's site, which matters if the goal is studying what an individual can build solo. One claim was refuted outright (0-3): brutalistwebsites.com does not itself articulate a unifying anti-mainstream design philosophy — that framing came from secondary commentary, and the directory should be treated as a raw catalog plus interview archive, not a manifesto. Awwwards 'Honors' selection includes a public voting round atop jury vetting, so 'juried' is a slight simplification. Finally, transferability caveats surfaced by the sources themselves: Josh Comeau's shared-state easter egg required moderation after launch chaos, PartyKit-style real-time sync needs an external service (frhd.me is a static export with no server runtime), and the heavy WebGL/WebGPU approaches (Simon, Samsy) conflict with an editorial site's performance and no-JS-reading budget unless confined to an easter-egg surface like the existing /terminal.",
+  "openQuestions": [
+    "Which of the discovered patterns are implementable within frhd.me's static-export Next.js constraint without adding a server — e.g., can a shared-state easter egg like Comeau's rainbow work via a third-party service (PartyKit/Cloudflare DO) called from the static page, or should shared-state ideas be dropped in favor of purely client-side discovery mechanics (achievements, resize/hotkey secrets)?",
+    "What do the ~925 brutalistwebsites.com creator interviews actually say in aggregate about why minimal/raw personal sites work — a sampling pass was verified but no thematic synthesis of the interview corpus was performed?",
+    "How discoverable should the terminal easter egg be — the verified examples split between zero-signposting discovery (Lynn Fisher's resize, Comeau's hover-to-reveal) and explicit invitation (Bruno Simon's 'discover the many secrets'), and no evidence was gathered on which approach visitors actually find?",
+    "None of the deep-dived sites combine an editorial two-column text layout with a terminal motif specifically — is there prior art for terminal-flavored editorial sites (beyond full terminal-only portfolios) that this research round did not surface?"
+  ],
+  "refuted": [
+    {
+      "claim": "The directory defines web brutalism as a deliberate generational reaction against polished, friendly mainstream web design — framing rawness and discomfort as an intentional aesthetic stance rather than neglect, which is the design philosophy underpinning every site it lists.",
+      "vote": "0-3",
+      "source": "https://brutalistwebsites.com/"
+    }
+  ],
+  "unverified": [],
+  "sources": [
+    {
+      "url": "https://www.awwwards.com/websites/winner_category_portfolio/",
+      "quality": "primary",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://muz.li/blog/top-100-most-creative-and-unique-portfolio-websites-of-2025/",
+      "quality": "blog",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://blog.readymag.com/award-winning-portfolios/",
+      "quality": "blog",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://www.awwwards.com/sites/bruno-simon-portfolio",
+      "quality": "primary",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://www.awwwards.com/websites/developer-portfolio/",
+      "quality": "primary",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://www.awwwards.com/awwwards/collections/freelance-portfolio/",
+      "quality": "secondary",
+      "angle": "Award-winning portfolio showcases",
+      "claimCount": 5
+    },
+    {
+      "url": "https://brutalistwebsites.com/",
+      "quality": "primary",
+      "angle": "Brutalist and weird-web personal sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://onepagelove.com/brutalist-websites",
+      "quality": "blog",
+      "angle": "Brutalist and weird-web personal sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://reallygooddesigns.com/neo-brutalist-website-examples/",
+      "quality": "blog",
+      "angle": "Brutalist and weird-web personal sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://whimsical.club/",
+      "quality": "blog",
+      "angle": "Interactive, playful, and easter-egg-driven sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://bruno-simon.com/",
+      "quality": "primary",
+      "angle": "Interactive, playful, and easter-egg-driven sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://mxb.dev/blog/the-whimsical-web/",
+      "quality": "blog",
+      "angle": "Interactive, playful, and easter-egg-driven sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://gwern.net/design",
+      "quality": "primary",
+      "angle": "Typography-driven editorial personal sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://github.com/stars/brianlovin/lists/personal-websites",
+      "quality": "blog",
+      "angle": "Typography-driven editorial personal sites",
+      "claimCount": 5
+    },
+    {
+      "url": "https://www.joshwcomeau.com/blog/how-i-built-my-blog-v2/",
+      "quality": "primary",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 5
+    },
+    {
+      "url": "https://lynnandtonic.com/thoughts/entries/case-study-2025-refresh/",
+      "quality": "primary",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 5
+    },
+    {
+      "url": "https://www.cassie.codes/posts/making-a-lil-me-part-1/",
+      "quality": "blog",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 5
+    },
+    {
+      "url": "https://personalsit.es/",
+      "quality": "secondary",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 5
+    },
+    {
+      "url": "https://rachsmith.com/the-incredible-websites-of-lynn-fisher/",
+      "quality": "blog",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 4
+    },
+    {
+      "url": "https://news.ycombinator.com/item?id=41645265",
+      "quality": "forum",
+      "angle": "Practitioner roundups and build write-ups",
+      "claimCount": 5
+    }
+  ],
+  "stats": {
+    "angles": 5,
+    "sourcesFetched": 20,
+    "claimsExtracted": 99,
+    "claimsVerified": 25,
+    "confirmed": 24,
+    "killed": 1,
+    "unverified": 0,
+    "afterSynthesis": 11,
+    "urlDupes": 2,
+    "budgetDropped": 8,
+    "agentCalls": 102
+  }
+}
