@@ -121,6 +121,99 @@ body {
   opacity: 0.65;
 }
 
+/* --- Writing post ---------------------------------------------------- */
+
+.post {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.post-back {
+  display: inline-block;
+  margin: 0 0 2.75rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.post-back:hover {
+  color: var(--fg);
+}
+
+.post-header {
+  margin: 0 0 2.25rem;
+}
+
+.post-title {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.post-date {
+  margin: 0;
+  color: var(--muted);
+}
+
+/* Long-form body in Geist Sans for readability; headings, code, and other
+   structure stay monospace to keep the site's terminal heritage. */
+.post-body {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+.post-body h1,
+.post-body h2,
+.post-body h3,
+.post-body h4,
+.post-body h5,
+.post-body h6,
+.post-body code,
+.post-body pre {
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.post-body h2,
+.post-body h3 {
+  margin: 2rem 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.post-body p {
+  margin: 0 0 1.25rem;
+}
+
+.post-body a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.post-body a:hover {
+  text-decoration: underline;
+}
+
+.post-body code {
+  font-size: 0.9em;
+  padding: 0.05em 0.3em;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+}
+
+.post-body pre {
+  padding: 1rem;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.post-body pre code {
+  padding: 0;
+  border: 0;
+}
+
 .theme-toggle {
   position: fixed;
   top: 1rem;
