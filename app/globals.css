@@ -1,6 +1,12 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+/* Map Tailwind's font utilities to the Geist variables from app/layout.tsx so
+   the body's `font-mono` class (and any `font-sans` usage) resolves to Geist
+   rather than the default UA stacks. */
+@theme {
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
 
 /* Theme tokens for the quiet site. The terminal (see app/components/terminal)
    sets its own full-screen bg-black container and does not read these. */
@@ -195,6 +201,33 @@ html:has(.terminal-page) body {
 
 .post-body p {
   margin: 0 0 1.25rem;
+}
+
+/* Tailwind preflight strips list styling and blockquote margins; restore
+   sensible defaults for markdown-rendered post bodies. */
+.post-body ul,
+.post-body ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.post-body ul {
+  list-style: disc;
+}
+
+.post-body ol {
+  list-style: decimal;
+}
+
+.post-body li {
+  margin: 0 0 0.35rem;
+}
+
+.post-body blockquote {
+  margin: 0 0 1.25rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+  color: var(--muted);
 }
 
 .post-body a {
