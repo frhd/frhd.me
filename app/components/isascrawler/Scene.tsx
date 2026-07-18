@@ -210,15 +210,21 @@ export default function Scene({ fallbackSrc, fallbackAlt }: SceneProps) {
   }, [fallbackAlt])
 
   return (
-    <div ref={containerRef} className="relative" style={{ aspectRatio: '1200 / 747' }}>
+    // Inline styles, not utility classes: the component must stay
+    // self-contained (Tailwind utilities are not generated in this repo).
+    <div ref={containerRef} style={{ position: 'relative', aspectRatio: '1200 / 747' }}>
       {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimization */}
       <img
         src={fallbackSrc}
         alt={fallbackAlt}
         width={1200}
         height={747}
-        className="h-auto w-full"
-        style={ready ? { visibility: 'hidden' } : undefined}
+        style={{
+          width: '100%',
+          height: 'auto',
+          display: 'block',
+          visibility: ready ? 'hidden' : 'visible',
+        }}
       />
     </div>
   )

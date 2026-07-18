@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import CrawlerScene from '@/app/components/isascrawler/ClientSceneWrapper'
+import './isascrawler.css'
 
 export const metadata: Metadata = {
   title: 'ISAScrawler — farhad omid',
@@ -10,13 +11,13 @@ export const metadata: Metadata = {
 
 export default function IsascrawlerPage() {
   return (
-    <main className="mx-auto max-w-2xl px-6 py-16 font-mono text-[15px] leading-relaxed">
-      <h1 className="text-lg font-bold">ISAScrawler</h1>
-      <p className="mt-1 text-sm opacity-60">
+    <main className="project-page">
+      <h1 className="project-title">ISAScrawler</h1>
+      <p className="project-meta">
         Studienarbeit, ISAS · Universität Karlsruhe · 2006–07
       </p>
 
-      <p className="mt-8">
+      <p className="project-intro">
         At the Intelligent Sensor-Actuator-Systems lab, a group of small
         caterpillar robots was meant to explore collaborative swarm behavior —
         machines that crawl over terrain in groups and solve tasks together.
@@ -26,19 +27,19 @@ export default function IsascrawlerPage() {
       </p>
 
       {/* The interactive 3D scene; the photo is its permanent fallback */}
-      <figure className="mt-8">
+      <figure className="project-figure">
         <CrawlerScene
           fallbackSrc="/projects/isascrawler/prototype.jpg"
           fallbackAlt="The ISAScrawler prototype: three servo-driven leg segments under a copper PCB trunk carrying a LiPo battery and an XBee radio module"
         />
-        <figcaption className="mt-2 text-sm opacity-60">
+        <figcaption>
           The crawler, rebuilt in code from the thesis drawings, walking its
           forward gait. Drag to orbit.
         </figcaption>
       </figure>
 
-      <h2 className="mt-10 font-bold"># what was wrong</h2>
-      <p className="mt-3">
+      <h2 className="project-heading"># what was wrong</h2>
+      <p className="project-para">
         The predecessor fought itself: open-loop motors with no position
         feedback, a microcontroller per limb, joints that shed their ball
         bearings, and a tethered power supply. Every subsystem needed
@@ -46,8 +47,8 @@ export default function IsascrawlerPage() {
         robot.
       </p>
 
-      <h2 className="mt-10 font-bold"># the redesign</h2>
-      <p className="mt-3">
+      <h2 className="project-heading"># the redesign</h2>
+      <p className="project-para">
         The frame is CNC-milled copper-clad PCB material — structure and
         circuit board in one. The joints became a sandwich construction:
         three plates with enclosed ball-bearing races, so the bearings
@@ -60,7 +61,7 @@ export default function IsascrawlerPage() {
         reckoning only, no feedback about drift yet.
       </p>
 
-      <figure className="mt-8">
+      <figure className="project-figure">
         <img
           src="/projects/isascrawler/joint.jpg"
           alt="Sandwich joint: three milled PCB plates enclosing ball bearings in their races"
@@ -68,14 +69,13 @@ export default function IsascrawlerPage() {
           height={285}
           loading="lazy"
           decoding="async"
-          className="h-auto w-full"
         />
-        <figcaption className="mt-2 text-sm opacity-60">
+        <figcaption>
           The sandwich joint — the bearings are enclosed between three milled plates.
         </figcaption>
       </figure>
 
-      <figure className="mt-8">
+      <figure className="project-figure">
         <img
           src="/projects/isascrawler/leg.jpg"
           alt="A leg segment: milled PCB frame with two micro servos and blue leg rods"
@@ -83,15 +83,14 @@ export default function IsascrawlerPage() {
           height={727}
           loading="lazy"
           decoding="async"
-          className="h-auto w-full"
         />
-        <figcaption className="mt-2 text-sm opacity-60">
+        <figcaption>
           A leg segment — frame and circuit board are the same milled material.
         </figcaption>
       </figure>
 
-      <h2 className="mt-10 font-bold"># looking back</h2>
-      <p className="mt-3">
+      <h2 className="project-heading"># looking back</h2>
+      <p className="project-para">
         It was the first project where I built the whole stack myself —
         mechanics, boards, radio protocol, firmware — and where I learned
         that the second version of anything is mostly an apology to the
@@ -99,7 +98,7 @@ export default function IsascrawlerPage() {
         drawings, walking its original gait.
       </p>
 
-      <p className="mt-12 text-sm">
+      <p className="project-back">
         <Link href="/" className="home-link">
           ← home
         </Link>
