@@ -32,7 +32,7 @@ footer: … | press t
 Subpages only where content demands them:
 
 - `/writing/<slug>` — blog posts (MDX).
-- `/projects/<slug>` — optional longer project writeups; short projects link directly out.
+- `/projects/<slug>` — optional longer project writeups; short projects link directly out. First writeup: the ISAScrawler Studienarbeit — see [ISAScrawler showcase design](2026-07-18-isascrawler-showcase-design.md).
 - `/terminal` — the existing xterm.js terminal, full-screen.
 - `/rss.xml` — RSS feed of the writing posts (see below).
 - 404 page — one quiet line in the same voice, linking home.
