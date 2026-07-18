@@ -13,6 +13,9 @@
 /.next/
 /out/
 
+# generated photo derivatives (scripts/photos.mjs)
+/public/photos/
+
 # production
 /build
 
