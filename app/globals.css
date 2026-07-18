@@ -46,6 +46,17 @@ body {
   font-family: var(--font-geist-mono), monospace;
 }
 
+/* --- Terminal route -------------------------------------------------- */
+
+/* Task 2 removed the global `overflow: hidden` so the quiet content pages can
+   scroll. The full-screen terminal still needs it: re-scope it to just the
+   terminal page (via the `.terminal-page` wrapper in app/terminal/page.tsx) so
+   the xterm canvas never produces page-level scrollbars. */
+html:has(.terminal-page),
+html:has(.terminal-page) body {
+  overflow: hidden;
+}
+
 /* --- Quiet homepage -------------------------------------------------- */
 
 .home {

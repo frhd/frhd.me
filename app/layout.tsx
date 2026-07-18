@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
+import TerminalHotkey from "@/app/components/TerminalHotkey";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { buildThemeScript } from "@/lib/theme";
 
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body
         className={`${geistMono.variable} ${geistSans.variable} antialiased font-mono`}
       >
+        <TerminalHotkey />
         {children}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-3TLNT2Q614"
