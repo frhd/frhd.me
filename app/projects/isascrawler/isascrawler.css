@@ -1,46 +1,50 @@
 /* ISAScrawler writeup — self-contained route styles.
  *
- * The repo's Tailwind pipeline currently generates no utility classes
- * (v3 directives against the v4 PostCSS plugin), so this page styles
- * itself the way the quiet homepage does: semantic classes + the theme
- * tokens from globals.css (--fg / --muted / --accent / --border).
- * Values mirror the .home block: 68ch centered column, same padding
- * rhythm, 0.95rem / 1.75 body text. Font family inherits from body.
+ * The repo's Tailwind pipeline generates no utility classes, so this page
+ * styles itself with semantic classes + the theme tokens from globals.css
+ * (--fg / --muted / --accent / --border). It follows the editorial type
+ * system: headings/title/meta in the default Geist Sans, running prose in
+ * the Benne serif to match the `.prose` treatment used elsewhere.
  */
 
 .project-page {
-  max-width: 68ch;
+  max-width: 42rem;
   margin: 0 auto;
   padding: 4rem 1.5rem 6rem;
-  font-size: 0.95rem;
-  line-height: 1.75;
 }
 
 .project-title {
   margin: 0;
-  font-size: 1.05rem;
-  font-weight: 600;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 .project-meta {
-  margin: 0.25rem 0 0;
+  margin: 0.4rem 0 0;
   font-size: 0.85rem;
   color: var(--muted);
 }
 
 .project-intro {
   margin: 2rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
 }
 
 .project-heading {
   margin: 2.5rem 0 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--muted);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--fg);
 }
 
 .project-para {
   margin: 0.75rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
 }
 
 .project-figure {
@@ -62,4 +66,13 @@
 .project-back {
   margin-top: 3.5rem;
   font-size: 0.85rem;
+}
+
+.project-back a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.project-back a:hover {
+  color: var(--fg);
 }

@@ -99,9 +99,7 @@ export default function IsascrawlerPage() {
       </p>
 
       <p className="project-back">
-        <Link href="/" className="home-link">
-          ← home
-        </Link>
+        <Link href="/">← home</Link>
       </p>
     </main>
   )

@@ -61,7 +61,7 @@ export default async function PostPage({
             <h1 className="post-title">{post.title}</h1>
             <p className="post-date">{post.date}</p>
           </header>
-          <div className="post-body">{body}</div>
+          <div className="prose">{body}</div>
         </article>
       </main>
     </>
