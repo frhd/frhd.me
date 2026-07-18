@@ -1,6 +1,6 @@
 /**
  * Theme plumbing shared by the no-flash inline script (see app/layout.tsx)
- * and the manual toggle (app/components/home/ThemeToggle.tsx).
+ * and the manual toggle (app/components/ThemeToggle.tsx).
  *
  * The decision rule lives in exactly one shipped place: the script string
  * built by `buildThemeScript`. A stored manual choice wins; otherwise the OS

@@ -3,7 +3,7 @@ import { cache } from 'react'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import ThemeToggle from '@/app/components/home/ThemeToggle'
+import ThemeToggle from '@/app/components/ThemeToggle'
 import { renderMdx } from '@/lib/mdx'
 import { getAllPosts, getPost } from '@/lib/posts'
 import { SITE_TITLE } from '@/lib/site'
@@ -51,7 +51,7 @@ export default async function PostPage({
 
   return (
     <>
-      <ThemeToggle />
+      <ThemeToggle className="theme-toggle--floating" />
       <main className="post">
         <Link className="post-back" href="/">
           ← frhd.me

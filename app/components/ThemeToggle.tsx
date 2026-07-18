@@ -26,7 +26,7 @@ function subscribe(onChange: () => void): () => void {
   return () => observer.disconnect()
 }
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ className }: { className?: string }) {
   const theme = useSyncExternalStore(
     subscribe,
     readDomTheme,
@@ -66,7 +66,7 @@ export default function ThemeToggle() {
   return (
     <button
       type="button"
-      className="theme-toggle"
+      className={className ? `theme-toggle ${className}` : 'theme-toggle'}
       onClick={toggle}
       aria-label={label}
       title={label}

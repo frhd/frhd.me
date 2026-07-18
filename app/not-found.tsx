@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
-import ThemeToggle from '@/app/components/home/ThemeToggle'
+import ThemeToggle from '@/app/components/ThemeToggle'
 import { SITE_TITLE } from '@/lib/site'
 
 /**
@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
-      <ThemeToggle />
+      <ThemeToggle className="theme-toggle--floating" />
       <main className="site">
         <h1 className="site-name">404</h1>
         <p className="home-intro">

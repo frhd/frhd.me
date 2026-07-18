@@ -371,9 +371,6 @@ html:has(.terminal-page) body {
 }
 
 .theme-toggle {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
   padding: 0.2rem 0.5rem;
   font: inherit;
   font-size: 0.8rem;
@@ -387,6 +384,14 @@ html:has(.terminal-page) body {
 .theme-toggle:hover {
   color: var(--fg);
   border-color: var(--muted);
+}
+
+/* Floating variant: only the 404 (which has no editor chrome) pins the toggle
+   to the top-right. Inside the editor chrome it sits in the sidebar flow. */
+.theme-toggle--floating {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
 }
 
 @layer utilities {

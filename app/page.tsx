@@ -1,5 +1,5 @@
 import HomePage from './components/home/HomePage'
-import ThemeToggle from './components/home/ThemeToggle'
+import ThemeToggle from './components/ThemeToggle'
 import { getAllPosts } from '@/lib/posts'
 import { projects } from '@/lib/projects'
 
@@ -12,7 +12,7 @@ export default function Home() {
   const posts = getAllPosts()
   return (
     <>
-      <ThemeToggle />
+      <ThemeToggle className="theme-toggle--floating" />
       <HomePage posts={posts} projects={projects} />
     </>
   )
