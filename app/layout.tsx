@@ -44,14 +44,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Font variable classes live on <html>, not <body>: the :root font tokens
+  // in globals.css reference them via var(), and a custom property that
+  // can't resolve at its own element collapses to invalid for the whole tree.
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${geistMono.variable} ${geistSans.variable} ${benne.variable}`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body
-        className={`${geistMono.variable} ${geistSans.variable} ${benne.variable} antialiased font-mono`}
-      >
+      <body>
         <TerminalHotkey />
         {children}
         <Script

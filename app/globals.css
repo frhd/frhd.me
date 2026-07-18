@@ -1,11 +1,17 @@
 @import 'tailwindcss';
 
-/* Map Tailwind's font utilities to the Geist variables from app/layout.tsx so
-   the body's `font-mono` class (and any `font-sans` usage) resolves to Geist
-   rather than the default UA stacks. */
+/* Legacy mapping for Tailwind's font utilities. Inert on this pipeline:
+   utilities are not generated, and @theme variables are emitted inside an
+   `@layer theme` block that never applies at runtime — do NOT reference
+   these via var(); define real tokens in the :root blocks below instead. */
 @theme {
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Font tokens. Deliberately defined here (unlayered :root) rather than in
+   @theme above — see that block's comment. Same value in both themes. */
+:root {
   --font-serif: var(--font-benne), 'Iowan Old Style', Charter, Georgia, serif;
 }
 
