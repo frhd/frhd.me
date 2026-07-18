@@ -394,6 +394,191 @@ html:has(.terminal-page) body {
   right: 1rem;
 }
 
+/* --- Editor chrome --------------------------------------------------- */
+
+/* Two-column shell: a fixed-width sidebar and a fluid document pane. The mono
+   chrome (sidebar, breadcrumb, footer, topbar) reads the --chrome-* / --syn-*
+   tokens; the pane's document stays editorial serif via .prose / .post. All
+   colors go through tokens, so the theme flip needs no separate dark rules. */
+.editor {
+  --topbar-h: 2.75rem;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 0.75rem;
+  background: var(--chrome-bg);
+  border-right: 1px solid var(--border);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.85rem;
+  color: var(--chrome-fg);
+}
+
+.sidebar-root {
+  padding: 0.25rem 0.5rem 0.75rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+}
+
+.tree-row {
+  display: block;
+  padding: 0.2rem 0.5rem;
+  padding-left: calc(0.5rem + var(--depth, 0) * 0.9rem);
+  border-radius: 4px;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+a.tree-row:hover {
+  background: var(--active-bg);
+}
+
+.tree-row[aria-current='page'] {
+  background: var(--active-bg);
+  color: var(--fg);
+}
+
+/* Syntax-role colors keep the tree legible as "code": dirs read as keywords,
+   files as functions, off-site links as strings. */
+.tree-dir {
+  color: var(--syn-keyword);
+}
+
+.tree-file {
+  color: var(--syn-function);
+}
+
+.tree-external {
+  color: var(--syn-string);
+}
+
+.sidebar-foot {
+  margin-top: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 0.5rem 0.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-foot a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.sidebar-foot a:hover {
+  color: var(--fg);
+}
+
+.editor-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+.breadcrumb {
+  padding: 0.6rem 2rem;
+  background: var(--chrome-bg);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* The pane owns the reading column now (width, left-alignment, padding), so
+   .post / .prose no longer self-frame. */
+.editor-doc {
+  flex: 1;
+  max-width: 46rem;
+  padding: 2.5rem 2rem 3.5rem;
+}
+
+.editor-foot {
+  padding: 0.85rem 2rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Mobile topbar hosts the drawer toggle; hidden on desktop, so on wide
+   viewports the grid's only items are the sidebar and the pane. */
+.editor-topbar {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .editor {
+    display: block;
+  }
+
+  .editor-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    height: var(--topbar-h);
+    padding: 0 1rem;
+    background: var(--chrome-bg);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 0.85rem;
+    color: var(--chrome-fg);
+  }
+
+  .editor-topbar-toggle {
+    padding: 0.25rem 0.5rem;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Drawer anchored to the shared --topbar-h so it never drifts from the
+     topbar's height — a hardcoded pixel inset would break when the font
+     size changes. Hidden until the toggle opens it. */
+  .sidebar {
+    position: fixed;
+    top: var(--topbar-h);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 19;
+    height: auto;
+    border-right: none;
+    display: none;
+  }
+
+  .sidebar--open {
+    display: flex;
+  }
+
+  .breadcrumb,
+  .editor-doc,
+  .editor-foot {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
