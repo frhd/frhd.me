@@ -24,7 +24,8 @@
     "next-mdx-remote": "^6.0.0",
     "qrcode": "^1.5.4",
     "react": "^19",
-    "react-dom": "^19.2.3"
+    "react-dom": "^19.2.3",
+    "three": "^0.185.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.3",
@@ -36,6 +37,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9",
     "eslint-config-next": "16.0.10",

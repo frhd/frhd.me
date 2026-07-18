@@ -53,7 +53,7 @@ Everything the model needs, so no task requires re-reading the thesis:
 **Files:**
 - Create: `public/projects/isascrawler/prototype.jpg`, `joint.jpg`, `leg.jpg`
 
-- [ ] **Step 1: Copy and process the three photos**
+- [x] **Step 1: Copy and process the three photos**
 
 `sips` is built into macOS. Resize to max 1200 px wide, ~75% JPEG quality:
 
@@ -69,7 +69,7 @@ ls -la public/projects/isascrawler/
 
 Expected: three files, each well under 300 KB. If `sandwich1.jpg` or `Bein1.jpg` turn out to be poor shots (check visually), substitute `gelenkoffen.jpg` / `Bein3.jpg`.
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add public/projects/isascrawler
@@ -82,9 +82,9 @@ git commit -m "add ISAScrawler photos (resized from thesis archive)"
 - Modify: `lib/projects.ts`
 - Modify: `lib/__tests__/projects.test.ts`
 
-- [ ] **Step 1: Read both files first** — the v2 loop may have changed them since this plan was written. Adapt the steps below to the current shape.
+- [x] **Step 1: Read both files first** — the v2 loop may have changed them since this plan was written. Adapt the steps below to the current shape.
 
-- [ ] **Step 2: Write failing tests**
+- [x] **Step 2: Write failing tests**
 
 In `lib/__tests__/projects.test.ts`, first FIX the existing assertion that every entry has an `https?://` `href` (currently `lib/__tests__/projects.test.ts:10-16`, "gives every project a name, one-liner, and href") — it must tolerate entries without `href`:
 
@@ -114,12 +114,12 @@ describe('isascrawler entry', () => {
 })
 ```
 
-- [ ] **Step 3: Run tests to verify they fail**
+- [x] **Step 3: Run tests to verify they fail**
 
 Run: `pnpm vitest run lib/__tests__/projects.test.ts`
 Expected: FAIL (`entry` undefined).
 
-- [ ] **Step 4: Implement**
+- [x] **Step 4: Implement**
 
 In `lib/projects.ts`: make `href` optional and fix the doc comments (spec decision — `href` stays reserved for external links; internal writeups are linked via `slug`):
 
@@ -142,11 +142,11 @@ Update the interface's top doc comment ("No writeups exist in v1…" is no longe
 
 If a homepage component already renders `projects` and assumes `href` is always present, fix it to prefer `/projects/${slug}` when `slug` is set (this is the spec's linking rule) — but do not build homepage rendering if it doesn't exist yet.
 
-- [ ] **Step 5: Run the full check**
+- [x] **Step 5: Run the full check**
 
 Run: `pnpm vitest run lib/__tests__/projects.test.ts` → PASS, then `pnpm check` → all green (type-check will catch any consumer assuming `href: string`).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add lib/projects.ts lib/__tests__/projects.test.ts
@@ -160,7 +160,7 @@ git commit -m "add ISAScrawler project entry; href becomes optional/external-onl
 
 The 3D scene lands in Chunk 2; until then the page shows `prototype.jpg` where the scene will go (which is also its permanent fallback).
 
-- [ ] **Step 1: Write the page**
+- [x] **Step 1: Write the page**
 
 Server component, plain `<img>` tags (static export — no image optimization), Tailwind classes consistent with a quiet single column. Content is derived from the thesis abstract; keep the register plain and first-person, no marketing tone. ~300–500 words. Draft to use (Farhad reviews wording before deploy):
 
@@ -266,13 +266,13 @@ export default function IsascrawlerPage() {
 }
 ```
 
-- [ ] **Step 2: Verify it renders and exports**
+- [x] **Step 2: Verify it renders and exports**
 
 Run: `pnpm dev`, open `http://localhost:3000/projects/isascrawler` — page renders, all three photos load, no console errors.
 Run: `pnpm pre-deploy`
 Expected: build succeeds; `out/projects/isascrawler/index.html` exists.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/projects/isascrawler/page.tsx
@@ -336,7 +336,7 @@ export function jointStateAt(t: number): CrawlerState
 
 Intro: `t` in `[0, 2 * PHASE_SECONDS)` plays keyframes 0→1→2 (rest pose → trunk up → middle up); after that, time folds modulo `CYCLE_SECONDS` = `(keyframes.length - 2) * PHASE_SECONDS` into the loop segments 2→3, 3→4, 4→5, 5→6, 6→7, 7→2.
 
-- [ ] **Step 1: Write failing tests** (`app/components/isascrawler/__tests__/gait-engine.test.ts`)
+- [x] **Step 1: Write failing tests** (`app/components/isascrawler/__tests__/gait-engine.test.ts`)
 
 ```ts
 import { describe, expect, it } from 'vitest'
@@ -418,12 +418,12 @@ describe('jointStateAt', () => {
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `pnpm vitest run app/components/isascrawler/__tests__/gait-engine.test.ts`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement `gait-engine.ts`**
+- [x] **Step 3: Implement `gait-engine.ts`**
 
 Pure TS, no imports. Keyframes exactly per the table; `jointStateAt`:
 
@@ -452,12 +452,12 @@ export const FORWARD_GAIT = {
 
 `jointStateAt(t)`: if `t < 2 * PHASE_SECONDS`, interpolate through keyframes 0→1→2 (`u` within each phase). Otherwise fold `t - 2 * PHASE_SECONDS` modulo `CYCLE_SECONDS` (segments 2→3 … 6→7 plus wrap 7→2); the wrap segment interpolates keyframe 7 → keyframe 2. Linear interpolation of every scalar field; return fresh objects (no mutation of keyframes).
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `pnpm vitest run app/components/isascrawler/__tests__/gait-engine.test.ts`
 Expected: PASS (all 8).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/components/isascrawler
@@ -466,19 +466,19 @@ git commit -m "add ISAScrawler gait engine with thesis moves1 keyframes"
 
 ### Task 5: Install three.js
 
-- [ ] **Step 1: Install**
+- [x] **Step 1: Install**
 
 ```bash
 pnpm add three
 pnpm add -D @types/three
 ```
 
-- [ ] **Step 2: Verify the gate still passes**
+- [x] **Step 2: Verify the gate still passes**
 
 Run: `pnpm check`
 Expected: green (nothing imports three yet).
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add package.json pnpm-lock.yaml
@@ -529,7 +529,7 @@ export function applyCrawlerState(parts: CrawlerParts, state: CrawlerState): voi
 
 `applyCrawlerState()` maps mm state → positions: `trunk.position.y = DIMS.trunk.restHeight + state.trunkLift`, and for each leg `L`: `parts[L].position.x = slotX(L) + state[L].x`, `parts[L].position.y = state[L].lift`. No rotation math in v1 — the sandwich joints are sliding joints, so translation is the faithful mapping.
 
-- [ ] **Step 1: Write failing tests**
+- [x] **Step 1: Write failing tests**
 
 ```ts
 import { describe, expect, it } from 'vitest'
@@ -580,13 +580,13 @@ describe('applyCrawlerState', () => {
 })
 ```
 
-- [ ] **Step 2: Run tests to verify they fail** — module not found.
+- [x] **Step 2: Run tests to verify they fail** — module not found.
 
-- [ ] **Step 3: Implement `model.ts`** per the design above. Keep it one file; extract small helpers (`box(w, h, d, color)`, `buildLegSegment(withFoot: boolean)`) inside the module rather than new files.
+- [x] **Step 3: Implement `model.ts`** per the design above. Keep it one file; extract small helpers (`box(w, h, d, color)`, `buildLegSegment(withFoot: boolean)`) inside the module rather than new files.
 
-- [ ] **Step 4: Run tests** — `pnpm vitest run app/components/isascrawler/__tests__/model.test.ts` → PASS.
+- [x] **Step 4: Run tests** — `pnpm vitest run app/components/isascrawler/__tests__/model.test.ts` → PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/components/isascrawler
@@ -602,7 +602,7 @@ git commit -m "add procedural three.js model of the ISAScrawler"
 
 No unit tests for this file (jsdom has no WebGL); it stays thin — all logic already lives in tested modules. Verification is manual + build.
 
-- [ ] **Step 1: Write `Scene.tsx`**
+- [x] **Step 1: Write `Scene.tsx`**
 
 `'use client'` component. Behavior:
 
@@ -615,7 +615,7 @@ No unit tests for this file (jsdom has no WebGL); it stays thin — all logic al
 - Drag-to-orbit: pointer events on the canvas adjust `root.rotation.y` (and clamp a small `rotation.x` range); no OrbitControls import, no zoom.
 - Cleanup on unmount: cancel RAF, disconnect observer, `renderer.dispose()`, dispose geometries/materials via `scene.traverse`.
 
-- [ ] **Step 2: Embed in the page**
+- [x] **Step 2: Embed in the page**
 
 `next/dynamic` with `ssr: false` is a build error inside a Server Component in Next 16, so use a tiny client wrapper (same pattern as the terminal's `ClientTerminalWrapper`). Create `app/components/isascrawler/ClientSceneWrapper.tsx`:
 
@@ -648,16 +648,16 @@ import CrawlerScene from '@/app/components/isascrawler/ClientSceneWrapper'
       </figure>
 ```
 
-- [ ] **Step 3: Verify in the browser**
+- [x] **Step 3: Verify in the browser**
 
 Run: `pnpm dev`, open `/projects/isascrawler`. Check: gait loops smoothly and matches the thesis sequence (trunk up → middle steps → front/rear lift while trunk advances); drag orbits; leaving the viewport pauses the RAF (check via performance panel or a console counter); OS reduced-motion setting yields a static model.
 
-- [ ] **Step 4: Verify the export**
+- [x] **Step 4: Verify the export**
 
 Run: `pnpm pre-deploy`
 Expected: build green. Confirm three.js is NOT in the shared/homepage JS: inspect `pnpm build` output — the three chunk should be attributed to `/projects/isascrawler` only.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/components/isascrawler app/projects/isascrawler/page.tsx
@@ -666,11 +666,11 @@ git commit -m "add gait-animated three.js replica to ISAScrawler page"
 
 ### Task 8: Final gate
 
-- [ ] **Step 1: Full check + build**
+- [x] **Step 1: Full check + build**
 
 Run: `pnpm pre-deploy`
 Expected: lint, type-check, all tests, and static export all green.
 
-- [ ] **Step 2: Review the diff as a whole** — no stray files, no changes outside `lib/projects.ts` + new files, archive folder untouched.
+- [x] **Step 2: Review the diff as a whole** — no stray files, no changes outside `lib/projects.ts` + new files, archive folder untouched.
 
-- [ ] **Step 3: Ask Farhad to review the page copy and the replica's look before any deploy.** Deployment itself is out of scope for this plan (v2 work owns it).
+- [x] **Step 3: Ask Farhad to review the page copy and the replica's look before any deploy.** Deployment itself is out of scope for this plan (v2 work owns it).

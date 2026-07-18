@@ -1,0 +1,65 @@
+/* ISAScrawler writeup — self-contained route styles.
+ *
+ * The repo's Tailwind pipeline currently generates no utility classes
+ * (v3 directives against the v4 PostCSS plugin), so this page styles
+ * itself the way the quiet homepage does: semantic classes + the theme
+ * tokens from globals.css (--fg / --muted / --accent / --border).
+ * Values mirror the .home block: 68ch centered column, same padding
+ * rhythm, 0.95rem / 1.75 body text. Font family inherits from body.
+ */
+
+.project-page {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.project-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.project-meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.project-intro {
+  margin: 2rem 0 0;
+}
+
+.project-heading {
+  margin: 2.5rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.project-para {
+  margin: 0.75rem 0 0;
+}
+
+.project-figure {
+  margin: 2rem 0 0; /* resets the browser's default figure side margins */
+}
+
+.project-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.project-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.project-back {
+  margin-top: 3.5rem;
+  font-size: 0.85rem;
+}
