@@ -60,7 +60,7 @@ Update both this table AND the phase file's status header at phase start and exi
 
 ## Sequencing and gates
 
-Phase 1 first; phases 2 and 3 can run in either order (or parallel) after it; 4 after 2+3; 5 last. Every phase exits green (`pnpm check`) and committed. Phase 4 contains the one human gate: **Farhad supplies 3–6 seed photos** before its second half. Phase 5 ends with the full `pnpm pre-deploy` + serve-`out/`-and-click-through gate and the merge of the `editor-chrome` branch (all phases work on that branch).
+Phase 1 first; phases 2 and 3 can run in either order (or parallel) after it; 4 after 2+3; 5 last. Every phase exits green (`pnpm check`) and committed. No human gates: phase 4 seeds with generated Monokai-gradient placeholders (real photos swap in later via manifest edit alone). Phase 5 ends with the full `pnpm pre-deploy` + serve-`out/`-and-click-through gate and the merge of the `editor-chrome` branch (all phases work on that branch).
 
 ## Open risks
 
