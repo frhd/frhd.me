@@ -1,10 +1,11 @@
 /**
- * Theme selection shared by the no-flash inline script (see app/layout.tsx),
- * the manual toggle, and the CSS token system in globals.css.
+ * Theme plumbing shared by the no-flash inline script (see app/layout.tsx)
+ * and the manual toggle (app/components/home/ThemeToggle.tsx).
  *
- * A manual choice persisted to localStorage always wins; otherwise the OS
- * `prefers-color-scheme` decides. Keeping the decision here as one pure
- * function lets it be unit-tested without touching the DOM.
+ * The decision rule lives in exactly one shipped place: the script string
+ * built by `buildThemeScript`. A stored manual choice wins; otherwise the OS
+ * `prefers-color-scheme` decides. The tests eval the emitted script under a
+ * mocked DOM, so what is verified is literally what runs in <head>.
  */
 
 export type Theme = 'light' | 'dark'
@@ -12,17 +13,20 @@ export type Theme = 'light' | 'dark'
 /** localStorage key holding the user's manual light/dark choice, if any. */
 export const THEME_STORAGE_KEY = 'frhd-theme'
 
-/** True when `value` is a valid persisted theme. */
-export function isTheme(value: unknown): value is Theme {
-  return value === 'light' || value === 'dark'
-}
-
 /**
- * Resolve the effective theme. A stored manual choice wins over the system
- * preference; anything else (unset or garbage) falls back to the system,
- * where `prefersDark` is the value of `prefers-color-scheme: dark`.
+ * Source of the inline no-flash script. It must run before first paint, so
+ * app/layout.tsx injects it into <head> via dangerouslySetInnerHTML
+ * (next/script would run too late). The try/catch keeps a broken or blocked
+ * localStorage from taking the page down; the CSS `prefers-color-scheme`
+ * fallback in globals.css then still applies.
  */
-export function resolveTheme(stored: string | null, prefersDark: boolean): Theme {
-  if (isTheme(stored)) return stored
-  return prefersDark ? 'dark' : 'light'
+export function buildThemeScript(): string {
+  return (
+    '(function(){try{' +
+    `var s=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});` +
+    'var d=window.matchMedia("(prefers-color-scheme: dark)").matches;' +
+    'var t=(s==="light"||s==="dark")?s:(d?"dark":"light");' +
+    'document.documentElement.setAttribute("data-theme",t);' +
+    '}catch(e){}})();'
+  )
 }

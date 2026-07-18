@@ -13,6 +13,8 @@
   --border: #e6e5dd;
 }
 
+/* NOTE: these dark values are intentionally duplicated in the
+   prefers-color-scheme fallback block below — keep both in sync. */
 :root[data-theme="dark"] {
   --bg: #121212;
   --fg: #eae8e2;
@@ -22,7 +24,9 @@
 }
 
 /* Fallback for the (rare) no-JS case where the inline script never sets
-   data-theme: follow the OS preference. */
+   data-theme: follow the OS preference. Duplicates the dark token values
+   from [data-theme="dark"] above (CSS can't share a selector across a media
+   query boundary) — any change there must be mirrored here. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
     --bg: #121212;

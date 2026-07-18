@@ -1,7 +1,8 @@
-import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { THEME_STORAGE_KEY } from '@/lib/theme'
+import { setPrefersDark } from '@/test/match-media-mock'
 
 import ThemeToggle from '../ThemeToggle'
 
@@ -33,6 +34,26 @@ describe('ThemeToggle', () => {
     fireEvent.click(screen.getByRole('button'))
     expect(document.documentElement.getAttribute('data-theme')).toBe('light')
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe('light')
+  })
+
+  it('follows OS theme changes while no manual choice is stored', () => {
+    document.documentElement.setAttribute('data-theme', 'light')
+    render(<ThemeToggle />)
+
+    act(() => setPrefersDark(true))
+    expect(document.documentElement.getAttribute('data-theme')).toBe('dark')
+
+    act(() => setPrefersDark(false))
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
+  })
+
+  it('ignores OS theme changes once a manual choice is stored', () => {
+    document.documentElement.setAttribute('data-theme', 'light')
+    localStorage.setItem(THEME_STORAGE_KEY, 'light')
+    render(<ThemeToggle />)
+
+    act(() => setPrefersDark(true))
+    expect(document.documentElement.getAttribute('data-theme')).toBe('light')
   })
 
   it('exposes an accessible label describing the target theme', () => {

@@ -1,35 +1,64 @@
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { isTheme, resolveTheme } from '../theme'
+import { setPrefersDark } from '@/test/match-media-mock'
 
-describe('resolveTheme', () => {
-  it('honors a stored light choice over the system preference', () => {
-    expect(resolveTheme('light', true)).toBe('light')
+import { buildThemeScript, THEME_STORAGE_KEY } from '../theme'
+
+/**
+ * These tests eval the exact script string that app/layout.tsx injects into
+ * <head>, so the shipped no-flash behavior itself is what is verified.
+ */
+function runThemeScript(): string | null {
+  window.eval(buildThemeScript())
+  return document.documentElement.getAttribute('data-theme')
+}
+
+describe('buildThemeScript', () => {
+  beforeEach(() => {
+    localStorage.clear()
+    document.documentElement.removeAttribute('data-theme')
   })
 
-  it('honors a stored dark choice over the system preference', () => {
-    expect(resolveTheme('dark', false)).toBe('dark')
+  it('honors a stored light choice over a dark system preference', () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'light')
+    setPrefersDark(true)
+    expect(runThemeScript()).toBe('light')
+  })
+
+  it('honors a stored dark choice over a light system preference', () => {
+    localStorage.setItem(THEME_STORAGE_KEY, 'dark')
+    setPrefersDark(false)
+    expect(runThemeScript()).toBe('dark')
   })
 
   it('falls back to the system preference (dark) when nothing is stored', () => {
-    expect(resolveTheme(null, true)).toBe('dark')
+    setPrefersDark(true)
+    expect(runThemeScript()).toBe('dark')
   })
 
   it('falls back to the system preference (light) when nothing is stored', () => {
-    expect(resolveTheme(null, false)).toBe('light')
+    setPrefersDark(false)
+    expect(runThemeScript()).toBe('light')
   })
 
   it('ignores an invalid stored value and uses the system preference', () => {
-    expect(resolveTheme('chartreuse', true)).toBe('dark')
+    localStorage.setItem(THEME_STORAGE_KEY, 'chartreuse')
+    setPrefersDark(true)
+    expect(runThemeScript()).toBe('dark')
   })
-})
 
-describe('isTheme', () => {
-  it('accepts only the two valid themes', () => {
-    expect(isTheme('light')).toBe(true)
-    expect(isTheme('dark')).toBe(true)
-    expect(isTheme('')).toBe(false)
-    expect(isTheme(null)).toBe(false)
-    expect(isTheme('DARK')).toBe(false)
+  it('swallows storage failures instead of throwing before first paint', () => {
+    const getItem = vi
+      .spyOn(Storage.prototype, 'getItem')
+      .mockImplementation(() => {
+        throw new Error('storage disabled')
+      })
+    try {
+      expect(() => window.eval(buildThemeScript())).not.toThrow()
+      // The CSS prefers-color-scheme fallback takes over in this case.
+      expect(document.documentElement.getAttribute('data-theme')).toBeNull()
+    } finally {
+      getItem.mockRestore()
+    }
   })
 })

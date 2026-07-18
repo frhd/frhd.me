@@ -1,20 +1,16 @@
 import '@testing-library/jest-dom'
-import { vi } from 'vitest'
+import { beforeEach, vi } from 'vitest'
 
-// jsdom does not implement matchMedia; provide a minimal stub so components
-// that read the OS color-scheme preference (e.g. ThemeToggle) can mount.
-if (typeof window !== 'undefined' && !window.matchMedia) {
-  window.matchMedia = (query: string): MediaQueryList =>
-    ({
-      matches: false,
-      media: query,
-      onchange: null,
-      addEventListener: () => {},
-      removeEventListener: () => {},
-      addListener: () => {},
-      removeListener: () => {},
-      dispatchEvent: () => false,
-    }) as unknown as MediaQueryList
+import { installMatchMediaMock, resetMatchMediaMock } from './match-media-mock'
+
+// jsdom does not implement matchMedia; install a controllable mock so tests
+// can both mount components that read the OS color-scheme preference and
+// drive preference changes (see test/match-media-mock.ts).
+if (typeof window !== 'undefined') {
+  installMatchMediaMock()
+  beforeEach(() => {
+    resetMatchMediaMock()
+  })
 }
 
 // Mock the qrcode library for tests

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
-import { THEME_STORAGE_KEY } from "@/lib/theme";
+import { buildThemeScript } from "@/lib/theme";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -22,12 +22,10 @@ export const metadata: Metadata = {
     "farhad omid — software engineer. tools, toys, and long-running experiments.",
 };
 
-// Runs before first paint to avoid a flash of the wrong theme. Mirrors
-// resolveTheme() in lib/theme.ts: a stored manual choice wins, else the OS
-// preference. next/script can't run this early, so it must be inline.
-const themeScript = `(function(){try{var k=${JSON.stringify(
-  THEME_STORAGE_KEY,
-)};var s=localStorage.getItem(k);var d=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=(s==="light"||s==="dark")?s:(d?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
+// Runs before first paint to avoid a flash of the wrong theme: a stored
+// manual choice wins, else the OS preference. Built (and unit-tested) in
+// lib/theme.ts; next/script can't run this early, so it must be inline.
+const themeScript = buildThemeScript();
 
 export default function RootLayout({
   children,
