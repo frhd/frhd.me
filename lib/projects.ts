@@ -1,17 +1,18 @@
 /**
  * Curated project list for the `## work` section of the homepage.
  *
- * `slug` is only set when a `/projects/<slug>` writeup page exists. No writeups
- * exist in v1, so every entry links straight out via `href`.
+ * `slug` is only set when a `/projects/<slug>` writeup page exists, in which
+ * case the work list links there instead of out via `href`. Every entry must
+ * have at least one of `href` or `slug`.
  */
 export interface Project {
   /** Short project name. */
   name: string
   /** One-line description. */
   oneLiner: string
-  /** External link (GitHub, demo, etc.). */
-  href: string
-  /** Present only when a longer writeup page exists. */
+  /** External link (GitHub, demo, etc.). Omitted when the project only has an internal writeup. */
+  href?: string
+  /** Present only when a `/projects/<slug>` writeup page exists; the work list links there. */
   slug?: string
 }
 
@@ -36,5 +37,11 @@ export const projects: Project[] = [
     name: 'tetris-rl-nn',
     oneLiner: 'teaching a neural net to play tetris',
     href: 'https://github.com/frhd/tetris-rl-nn',
+  },
+  {
+    name: 'ISAScrawler',
+    oneLiner:
+      'rebuilt a caterpillar swarm robot — mechanics, electronics, firmware (Uni Karlsruhe, 2007)',
+    slug: 'isascrawler',
   },
 ]

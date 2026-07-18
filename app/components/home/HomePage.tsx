@@ -13,7 +13,10 @@ export interface HomePageProps {
 }
 
 function projectHref(project: Project): string {
-  return project.slug ? `/projects/${project.slug}/` : project.href
+  if (project.slug) return `/projects/${project.slug}/`
+  if (project.href) return project.href
+  // Every entry must have slug or href; the throw enforces this at build time.
+  throw new Error(`project "${project.name}" has neither slug nor href`)
 }
 
 export default function HomePage({ posts, projects }: HomePageProps) {
