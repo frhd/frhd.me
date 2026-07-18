@@ -75,6 +75,14 @@ describe('buildRssXml', () => {
     expect(xml).toContain('<pubDate>Wed, 01 Jan 2025 00:00:00 GMT</pubDate>')
   })
 
+  it('produces a valid channel with zero items for an empty post list', () => {
+    const xml = buildRssXml([])
+    expect(xml).toMatch(/^<\?xml version="1\.0" encoding="UTF-8"\?>/)
+    expect(xml).toContain('<title>frhd.me</title>')
+    expect(xml).toContain('</channel>')
+    expect(xml).not.toContain('<item>')
+  })
+
   it('escapes XML metacharacters in interpolated values', () => {
     const xml = buildRssXml([
       {

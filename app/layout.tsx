@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
+import { SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { buildThemeScript } from "@/lib/theme";
 
 const geistMono = localFont({
@@ -17,9 +18,8 @@ const geistSans = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "frhd.me",
-  description:
-    "farhad omid — software engineer. tools, toys, and long-running experiments.",
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
 };
 
 // Runs before first paint to avoid a flash of the wrong theme: a stored

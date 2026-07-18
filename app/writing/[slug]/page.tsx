@@ -1,6 +1,9 @@
+import { cache } from 'react'
+
 import type { Metadata } from 'next'
 import Link from 'next/link'
 
+import ThemeToggle from '@/app/components/home/ThemeToggle'
 import { renderMdx } from '@/lib/mdx'
 import { getAllPosts, getPost } from '@/lib/posts'
 import { SITE_TITLE } from '@/lib/site'
@@ -11,6 +14,10 @@ import { SITE_TITLE } from '@/lib/site'
  * server component: load the post, compile its MDX body, and lay it out in the
  * same quiet one-column style as the homepage.
  */
+
+// Deduplicate the file read: generateMetadata and PostPage both need the post,
+// and React's cache() lets them share one getPost call per render.
+const getCachedPost = cache(getPost)
 
 interface PostPageParams {
   slug: string
@@ -26,7 +33,7 @@ export async function generateMetadata({
   params: Promise<PostPageParams>
 }): Promise<Metadata> {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = getCachedPost(slug)
   return {
     title: `${post.title} — ${SITE_TITLE}`,
     description: post.summary,
@@ -39,21 +46,24 @@ export default async function PostPage({
   params: Promise<PostPageParams>
 }) {
   const { slug } = await params
-  const post = getPost(slug)
+  const post = getCachedPost(slug)
   const body = await renderMdx(post.content)
 
   return (
-    <main className="post">
-      <Link className="post-back" href="/">
-        ← frhd.me
-      </Link>
-      <article>
-        <header className="post-header">
-          <h1 className="post-title">{post.title}</h1>
-          <p className="post-date">{post.date}</p>
-        </header>
-        <div className="post-body">{body}</div>
-      </article>
-    </main>
+    <>
+      <ThemeToggle />
+      <main className="post">
+        <Link className="post-back" href="/">
+          ← frhd.me
+        </Link>
+        <article>
+          <header className="post-header">
+            <h1 className="post-title">{post.title}</h1>
+            <p className="post-date">{post.date}</p>
+          </header>
+          <div className="post-body">{body}</div>
+        </article>
+      </main>
+    </>
   )
 }
