@@ -25,17 +25,33 @@
   --accent: #1a56db;
   --border: #e6e5dd;
   --code-bg: #f1f0ea;
+  --chrome-bg: #f4f3ec;
+  --chrome-fg: #3d3d36;
+  --active-bg: #e9e7db;
+  --syn-keyword: #cf222e;
+  --syn-string: #0a3069;
+  --syn-function: #1a56db;
+  --syn-constant: #953800;
+  --syn-comment: #6b6b62;
 }
 
 /* NOTE: these dark values are intentionally duplicated in the
    prefers-color-scheme fallback block below — keep both in sync. */
 :root[data-theme="dark"] {
-  --bg: #121212;
-  --fg: #eae8e2;
-  --muted: #8b897f;
-  --accent: #7cb0ff;
-  --border: #2a2a27;
-  --code-bg: #1f1f1d;
+  --bg: #272822;
+  --fg: #f8f8f2;
+  --muted: #a59f85;
+  --accent: #66d9ef;
+  --border: #3e3d32;
+  --code-bg: #1e1f1c;
+  --chrome-bg: #1e1f1c;
+  --chrome-fg: #c8c5b6;
+  --active-bg: #3e3d32;
+  --syn-keyword: #f92672;
+  --syn-string: #e6db74;
+  --syn-function: #a6e22e;
+  --syn-constant: #ae81ff;
+  --syn-comment: #75715e;
 }
 
 /* Fallback for the (rare) no-JS case where the inline script never sets
@@ -44,12 +60,20 @@
    query boundary) — any change there must be mirrored here. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --bg: #121212;
-    --fg: #eae8e2;
-    --muted: #8b897f;
-    --accent: #7cb0ff;
-    --border: #2a2a27;
-    --code-bg: #1f1f1d;
+    --bg: #272822;
+    --fg: #f8f8f2;
+    --muted: #a59f85;
+    --accent: #66d9ef;
+    --border: #3e3d32;
+    --code-bg: #1e1f1c;
+    --chrome-bg: #1e1f1c;
+    --chrome-fg: #c8c5b6;
+    --active-bg: #3e3d32;
+    --syn-keyword: #f92672;
+    --syn-string: #e6db74;
+    --syn-function: #a6e22e;
+    --syn-constant: #ae81ff;
+    --syn-comment: #75715e;
   }
 }
 
