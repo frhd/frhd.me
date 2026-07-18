@@ -2,7 +2,7 @@
 
 > Part of [frhd.me → editor-chrome](master.md). See index for invariants.
 
-**Status:** in progress
+**Status:** done
 
 **Depends on:** 1
 
