@@ -94,36 +94,11 @@ body {
   padding: 3rem 1.5rem 5rem;
 }
 
-.site-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin: 0 0 2.5rem;
-}
-
 .site-name {
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: -0.01em;
   margin: 0;
-}
-
-.site-nav {
-  display: flex;
-  gap: 1.1rem;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.site-nav a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.site-nav a:hover {
-  color: var(--fg);
 }
 
 /* --- Prose (serif long-form) --- */
@@ -137,6 +112,15 @@ body {
 
 .prose p {
   margin: 0 0 1rem;
+}
+
+.prose h1 {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 1.25rem;
+  color: var(--fg);
 }
 
 .prose h2 {
@@ -220,109 +204,6 @@ html:has(.terminal-page) body {
   color: var(--fg);
 }
 
-/* Single column on mobile, two even columns from tablet up. */
-.home-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 3rem;
-}
-
-@media (min-width: 768px) {
-  .home-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-  }
-}
-
-/* Right column stacks writing / now / elsewhere. */
-.home-col {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
-}
-
-.home-heading {
-  margin: 0 0 1rem;
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--fg);
-}
-
-.entry {
-  margin: 0 0 1.5rem;
-}
-
-.entry:last-child {
-  margin-bottom: 0;
-}
-
-/* Title + date share a baseline row; the title keeps its own flex item so a
-   long title wraps normally instead of the date breaking it mid-line. */
-.entry-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 1rem;
-}
-
-.entry-title {
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.entry-title:hover {
-  text-decoration: underline;
-}
-
-.entry-date {
-  flex: none;
-  font-family: var(--font-geist-sans), system-ui, sans-serif;
-  font-size: 0.8rem;
-  color: var(--muted);
-  white-space: nowrap;
-}
-
-.entry-blurb {
-  margin: 2px 0 0;
-  font-family: var(--font-serif);
-  font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.home-now,
-.home-elsewhere {
-  margin: 0;
-  font-family: var(--font-serif);
-  font-size: 0.95rem;
-  line-height: 1.6;
-  color: var(--fg);
-}
-
-.home-now a,
-.home-elsewhere a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-.home-now a:hover,
-.home-elsewhere a:hover {
-  text-decoration: underline;
-}
-
-.home-sep {
-  color: var(--muted);
-}
-
-.home-footer {
-  margin-top: 4rem;
-}
-
 .home-hint {
   font-family: var(--font-geist-mono), monospace;
   font-size: 0.8rem;
@@ -332,15 +213,16 @@ html:has(.terminal-page) body {
 
 /* --- Writing post ---------------------------------------------------- */
 
-/* Centered reading column. The rendered MDX body uses the shared `.prose`
-   class (serif long-form, sans headings, mono code) — the container only owns
-   the column width, padding, and the title/date/back metadata. */
+/* The editor pane owns the reading column (width, left-alignment, padding), so
+   the post wrapper no longer self-frames — otherwise posts would double-frame
+   and center inside the left-aligned pane. It just groups the header + prose.
+   The rendered MDX body uses the shared `.prose` class (serif long-form, sans
+   headings, mono code). */
 .post {
-  max-width: 42rem;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
+  padding: 0;
 }
 
+/* Still used by the 404's "← frhd.me" link. */
 .post-back {
   display: inline-block;
   margin: 0 0 2.75rem;

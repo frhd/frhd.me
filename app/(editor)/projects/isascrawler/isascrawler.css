@@ -7,10 +7,11 @@
  * the Benne serif to match the `.prose` treatment used elsewhere.
  */
 
+/* The editor pane owns the reading column (width, left-alignment, padding);
+   this wrapper only groups the writeup so it doesn't double-frame inside the
+   pane. */
 .project-page {
-  max-width: 42rem;
-  margin: 0 auto;
-  padding: 4rem 1.5rem 6rem;
+  padding: 0;
 }
 
 .project-title {
@@ -61,18 +62,4 @@
   margin-top: 0.5rem;
   font-size: 0.85rem;
   color: var(--muted);
-}
-
-.project-back {
-  margin-top: 3.5rem;
-  font-size: 0.85rem;
-}
-
-.project-back a {
-  color: var(--muted);
-  text-decoration: none;
-}
-
-.project-back a:hover {
-  color: var(--fg);
 }

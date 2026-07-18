@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import CrawlerScene from '@/app/components/isascrawler/ClientSceneWrapper'
 import './isascrawler.css'
 
@@ -96,10 +95,6 @@ export default function IsascrawlerPage() {
         that the second version of anything is mostly an apology to the
         first. The crawler above is rebuilt in code from the thesis
         drawings, walking its original gait.
-      </p>
-
-      <p className="project-back">
-        <Link href="/">← home</Link>
       </p>
     </main>
   )

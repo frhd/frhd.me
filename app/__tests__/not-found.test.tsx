@@ -8,10 +8,14 @@ describe('NotFound', () => {
     cleanup()
   })
 
-  it('renders the quiet 404 line', () => {
+  it('renders the editor-flavored 404 line', () => {
     render(<NotFound />)
-    expect(screen.getByRole('heading', { name: '404' })).toBeInTheDocument()
-    expect(screen.getByText(/nothing here/i)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'no such file' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/E404: this path doesn't resolve/i),
+    ).toBeInTheDocument()
   })
 
   it('links back home', () => {
