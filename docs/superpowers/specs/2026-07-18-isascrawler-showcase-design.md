@@ -29,12 +29,17 @@ Content, in order:
 4. **Body sections** (~300–500 words total): deficits of the predecessor; the redesign (actuation, sandwich joints, electronics/radio, firmware and coordinate-based path mode); short closing reflection.
 5. **1–2 detail photos** in the body (sandwich joint and/or leg module).
 
-The `## work` list on the homepage gets one entry: name + one-liner, `href` pointing at `/projects/isascrawler` (uses the `slug` field from the v2 projects data file).
+The `## work` list on the homepage gets one entry in the projects data file (`lib/projects.ts`): name + one-liner, with `slug: 'isascrawler'` set and the homepage renderer linking to `/projects/<slug>` when `slug` is present (`href` stays reserved for external links; its doc comment is updated accordingly).
+
+The page itself is a hand-authored `app/projects/isascrawler/page.tsx` — not MDX. The v2 MDX pipeline is for writing posts only; this page needs a React component embed anyway.
+
+Photos are delivered as plain `<img>` tags (Next image optimization is unavailable under static export; the images are pre-resized and compressed). All photos get descriptive alt text.
 
 ## 3D replica
 
 - **Geometry is procedural** — built in code from boxes, plates, and cylinders; no modeling-tool asset pipeline. Source of truth for proportions: the thesis (three ~50 mm segment modules under a ~16 cm top plate, per `Schema.png` and the text) and the prototype photos for layout and color (copper PCB plates, silver LiPo pouch, blue XBee board with antenna, black servos, blue leg rods, yellow feet).
-- **Gait animation** encodes the thesis's documented phase sequences (forward: 9 phases a–i; sideways: 8; rotation: 8) as keyframed joint states with interpolation. Forward gait plays by default on a loop.
+- **Gait animation** encodes the thesis's documented phase sequences (forward: 9 phases a–i; sideways: 8; rotation: 8) as keyframed joint states with interpolation. Forward gait plays by default on a loop. Source for transcription: figures `moves1`–`moves3` and their captions in the "Neuentwicklung → Neuer Lokomotionsansatz" section of `Mittelteil.tex` / `Hauptdatei.pdf` in the archive folder.
+- **Reduced motion:** when `prefers-reduced-motion` is set, the gait loop and idle rotation do not autoplay; the model renders static (drag-to-orbit still works).
 - **Architecture** follows the repo's existing engine pattern (pure logic separated from rendering, as in `games/*-engine.ts`):
   - `isascrawler/model.ts` — dimensions/colors constants and mesh-building functions (input: constants; output: a three.js `Group`).
   - `isascrawler/gait-engine.ts` — pure TypeScript, no three.js import: phase definitions and a `jointStateAt(t)` function returning joint angles/offsets. Unit-tested (phase order, interpolation continuity, loop wraparound).
