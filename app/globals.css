@@ -2,19 +2,138 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #000000;
-  --foreground: #ededed;
+/* Theme tokens for the quiet site. The terminal (see app/components/terminal)
+   sets its own full-screen bg-black container and does not read these. */
+:root,
+:root[data-theme="light"] {
+  --bg: #fcfcf9;
+  --fg: #1b1b19;
+  --muted: #6b6b62;
+  --accent: #1a56db;
+  --border: #e6e5dd;
+}
+
+:root[data-theme="dark"] {
+  --bg: #121212;
+  --fg: #eae8e2;
+  --muted: #8b897f;
+  --accent: #7cb0ff;
+  --border: #2a2a27;
+}
+
+/* Fallback for the (rare) no-JS case where the inline script never sets
+   data-theme: follow the OS preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: #121212;
+    --fg: #eae8e2;
+    --muted: #8b897f;
+    --accent: #7cb0ff;
+    --border: #2a2a27;
+  }
 }
 
 html,
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--fg);
+  background: var(--bg);
   font-family: var(--font-geist-mono), monospace;
+}
+
+/* --- Quiet homepage -------------------------------------------------- */
+
+.home {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: 4rem 1.5rem 6rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
+}
+
+.home-name {
+  margin: 0 0 1.25rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.home-intro {
+  margin: 0 0 2.75rem;
+  color: var(--fg);
+}
+
+.home-section {
+  margin: 0 0 2.25rem;
+}
+
+.home-heading {
+  margin: 0 0 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.home-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-item {
+  margin: 0 0 0.35rem;
+}
+
+.home-dim {
+  color: var(--muted);
+}
+
+.home-date {
+  white-space: nowrap;
+}
+
+.home-now,
+.home-elsewhere {
+  margin: 0;
+}
+
+.home a,
+.home-link {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.home a:hover,
+.home-link:hover {
+  text-decoration: underline;
+}
+
+.home-footer {
+  margin-top: 3.5rem;
+}
+
+.home-hint {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.2rem 0.5rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.theme-toggle:hover {
+  color: var(--fg);
+  border-color: var(--muted);
 }
 
 @layer utilities {

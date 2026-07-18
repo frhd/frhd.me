@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import Script from "next/script";
 import "./globals.css";
+import { THEME_STORAGE_KEY } from "@/lib/theme";
 
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
@@ -9,10 +10,24 @@ const geistMono = localFont({
   weight: "100 900",
 });
 
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+
 export const metadata: Metadata = {
-  title: "frhd.me | Terminal",
-  description: "Interactive terminal portfolio - Explore through commands",
+  title: "frhd.me",
+  description:
+    "farhad omid — software engineer. tools, toys, and long-running experiments.",
 };
+
+// Runs before first paint to avoid a flash of the wrong theme. Mirrors
+// resolveTheme() in lib/theme.ts: a stored manual choice wins, else the OS
+// preference. next/script can't run this early, so it must be inline.
+const themeScript = `(function(){try{var k=${JSON.stringify(
+  THEME_STORAGE_KEY,
+)};var s=localStorage.getItem(k);var d=window.matchMedia("(prefers-color-scheme: dark)").matches;var t=(s==="light"||s==="dark")?s:(d?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -20,9 +35,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body
-        className={`${geistMono.variable} antialiased font-mono`}
+        className={`${geistMono.variable} ${geistSans.variable} antialiased font-mono`}
       >
         {children}
         <Script
