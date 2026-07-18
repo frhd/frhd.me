@@ -86,8 +86,10 @@ describe('getPost', () => {
     expect(post.content.trim()).toBe('middle body')
   })
 
-  it('throws for an unknown slug', () => {
-    expect(() => getPost('does-not-exist', fixtureDir)).toThrow()
+  it('throws a clean domain error for an unknown slug', () => {
+    expect(() => getPost('does-not-exist', fixtureDir)).toThrow(
+      'Post "does-not-exist" not found.',
+    )
   })
 })
 
@@ -133,6 +135,12 @@ describe('parsePost validation', () => {
     expect(() =>
       parsePost('bad', `---\ntitle: t\ndate: "2026-13-01"\n---${body}`),
     ).toThrow(/date/i)
+  })
+
+  it('tags syntactically broken YAML frontmatter with the slug', () => {
+    expect(() =>
+      parsePost('bad', `---\ntitle: "unclosed\ndate: [oops\n---${body}`),
+    ).toThrow(/Post "bad"/)
   })
 
   it('rejects a non-string summary', () => {

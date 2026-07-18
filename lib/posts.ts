@@ -71,7 +71,14 @@ function readFrontmatter(raw: string): { data: Record<string, unknown>; content:
  * slug-tagged error on any invalid or missing required frontmatter.
  */
 export function parsePost(slug: string, raw: string): Post {
-  const { data, content } = readFrontmatter(raw)
+  let data: Record<string, unknown>
+  let content: string
+  try {
+    ;({ data, content } = readFrontmatter(raw))
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error)
+    throw new Error(`Post "${slug}": invalid frontmatter YAML. ${reason}`)
+  }
   const { title, date, summary } = data
 
   if (typeof title !== 'string' || title.trim() === '') {
@@ -115,7 +122,6 @@ export function getAllPosts(dir: string = POSTS_DIR): PostMeta[] {
     const raw = fs.readFileSync(path.join(dir, filename), 'utf8')
     // Discard the body; the listing only needs metadata.
     const { content: _body, ...meta } = parsePost(slug, raw)
-    void _body
     return meta
   })
 
@@ -130,6 +136,14 @@ export function getAllPosts(dir: string = POSTS_DIR): PostMeta[] {
  * missing or its frontmatter is invalid.
  */
 export function getPost(slug: string, dir: string = POSTS_DIR): Post {
-  const raw = fs.readFileSync(path.join(dir, `${slug}${POST_EXTENSION}`), 'utf8')
+  let raw: string
+  try {
+    raw = fs.readFileSync(path.join(dir, `${slug}${POST_EXTENSION}`), 'utf8')
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      throw new Error(`Post "${slug}" not found.`)
+    }
+    throw error
+  }
   return parsePost(slug, raw)
 }

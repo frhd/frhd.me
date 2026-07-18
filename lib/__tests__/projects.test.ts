@@ -15,13 +15,12 @@ describe('projects', () => {
     }
   })
 
-  it('only carries a slug when a writeup page exists (none in v1)', () => {
+  it('has a string slug whenever one is present', () => {
     for (const project of projects) {
-      if ('slug' in project && project.slug !== undefined) {
+      if (project.slug !== undefined) {
         expect(typeof project.slug).toBe('string')
+        expect(project.slug).toBeTruthy()
       }
     }
-    // v1 ships no project writeups
-    expect(projects.every((p) => p.slug === undefined)).toBe(true)
   })
 })
