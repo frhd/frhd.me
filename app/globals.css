@@ -6,6 +6,7 @@
 @theme {
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-serif: var(--font-benne), 'Iowan Old Style', Charter, Georgia, serif;
 }
 
 /* Theme tokens for the quiet site. The terminal (see app/components/terminal)
@@ -17,6 +18,7 @@
   --muted: #6b6b62;
   --accent: #1a56db;
   --border: #e6e5dd;
+  --code-bg: #f1f0ea;
 }
 
 /* NOTE: these dark values are intentionally duplicated in the
@@ -27,6 +29,7 @@
   --muted: #8b897f;
   --accent: #7cb0ff;
   --border: #2a2a27;
+  --code-bg: #1f1f1d;
 }
 
 /* Fallback for the (rare) no-JS case where the inline script never sets
@@ -40,6 +43,7 @@
     --muted: #8b897f;
     --accent: #7cb0ff;
     --border: #2a2a27;
+    --code-bg: #1f1f1d;
   }
 }
 
@@ -49,7 +53,118 @@ body {
   padding: 0;
   color: var(--fg);
   background: var(--bg);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* --- Site shell --- */
+
+.site {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 5rem;
+}
+
+.site-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0 0 2.5rem;
+}
+
+.site-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.site-nav {
+  display: flex;
+  gap: 1.1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.site-nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.site-nav a:hover {
+  color: var(--fg);
+}
+
+/* --- Prose (serif long-form) --- */
+
+.prose {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  max-width: 62ch;
+}
+
+.prose p {
+  margin: 0 0 1rem;
+}
+
+.prose h2 {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin: 2rem 0 0.6rem;
+  color: var(--fg);
+}
+
+.prose h3 {
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.prose a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.prose a:hover {
+  text-decoration: underline;
+}
+
+.prose code {
   font-family: var(--font-geist-mono), monospace;
+  font-size: 0.85em;
+  background: var(--code-bg);
+  padding: 0 0.25em;
+  border-radius: 3px;
+}
+
+.prose pre {
+  font-family: var(--font-geist-mono), monospace;
+  background: var(--code-bg);
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  background: none;
+  padding: 0;
+}
+
+.prose blockquote {
+  margin: 1.5rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--border);
+  color: var(--muted);
+}
+
+.prose ul,
+.prose ol {
+  padding-left: 1.4rem;
+  margin: 0 0 1rem;
 }
 
 /* --- Terminal route -------------------------------------------------- */

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Benne } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import TerminalHotkey from "@/app/components/TerminalHotkey";
@@ -16,6 +17,13 @@ const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
   weight: "100 900",
+});
+
+const benne = Benne({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-benne",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -42,7 +50,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body
-        className={`${geistMono.variable} ${geistSans.variable} antialiased font-mono`}
+        className={`${geistMono.variable} ${geistSans.variable} ${benne.variable} antialiased font-mono`}
       >
         <TerminalHotkey />
         {children}
