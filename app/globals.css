@@ -509,6 +509,101 @@ a.tree-row:hover {
   }
 }
 
+/* --- Syntax highlighting (shiki via rehype-pretty-code) --------------- */
+
+/* Each fenced block is wrapped in <figure data-rehype-pretty-code-figure> >
+   <pre> > <code style="display:grid"> with one <span data-line> per line.
+   keepBackground:false means the pane's own --code-bg (from .prose pre) shows
+   through; we only own the token colors and the line-number gutter here. */
+.prose [data-rehype-pretty-code-figure] {
+  margin: 1rem 0;
+}
+
+.prose [data-rehype-pretty-code-figure] pre {
+  margin: 0;
+}
+
+/* Dual-theme tokens: every token carries BOTH palettes as inline CSS vars
+   (--shiki-light / --shiki-dark). Light reads the light var by default; the
+   dark override below just switches which var each token reads — no
+   re-highlighting. Tokens with no var (plain text / defaultLang) fall back to
+   the inherited pane foreground. */
+.prose [data-rehype-pretty-code-figure] [data-line] span {
+  color: var(--shiki-light);
+  font-style: var(--shiki-light-font-style, normal);
+}
+
+/* Dark switch. Like the tokens, this must live in BOTH the explicit
+   [data-theme='dark'] selector AND the no-JS prefers-color-scheme fallback —
+   any change here is mirrored in the @media block below. */
+:root[data-theme='dark'] .prose [data-rehype-pretty-code-figure] [data-line] span {
+  color: var(--shiki-dark);
+  font-style: var(--shiki-dark-font-style, normal);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) .prose [data-rehype-pretty-code-figure] [data-line] span {
+    color: var(--shiki-dark);
+    font-style: var(--shiki-dark-font-style, normal);
+  }
+}
+
+/* Line numbers inside code blocks. Scoped to `pre ... [data-line]` so it only
+   counts fenced-block lines — inline code is bypassed and never gets a
+   [data-line], and this never leaks to the decorative prose gutter. */
+.prose [data-rehype-pretty-code-figure] pre code {
+  counter-reset: line;
+}
+
+.prose [data-rehype-pretty-code-figure] pre code [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1.5rem;
+  margin-right: 1.25rem;
+  text-align: right;
+  color: var(--muted);
+  opacity: 0.55;
+  user-select: none;
+}
+
+/* --- Decorative editor gutter (wide screens) ------------------------- */
+
+/* Sublime-style line numbers down the reading pane: number only the DIRECT
+   children of .prose (paragraphs, headings, the code figure as one block).
+   `> *` keeps it off the code figure's internal [data-line] rows, so a block's
+   lines are never double-numbered. Numbers live in extra pane left-padding,
+   absolutely placed against each block. Wide screens only; absent on mobile. */
+@media (min-width: 1100px) {
+  .editor-doc {
+    padding-left: 4.75rem;
+  }
+
+  .editor-doc .prose {
+    counter-reset: gutter;
+  }
+
+  .editor-doc .prose > * {
+    position: relative;
+  }
+
+  .editor-doc .prose > *::before {
+    counter-increment: gutter;
+    content: counter(gutter);
+    position: absolute;
+    left: -3.5rem;
+    width: 2.5rem;
+    text-align: right;
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 0.72rem;
+    line-height: 1.9;
+    color: var(--muted);
+    opacity: 0.4;
+    user-select: none;
+    pointer-events: none;
+  }
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
