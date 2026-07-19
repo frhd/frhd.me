@@ -42,7 +42,7 @@ v2 ("Monospace Quiet" → editorial serif two-column, spec `docs/superpowers/spe
 | 2 | [phase-2-photos-data.md](phase-2-photos-data.md) | none | done |
 | 3 | [phase-3-editor-shell.md](phase-3-editor-shell.md) | 1 | done |
 | 4 | [phase-4-photos-routes.md](phase-4-photos-routes.md) | 2, 3 | in progress |
-| 5 | [phase-5-syntax-and-polish.md](phase-5-syntax-and-polish.md) | 1–4 | todo |
+| 5 | [phase-5-syntax-and-polish.md](phase-5-syntax-and-polish.md) | 1–4 | done |
 
 Update both this table AND the phase file's status header at phase start and exit.
 
