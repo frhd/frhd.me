@@ -13,7 +13,7 @@ used to be still lives at `/terminal` (press `t` from anywhere).
 - `pnpm build` — runs `scripts/photos.mjs` then `next build` (static export to `out/`).
 - `pnpm photos` — regenerate photo derivatives and materialize photo routes.
 - `pnpm check` — lint + type-check + tests. **Must be green before every commit**
-  (also enforced by a pre-commit hook).
+  (run it yourself — no hook enforces it).
 - `pnpm pre-deploy` — `pnpm check` then `pnpm build`; the ship gate.
 - `pnpm test` / `pnpm test:run` — vitest (watch / once).
 
