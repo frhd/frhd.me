@@ -16,6 +16,10 @@
 # generated photo derivatives (scripts/photos.mjs)
 /public/photos/
 
+# materialized /photos/[year]/ route, copied from photos/_src/ by
+# scripts/photos.mjs only when the manifest has at least one photo
+/app/(editor)/photos/\[year\]/
+
 # production
 /build
 

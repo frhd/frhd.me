@@ -16,10 +16,22 @@ import sharp from 'sharp'
  * manifest starts empty) — this exits 0 quietly rather than failing the
  * build. Derivatives already newer than their source are skipped so repeat
  * builds are fast.
+ *
+ * It also gates the `/photos/<year>/` and `/photos/<year>/<slug>/` App
+ * Router routes (see `syncPhotoRoutes` below): on this Next.js version,
+ * `output: 'export'` throws if a dynamic segment's `generateStaticParams()`
+ * resolves to zero routes, so those routes cannot simply exist with an empty
+ * manifest. The authored source lives in the private `photos/_src/` folder
+ * (Next excludes `_`-prefixed folders from routing), and this script
+ * materializes it as the real `photos/[year]/` route only once at least one
+ * photo original is on disk — otherwise it makes sure the materialized copy
+ * is absent, so Next never discovers the route at all.
  */
 
 const CONTENT_DIR = path.join(process.cwd(), 'content/photos')
 const OUTPUT_DIR = path.join(process.cwd(), 'public/photos')
+const PHOTO_ROUTES_SRC = path.join(process.cwd(), 'app/(editor)/photos/_src/[year]')
+const PHOTO_ROUTES_DEST = path.join(process.cwd(), 'app/(editor)/photos/[year]')
 
 const PHOTO_EXTENSION_PATTERN = /\.(jpe?g|png)$/i
 
@@ -56,9 +68,27 @@ async function processOriginal(year, filename) {
   }
 }
 
+/**
+ * Materializes (or removes) the real `/photos/[year]/` route directory from
+ * the private `_src` template, based on whether any photo original exists.
+ * Always re-copies when present so edits to the `_src` source aren't left
+ * stale in the materialized copy.
+ */
+function syncPhotoRoutes(hasPhotos) {
+  fs.rmSync(PHOTO_ROUTES_DEST, { recursive: true, force: true })
+
+  if (hasPhotos) {
+    fs.cpSync(PHOTO_ROUTES_SRC, PHOTO_ROUTES_DEST, { recursive: true })
+    console.log('photos: registered /photos/[year]/ routes')
+  } else {
+    console.log('photos: manifest empty, /photos/[year]/ routes stay unregistered')
+  }
+}
+
 async function main() {
   if (!fs.existsSync(CONTENT_DIR)) {
     console.log('photos: no content/photos/ directory, skipping.')
+    syncPhotoRoutes(false)
     return
   }
 
@@ -67,15 +97,20 @@ async function main() {
     .filter((entry) => entry.isDirectory())
     .map((entry) => entry.name)
 
+  let hasPhotos = false
+
   for (const year of years) {
     const filenames = fs
       .readdirSync(path.join(CONTENT_DIR, year))
       .filter((name) => PHOTO_EXTENSION_PATTERN.test(name))
 
     for (const filename of filenames) {
+      hasPhotos = true
       await processOriginal(year, filename)
     }
   }
+
+  syncPhotoRoutes(hasPhotos)
 }
 
 main().catch((error) => {
