@@ -37,10 +37,16 @@ export interface PhotoEntry {
 }
 
 /**
- * The site's photos. Empty until Phase 4 seeds it; every real entry must
- * point at an original that actually exists in `content/photos/`.
+ * The site's photos. Every entry must point at an original that actually
+ * exists in `content/photos/` (and vice versa — both directions throw).
+ * After editing, run `pnpm photos` to regenerate derivatives and
+ * materialize the `/photos/<year>/` routes.
  */
-export const photoManifest: PhotoEntry[] = []
+export const photoManifest: PhotoEntry[] = [
+  { year: '2026', slug: 'dusk-gradient', ext: 'jpg', caption: 'dusk, rendered in the editor palette' },
+  { year: '2026', slug: 'monokai-hills', ext: 'jpg', caption: 'hills against a monokai sky' },
+  { year: '2026', slug: 'paper-grid', ext: 'jpg', caption: 'grid lines on warm paper' },
+]
 
 function isPhotoExt(ext: string): ext is PhotoExt {
   return (PHOTO_EXTENSIONS as readonly string[]).includes(ext)
