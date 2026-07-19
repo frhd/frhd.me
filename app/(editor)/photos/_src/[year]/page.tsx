@@ -46,19 +46,17 @@ export default async function PhotoYearPage({
   const photos = getCachedPhotos().filter((photo) => photo.year === year)
 
   return (
-    <main>
-      <div className="photo-grid">
-        {photos.map((photo) => (
-          <Link key={photo.slug} href={`/photos/${photo.year}/${photo.slug}/`}>
-            {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimization */}
-            <img
-              src={photoSrc(photo, 'thumb')}
-              alt={photo.caption ?? photo.slug}
-              loading="lazy"
-            />
-          </Link>
-        ))}
-      </div>
-    </main>
+    <div className="photo-grid">
+      {photos.map((photo) => (
+        <Link key={photo.slug} href={`/photos/${photo.year}/${photo.slug}/`}>
+          {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimization */}
+          <img
+            src={photoSrc(photo, 'thumb')}
+            alt={photo.caption ?? photo.slug}
+            loading="lazy"
+          />
+        </Link>
+      ))}
+    </div>
   )
 }

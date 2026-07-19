@@ -70,7 +70,7 @@ export default async function PhotoPage({
   const { photo, prev, next } = findPhotoWithNeighbors(getCachedPhotos(), year, slug)
 
   return (
-    <main className="photo-detail">
+    <div className="photo-detail">
       {/* eslint-disable-next-line @next/next/no-img-element -- static export, no image optimization */}
       <img src={photoSrc(photo, 'large')} alt={photo.caption ?? photo.slug} />
       {photo.caption && <p className="photo-caption">{photo.caption}</p>}
@@ -86,6 +86,6 @@ export default async function PhotoPage({
           <span />
         )}
       </nav>
-    </main>
+    </div>
   )
 }

@@ -97,6 +97,13 @@ describe('getAllPhotos', () => {
     expect(() => getAllPhotos([], dir)).toThrow(/2026\/orphan/)
   })
 
+  it('throws when an uppercase-extension original has no manifest entry', () => {
+    const dir = makeFixtureDir()
+    writeOriginal(dir, '2026', 'Sunset.JPG')
+
+    expect(() => getAllPhotos([], dir)).toThrow(/2026\/Sunset\.jpg/)
+  })
+
   it('ignores non-photo files on disk', () => {
     const dir = makeFixtureDir()
     writeOriginal(dir, '2026', '.DS_Store')

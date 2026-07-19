@@ -48,7 +48,7 @@ export default async function PostPage({
   const body = await renderMdx(post.content)
 
   return (
-    <main className="post">
+    <div className="post">
       <article>
         <header className="post-header">
           <h1 className="post-title">{post.title}</h1>
@@ -56,6 +56,6 @@ export default async function PostPage({
         </header>
         <div className="prose">{body}</div>
       </article>
-    </main>
+    </div>
   )
 }

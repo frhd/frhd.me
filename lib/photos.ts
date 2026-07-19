@@ -71,9 +71,10 @@ function scanOriginals(dir: string): Set<string> {
     const year = yearEntry.name
     const yearDir = path.join(dir, year)
     for (const filename of fs.readdirSync(yearDir)) {
-      const ext = filename.slice(filename.lastIndexOf('.') + 1)
+      const rawExt = filename.slice(filename.lastIndexOf('.') + 1)
+      const ext = rawExt.toLowerCase()
       if (!isPhotoExt(ext)) continue
-      const slug = filename.slice(0, -(ext.length + 1))
+      const slug = filename.slice(0, -(rawExt.length + 1))
       keys.add(entryKey({ year, slug, ext }))
     }
   }

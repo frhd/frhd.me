@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function IsascrawlerPage() {
   return (
-    <main className="project-page">
+    <div className="project-page">
       <h1 className="project-title">ISAScrawler</h1>
       <p className="project-meta">
         Studienarbeit, ISAS · Universität Karlsruhe · 2006–07
@@ -96,6 +96,6 @@ export default function IsascrawlerPage() {
         first. The crawler above is rebuilt in code from the thesis
         drawings, walking its original gait.
       </p>
-    </main>
+    </div>
   )
 }
