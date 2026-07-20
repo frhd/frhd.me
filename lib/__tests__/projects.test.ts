@@ -52,3 +52,13 @@ describe('gaussian-approx entry', () => {
     expect(entry!.href).toBe('https://github.com/frhd/gaussian-approx')
   })
 })
+
+describe('tetris-rl-nn entry', () => {
+  const entry = projects.find((p) => p.slug === 'tetris-rl-nn')
+
+  it('has an internal writeup slug and keeps its external repo href', () => {
+    expect(entry).toBeDefined()
+    expect(entry!.slug).toBe('tetris-rl-nn')
+    expect(entry!.href).toBe('https://github.com/frhd/tetris-rl-nn')
+  })
+})

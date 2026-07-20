@@ -38,6 +38,7 @@ export const projects: Project[] = [
     name: 'tetris-rl-nn',
     oneLiner: 'Teaching a neural net to play tetris',
     href: 'https://github.com/frhd/tetris-rl-nn',
+    slug: 'tetris-rl-nn',
   },
   {
     name: 'ISAScrawler',
