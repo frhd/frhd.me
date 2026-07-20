@@ -1,0 +1,165 @@
+/* gaussian-approx writeup — self-contained route styles.
+ *
+ * Mirrors isascrawler.css: the repo's Tailwind pipeline generates no utility
+ * classes, so this page styles itself with semantic classes + the theme tokens
+ * from globals.css (--fg / --muted / --accent / --border / --code-bg). Running
+ * prose is the Benne serif; the figure chrome and readout are the mono font.
+ * Everything below references tokens only, so light/dark theming is automatic
+ * and no theme-specific rules are needed. */
+
+.project-page {
+  padding: 0;
+}
+
+.project-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.project-meta {
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.project-intro {
+  margin: 2rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.project-heading {
+  margin: 2.5rem 0 0;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--fg);
+}
+
+.project-para {
+  margin: 0.75rem 0 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+}
+
+.project-figure {
+  margin: 2rem 0 0; /* resets the browser's default figure side margins */
+}
+
+.project-figure figcaption {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+/* --- interactive Kalman figure --- */
+
+.kf {
+  width: 100%;
+}
+
+.kf-frame {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--code-bg);
+  overflow: hidden;
+}
+
+.kf-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 62vh;
+}
+
+.kf-readout {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.kf-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 0.75rem;
+  margin-top: 0.6rem;
+}
+
+.kf-btn,
+.kf-seg-btn {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--fg);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  cursor: pointer;
+}
+
+.kf-btn {
+  min-width: 5.5rem;
+}
+
+.kf-btn:hover,
+.kf-seg-btn:hover {
+  border-color: var(--muted);
+}
+
+.kf-btn:focus-visible,
+.kf-seg-btn:focus-visible,
+.kf-scrub:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* segmented trajectory switcher: a single grouped control */
+.kf-seg {
+  display: inline-flex;
+}
+
+.kf-seg-btn {
+  border-radius: 0;
+  border-left-width: 0;
+}
+
+.kf-seg-btn:first-child {
+  border-left-width: 1px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+.kf-seg-btn:last-child {
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.kf-seg-btn[aria-pressed='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* keep the pressed button's shared right edge from being overdrawn by the
+   next button's (unpressed) left border */
+.kf-seg-btn[aria-pressed='true'] + .kf-seg-btn {
+  border-left-width: 1px;
+  border-left-color: var(--accent);
+}
+
+.kf-scrub {
+  flex: 1 1 8rem;
+  min-width: 6rem;
+  accent-color: var(--accent);
+  cursor: pointer;
+}

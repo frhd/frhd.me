@@ -42,3 +42,13 @@ describe('isascrawler entry', () => {
     expect(entry!.href).toBeUndefined()
   })
 })
+
+describe('gaussian-approx entry', () => {
+  const entry = projects.find((p) => p.slug === 'gaussian-approx')
+
+  it('has an internal writeup slug and keeps its external repo href', () => {
+    expect(entry).toBeDefined()
+    expect(entry!.slug).toBe('gaussian-approx')
+    expect(entry!.href).toBe('https://github.com/frhd/gaussian-approx')
+  })
+})

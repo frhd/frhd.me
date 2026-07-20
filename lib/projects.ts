@@ -32,6 +32,7 @@ export const projects: Project[] = [
     name: 'gaussian-approx',
     oneLiner: 'Kalman-based gaussian approximator',
     href: 'https://github.com/frhd/gaussian-approx',
+    slug: 'gaussian-approx',
   },
   {
     name: 'tetris-rl-nn',
