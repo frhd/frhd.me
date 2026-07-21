@@ -18,7 +18,7 @@ export default function IsascrawlerPage() {
 
       <p className="project-intro">
         At the Intelligent Sensor-Actuator-Systems lab, a group of small
-        caterpillar robots was meant to explore collaborative swarm behavior —
+        caterpillar robots was meant to explore collaborative swarm behavior:
         machines that crawl over terrain in groups and solve tasks together.
         The existing prototype had accumulated enough mechanical and electrical
         problems that efficient operation was impossible, so my Studienarbeit
@@ -42,13 +42,13 @@ export default function IsascrawlerPage() {
         The predecessor fought itself: open-loop motors with no position
         feedback, a microcontroller per limb, joints that shed their ball
         bearings, and a tethered power supply. Every subsystem needed
-        redesign, and the fixes only worked together — so it became a new
+        redesign, and the fixes only worked together, so it became a new
         robot.
       </p>
 
       <h2 className="project-heading"># the redesign</h2>
       <p className="project-para">
-        The frame is CNC-milled copper-clad PCB material — structure and
+        The frame is CNC-milled copper-clad PCB material: structure and
         circuit board in one. The joints became a sandwich construction:
         three plates with enclosed ball-bearing races, so the bearings
         physically cannot fall out, driven by 4.7-gram positional micro
@@ -56,7 +56,7 @@ export default function IsascrawlerPage() {
         radio module made communication bidirectional, and a lithium-polymer
         cell finally cut the cable. The firmware was rewritten from scratch:
         besides manual and per-servo control, the robot accepts target
-        coordinates and walks a straight computed path on its own — dead
+        coordinates and walks a straight computed path on its own: dead
         reckoning only, no feedback about drift yet.
       </p>
 
@@ -70,7 +70,7 @@ export default function IsascrawlerPage() {
           decoding="async"
         />
         <figcaption>
-          The sandwich joint — the bearings are enclosed between three milled plates.
+          The sandwich joint: the bearings are enclosed between three milled plates.
         </figcaption>
       </figure>
 
@@ -84,14 +84,14 @@ export default function IsascrawlerPage() {
           decoding="async"
         />
         <figcaption>
-          A leg segment — frame and circuit board are the same milled material.
+          A leg segment: frame and circuit board are the same milled material.
         </figcaption>
       </figure>
 
       <h2 className="project-heading"># looking back</h2>
       <p className="project-para">
-        It was the first project where I built the whole stack myself —
-        mechanics, boards, radio protocol, firmware — and where I learned
+        It was the first project where I built the whole stack myself
+        (mechanics, boards, radio protocol, firmware), and where I learned
         that the second version of anything is mostly an apology to the
         first. The crawler above is rebuilt in code from the thesis
         drawings, walking its original gait.

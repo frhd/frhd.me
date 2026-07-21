@@ -7,7 +7,7 @@ import './tetris-rl-nn.css'
 export const metadata: Metadata = {
   title: 'tetris-rl-nn — farhad omid',
   description:
-    'A small Deep Q-Network that learned to play Tetris from self-play — running live in the browser, the real trained weights and all.',
+    'A small Deep Q-Network that learned to play Tetris from self-play, running live in the browser, the real trained weights and all.',
 }
 
 export default function TetrisRlNnPage() {
@@ -32,8 +32,8 @@ export default function TetrisRlNnPage() {
           shades the ten columns by how highly it rates landing there (the strip
           under the board) and outlines the placement it chose; then the piece
           falls and any full rows clear. The 14 board features on the right are
-          exactly what the network sees. This is the real exported model —
-          about 330&nbsp;KB of weights fetched on load — not a canned animation,
+          exactly what the network sees. This is the real exported model
+          (about 330&nbsp;KB of weights fetched on load), not a canned animation,
           so every game plays out differently.
         </figcaption>
       </figure>
@@ -49,8 +49,8 @@ export default function TetrisRlNnPage() {
       </p>
       <p className="project-para">
         It never sees the raw pixels. The board is boiled down to 14 hand-picked
-        features — the ten column heights, the aggregate and maximum height, the
-        number of covered holes, and the surface bumpiness — and those get
+        features (the ten column heights, the aggregate and maximum height, the
+        number of covered holes, and the surface bumpiness), and those get
         concatenated with one-hot encodings of the current and next piece for a
         28-number state vector. The network itself is deliberately tiny: a
         multilayer perceptron, 28 → 256 → 256 → 40, trained with Double DQN and
@@ -72,8 +72,8 @@ export default function TetrisRlNnPage() {
         Measured greedily on this exact exported model, it clears a mean of
         about 49 lines per game (median 49, ranging from 9 to 88 across 20
         games), placing roughly 160 pieces before it finally tops out. It is
-        nowhere near the search-based Tetris bots — it has no lookahead at all,
-        it just reacts to the board in front of it — but a 330&nbsp;KB pile of
+        nowhere near the search-based Tetris bots (it has no lookahead at all,
+        it just reacts to the board in front of it), but a 330&nbsp;KB pile of
         weights reliably keeping the stack flat and hunting for clears is more
         than I expected the plain version to pull off. It is the one running
         live above.

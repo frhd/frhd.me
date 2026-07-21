@@ -19,7 +19,7 @@ export interface Project {
 export const projects: Project[] = [
   {
     name: 'frhd.me',
-    oneLiner: 'This site — and the whole terminal OS it used to be (press t)',
+    oneLiner: 'This site, and the whole terminal OS it used to be (press t)',
     href: 'https://github.com/frhd/frhd.me',
   },
   {
@@ -43,7 +43,7 @@ export const projects: Project[] = [
   {
     name: 'ISAScrawler',
     oneLiner:
-      'Rebuilt a caterpillar swarm robot — mechanics, electronics, firmware (Uni Karlsruhe, 2007)',
+      'Rebuilt a caterpillar swarm robot: mechanics, electronics, firmware (Uni Karlsruhe, 2007)',
     slug: 'isascrawler',
   },
 ]

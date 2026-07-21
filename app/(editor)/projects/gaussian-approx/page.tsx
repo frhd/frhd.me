@@ -8,7 +8,7 @@ import './gaussian-approx.css'
 export const metadata: Metadata = {
   title: 'gaussian-approx — farhad omid',
   description:
-    'A hobby sigma-point (unscented) Kalman filter in C, with an ASCII terminal visualizer — and an interactive figure replaying real recorded runs.',
+    'A hobby sigma-point (unscented) Kalman filter in C, with an ASCII terminal visualizer and an interactive figure replaying real recorded runs.',
 }
 
 export default function GaussianApproxPage() {
@@ -24,7 +24,7 @@ export default function GaussianApproxPage() {
         and the way that finally stuck was watching one run. So this is two
         small things: a dependency-free C filter library, and an ASCII terminal
         visualizer that tracks a moving target from noisy measurements and draws
-        the whole thing — grids, markers, and covariance ellipses — in the
+        the whole thing (grids, markers, and covariance ellipses) in the
         terminal.
       </p>
 
@@ -47,8 +47,8 @@ export default function GaussianApproxPage() {
         picks a small set of sample points that capture the current mean and
         covariance, pushes each one through the real nonlinear model, and
         reconstructs the resulting Gaussian from where they land. This build
-        uses pre-computed optimal sample placements at three precision levels —
-        3, 5, or 7 points per axis — all in pure C with nothing beyond libc and
+        uses pre-computed optimal sample placements at three precision levels
+        (3, 5, or 7 points per axis), all in pure C with nothing beyond libc and
         libm.
       </p>
 
@@ -56,7 +56,7 @@ export default function GaussianApproxPage() {
       <p className="project-para">
         The surprise was how little the approximation level mattered. For this
         near-linear constant-velocity model the 3-, 5-, and 7-point filters
-        produce essentially the same estimate — the extra sigma points buy you
+        produce essentially the same estimate. The extra sigma points buy you
         nothing until the dynamics actually bend, which is exactly the sort of
         thing you only believe once you have watched it. The honest failure is
         elsewhere: under the heavy measurement noise the estimate visibly lags
