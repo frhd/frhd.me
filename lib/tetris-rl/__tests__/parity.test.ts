@@ -47,7 +47,7 @@ function loadModel() {
 }
 
 describe('golden-trace parity', () => {
-  it('reproduces flatState, q-values, actions and clears for all 134 steps', () => {
+  it('reproduces flatState, q-values, actions and clears for all 181 steps', () => {
     const net = loadModel()
     const engine = new TetrisRlEngine(feedSource())
 
@@ -73,10 +73,10 @@ describe('golden-trace parity', () => {
       expect(last.linesCleared).toBe(step.linesCleared)
     }
 
-    expect(engine.totalLines).toBe(39)
-    expect(engine.officialScore).toBe(10800)
+    expect(engine.totalLines).toBe(57)
+    expect(engine.officialScore).toBe(13420)
     expect(last?.gameOver).toBe(true)
-    expect(trace.totalLines).toBe(39)
-    expect(trace.officialScore).toBe(10800)
+    expect(trace.totalLines).toBe(57)
+    expect(trace.officialScore).toBe(13420)
   })
 })

@@ -54,8 +54,8 @@ export default function TetrisRlNnPage() {
         concatenated with one-hot encodings of the current and next piece for a
         28-number state vector. The network itself is deliberately tiny: a
         multilayer perceptron, 28 → 256 → 256 → 40, trained with Double DQN and
-        prioritized experience replay, with exploration annealed over the first
-        500k steps and roughly 650k training steps in total.
+        prioritized experience replay, with exploration annealed away as it
+        learned over roughly 480k steps of self-play.
       </p>
 
       <h2 className="project-heading"># what I found</h2>
@@ -70,12 +70,13 @@ export default function TetrisRlNnPage() {
       </p>
       <p className="project-para">
         Measured greedily on this exact exported model, it clears a mean of
-        about 33 lines per game (median 30, ranging from 11 to 56 across 20
-        games), placing roughly 120 pieces before it finally tops out. It is
+        about 49 lines per game (median 49, ranging from 9 to 88 across 20
+        games), placing roughly 160 pieces before it finally tops out. It is
         nowhere near the search-based Tetris bots — it has no lookahead at all,
-        it just reacts to the board in front of it — but watching a 330&nbsp;KB
-        pile of weights reliably keep the stack flat and hunt for clears is
-        still the sort of thing I only really believed once I had watched it.
+        it just reacts to the board in front of it — but a 330&nbsp;KB pile of
+        weights reliably keeping the stack flat and hunting for clears is more
+        than I expected the plain version to pull off. It is the one running
+        live above.
       </p>
 
       <p className="project-para">
