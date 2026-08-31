@@ -46,7 +46,7 @@
     "@types/three": "^0.185.1",
     "@vitejs/plugin-react": "^5.1.2",
     "eslint": "^9",
-    "eslint-config-next": "16.0.10",
+    "eslint-config-next": "16.2.10",
     "jsdom": "^27.3.0",
     "postcss": "^8",
     "sharp": "^0.35.3",
